@@ -1,0 +1,60 @@
+<div>
+    <div class="row tool-bar-row">
+        <input class="btn btn-default sysUserAddBtn ROLE_106" v-on:click="$refs.sysUserInfo.showInfoPanel({})" type="button" value="添加">
+        <div class="pull-right">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" v-model="queryData.keyword" class="form-control" id="exampleInputAmount"
+                           placeholder="username/email/mobile">
+                </div>
+                <input v-on:click="queryPageData(1)" class="btn btn-primary" type="button" value="搜索">
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td> ID </td>
+            <td> 账号 </td>
+            <td> 昵称 </td>
+            <td> 邮箱</td>
+            <td> 手机号 </td>
+            <td> 添加时间 </td>
+            <td> 更新时间 </td>
+            <td> 操作 </td>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr v-for="sysUser in sysUserList" >
+            <td> {{sysUser.id}} </td>
+            <td> {{sysUser.username}} </td>
+            <td> {{sysUser.nickname}} </td>
+            <td> {{sysUser.email}} </td>
+            <td> {{sysUser.mobile}} </td>
+            <td> {{sysUser.create_time}} </td>
+            <td> {{sysUser.update_time}} </td>
+            <td>
+                <button v-on:click="$refs.sysUserInfo.showInfoPanel({id:sysUser.id})" type="button" class="btn btn-info btn-xs ROLE_102"> 查看/修改 </button>
+                <button v-on:click="delRowData(sysUser.id)" type="button" class="btn btn-danger btn-xs ROLE_104"> 删除 </button>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <table-page
+            v-bind:notification-change="tablePage.notificationChange"
+            v-bind:reload-notification="tablePage.reloadNotification"
+            v-bind:total-count="tablePage.totalCount"
+            v-bind:curr-page="tablePage.currPage"
+            v-on:change-page="queryPageData"></table-page>
+
+
+    <!-- 添加用户 -->
+    <sys-user-info ref="sysUserInfo" v-on:completed="reloadPage" />
+
+</div>
