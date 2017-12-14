@@ -2,6 +2,7 @@ package com.cd2cd.service;
 
 import java.util.List;
 
+import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.SysRole;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DataPageWrapper;
@@ -15,4 +16,9 @@ public interface SysUserService {
 	ObjDataWrapper<SysUserVo, List<SysRole>, Object> detail(Integer id);
 	
 	boolean del(Integer userId);
+	
+	ServiceCode add(SysUserVo sysUserVo);
+	
+	ServiceCode modify(SysUserVo sysUserVo);
+	
 }

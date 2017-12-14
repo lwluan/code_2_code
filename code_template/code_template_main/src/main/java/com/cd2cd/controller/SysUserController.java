@@ -7,11 +7,15 @@ import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cd2cd.comm.DValid;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.SysRole;
 import com.cd2cd.service.SysUserService;
@@ -64,6 +68,30 @@ public class SysUserController extends BaseController {
 			res.setServiceCode(ServiceCode.FAILED);
 		}
 		
+		return res;
+	}
+	
+	@RequestMapping(value = "add", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> add(
+			@Validated(value = {DValid.AddEntity.class}) 
+			@RequestBody SysUserVo sysUserVo, 
+			BindingResult bindingResult) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		ServiceCode serviceCode = sysUserService.add(sysUserVo);
+		res.setServiceCode(serviceCode);
+		return res;
+	}
+	
+	@RequestMapping(value = "modify", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> modify(
+			@Validated(value = {DValid.ModifyEntity.class}) 
+			@RequestBody SysUserVo sysUserVo, 
+			BindingResult bindingResult) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		ServiceCode serviceCode = sysUserService.modify(sysUserVo);
+		res.setServiceCode(serviceCode);
 		return res;
 	}
 }

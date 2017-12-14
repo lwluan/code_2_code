@@ -6,12 +6,16 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.SysRole;
 import com.cd2cd.domain.SysUser;
+import com.cd2cd.domain.SysUserRoleRel;
 import com.cd2cd.domain.gen.SysUserCriteria;
 import com.cd2cd.domain.gen.SysUserCriteria.Criteria;
+import com.cd2cd.domain.gen.SysUserRoleRelCriteria;
 import com.cd2cd.mapper.SysRoleMapper;
 import com.cd2cd.mapper.SysUserMapper;
+import com.cd2cd.mapper.SysUserRoleRelMapper;
 import com.cd2cd.service.SysUserService;
 import com.cd2cd.util.BeanUtil;
 import com.cd2cd.vo.BaseRes;
@@ -27,6 +31,9 @@ public class SysUserServiceImpl implements SysUserService {
 	
 	@Autowired
 	private SysRoleMapper sysRoleMapper;
+	
+	@Autowired
+	private SysUserRoleRelMapper sysUserRoleRelMapper;
 	
 	@Override
 	public BaseRes<DataPageWrapper<SysUserVo>> list(
@@ -76,6 +83,45 @@ public class SysUserServiceImpl implements SysUserService {
 	public boolean del(Integer userId) {
 		int affected = sysRoleMapper.deleteByPrimaryKey(userId);
 		return (affected > 0 ? true : false);
+	}
+
+	@Override
+	public ServiceCode add(SysUserVo sysUserVo) {
+		
+		SysUser sysUser = BeanUtil.voConvert(sysUserVo, SysUser.class); 
+		sysUserMapper.insertSelective(sysUser);
+		updateUserRoles(sysUserVo.getRoles(), sysUser.getId());
+		
+		return ServiceCode.SUCCESS;
+	}
+
+	@Override
+	public ServiceCode modify(SysUserVo sysUserVo) {
+		
+		SysUser sysUser = BeanUtil.voConvert(sysUserVo, SysUser.class);
+		sysUserMapper.updateByPrimaryKeySelective(sysUser);
+		updateUserRoles(sysUserVo.getRoles(), sysUserVo.getId());
+		
+		return ServiceCode.SUCCESS;
+	}
+	
+	/**
+	 * 处理角色关联
+	 * @param roles
+	 * @param userId
+	 */
+	private void updateUserRoles(List<Integer> roles, Integer userId) {
+		
+		SysUserRoleRelCriteria example = new SysUserRoleRelCriteria();
+		example.createCriteria().andUserIdEqualTo(userId);
+		sysUserRoleRelMapper.deleteByExample(example);
+		
+		for( Integer roleId: roles ) {
+			SysUserRoleRel record = new SysUserRoleRel();
+			record.setRoleId(roleId);
+			record.setUserId(userId);
+			sysUserRoleRelMapper.insertSelective(record);
+		}
 	}
 
 }
