@@ -17,39 +17,39 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cd2cd.comm.DValid;
 import com.cd2cd.comm.ServiceCode;
-import com.cd2cd.service.SysUserService;
+import com.cd2cd.service.SysRoleService;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DataPageWrapper;
 import com.cd2cd.vo.ObjDataWrapper;
+import com.cd2cd.vo.SysAuthorityVo;
 import com.cd2cd.vo.SysRoleVo;
-import com.cd2cd.vo.SysUserVo;
 
 @Controller
-@RequestMapping("sysUser")
-public class SysUserController extends BaseController {
+@RequestMapping("sysRole")
+public class SysRoleController extends BaseController {
 
-	private static Logger LOG = LoggerFactory.getLogger(SysUserController.class);
+	private static Logger LOG = LoggerFactory.getLogger(SysRoleController.class);
 	
 	@Resource
-	private SysUserService sysUserService;
-
+	private SysRoleService sysRoleService;
+	
 	@RequestMapping( value = "list", method = RequestMethod.GET)
-	public @ResponseBody BaseRes<DataPageWrapper<SysUserVo>> queryPageList(
-			Integer currPage, Integer pageSize, SysUserVo sysUserVo) {
+	public @ResponseBody BaseRes<DataPageWrapper<SysRoleVo>> queryPageList(
+			Integer currPage, Integer pageSize, SysRoleVo sysRoleVo) {
 
-		LOG.info("currPage={}, pageSize={}, sysUserVo={}", currPage, pageSize, sysUserVo);
+		LOG.info("currPage={}, pageSize={}, sysRoleVo={}", currPage, pageSize, sysRoleVo);
 		
-		BaseRes<DataPageWrapper<SysUserVo>> res = sysUserService.list(currPage, pageSize, sysUserVo);
+		BaseRes<DataPageWrapper<SysRoleVo>> res = sysRoleService.list(currPage, pageSize, sysRoleVo);
 
 		return res;
 	}
 	
 	@RequestMapping( value = "detail/{id}", method = RequestMethod.GET)
-	public @ResponseBody BaseRes<ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object>> detail(@PathVariable("id") Integer id) {
+	public @ResponseBody BaseRes<ObjDataWrapper<SysRoleVo, List<SysAuthorityVo>, Object>> detail(@PathVariable("id") Integer id) {
 		
-		BaseRes<ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object>> res = new BaseRes<ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object>>();
+		BaseRes<ObjDataWrapper<SysRoleVo, List<SysAuthorityVo>, Object>> res = new BaseRes<ObjDataWrapper<SysRoleVo, List<SysAuthorityVo>, Object>>();
 		
-		ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object> objDataWrap = sysUserService.detail(id);
+		ObjDataWrapper<SysRoleVo, List<SysAuthorityVo>, Object> objDataWrap = sysRoleService.detail(id);
 		res.setData(objDataWrap);
 		res.setServiceCode(ServiceCode.SUCCESS);
 		
@@ -61,7 +61,7 @@ public class SysUserController extends BaseController {
 		
 		BaseRes<String> res = new BaseRes<String>();
 		
-		boolean success = sysUserService.del(id);
+		boolean success = sysRoleService.del(id);
 		if( success ) {
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} else {
@@ -74,11 +74,11 @@ public class SysUserController extends BaseController {
 	@RequestMapping(value = "add", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> add(
 			@Validated(value = {DValid.AddEntity.class}) 
-			@RequestBody SysUserVo sysUserVo, 
+			@RequestBody SysRoleVo sysRoleVo, 
 			BindingResult bindingResult) {
 		
 		BaseRes<String> res = new BaseRes<String>();
-		ServiceCode serviceCode = sysUserService.add(sysUserVo);
+		ServiceCode serviceCode = sysRoleService.add(sysRoleVo);
 		res.setServiceCode(serviceCode);
 		return res;
 	}
@@ -86,12 +86,13 @@ public class SysUserController extends BaseController {
 	@RequestMapping(value = "modify", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> modify(
 			@Validated(value = {DValid.ModifyEntity.class}) 
-			@RequestBody SysUserVo sysUserVo, 
+			@RequestBody SysRoleVo sysRoleVo, 
 			BindingResult bindingResult) {
 		
 		BaseRes<String> res = new BaseRes<String>();
-		ServiceCode serviceCode = sysUserService.modify(sysUserVo);
+		ServiceCode serviceCode = sysRoleService.modify(sysRoleVo);
 		res.setServiceCode(serviceCode);
 		return res;
 	}
+	
 }

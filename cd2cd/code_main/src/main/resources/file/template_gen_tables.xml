@@ -34,11 +34,21 @@
 		<javaClientGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/code_2_code/code_template/code_template_main/src/main/java/" type="XMLMAPPER" />
 		
 		<!-- sys table -->
-		<table domainObjectName="SysUser" tableName="sys_user" ></table>
-		<table domainObjectName="SysRole" tableName="sys_role" ></table>
-		<table domainObjectName="SysAuthority" tableName="sys_authority" ></table>
-		<table domainObjectName="SysUserRoleRel" tableName="sys_user_role_rel" ></table>
-		<table domainObjectName="SysAuthorityRoleRel" tableName="sys_authority_role_rel" ></table>
+		<table domainObjectName="SysUser" tableName="sys_user" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysRole" tableName="sys_role" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysAuthority" tableName="sys_authority" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysUserRoleRel" tableName="sys_user_role_rel" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysAuthorityRoleRel" tableName="sys_authority_role_rel" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
 		
 	</context>
 </generatorConfiguration>

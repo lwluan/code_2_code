@@ -9,6 +9,7 @@ public enum ServiceCode {
 	___GEN_CODE_START___(-20000, "自动生成内容【开始】不要编辑"),
 	SUCCESS(10000, "成功"),
 	FAILED(10001, "失败"),
+	ACCESS_DENIED(10003, "无权限操作"),
 	___GEN_CODE_END___(-10000, "自动生成内容【结束】不要编辑"),
 	
 	;

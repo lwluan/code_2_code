@@ -1,5 +1,8 @@
 package com.cd2cd.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ObjDataWrapper<T, E, H> {
 
 	private T data1;

@@ -16,6 +16,11 @@ public class SuperSysUser implements Serializable {
 
     private String password;
 
+    /**
+     * enable,disable
+     */
+    private String status;
+
     private Date createTime;
 
     private Date updateTime;
@@ -70,6 +75,20 @@ public class SuperSysUser implements Serializable {
         this.password = password;
     }
 
+    /**
+     * enable,disable
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * enable,disable
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -98,6 +117,7 @@ public class SuperSysUser implements Serializable {
         sb.append(", mobile=").append(mobile);
         sb.append(", email=").append(email);
         sb.append(", password=").append(password);
+        sb.append(", status=").append(status);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -123,6 +143,7 @@ public class SuperSysUser implements Serializable {
             && (this.getMobile() == null ? other.getMobile() == null : this.getMobile().equals(other.getMobile()))
             && (this.getEmail() == null ? other.getEmail() == null : this.getEmail().equals(other.getEmail()))
             && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
+            && (this.getStatus() == null ? other.getStatus() == null : this.getStatus().equals(other.getStatus()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -137,6 +158,7 @@ public class SuperSysUser implements Serializable {
         result = prime * result + ((getMobile() == null) ? 0 : getMobile().hashCode());
         result = prime * result + ((getEmail() == null) ? 0 : getEmail().hashCode());
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
+        result = prime * result + ((getStatus() == null) ? 0 : getStatus().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

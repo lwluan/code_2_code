@@ -101,17 +101,18 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.cd2cd.domain.SysAuthorityRoleRel">
-    insert into sys_authority_role_rel (id, authorities_id, role_id
-      )
-    values (#{id,jdbcType=INTEGER}, #{authoritiesId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER}
-      )
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_authority_role_rel (authorities_id, role_id)
+    values (#{authoritiesId,jdbcType=INTEGER}, #{roleId,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.SysAuthorityRoleRel">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into sys_authority_role_rel
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="authoritiesId != null">
         authorities_id,
       </if>
@@ -120,9 +121,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="authoritiesId != null">
         #{authoritiesId,jdbcType=INTEGER},
       </if>

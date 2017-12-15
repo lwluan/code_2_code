@@ -1,5 +1,6 @@
 package com.cd2cd.service.impl;
 
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -16,11 +17,13 @@ import com.cd2cd.domain.gen.SysUserRoleRelCriteria;
 import com.cd2cd.mapper.SysRoleMapper;
 import com.cd2cd.mapper.SysUserMapper;
 import com.cd2cd.mapper.SysUserRoleRelMapper;
+import com.cd2cd.security.MyMd5PasswordEncoder;
 import com.cd2cd.service.SysUserService;
 import com.cd2cd.util.BeanUtil;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DataPageWrapper;
 import com.cd2cd.vo.ObjDataWrapper;
+import com.cd2cd.vo.SysRoleVo;
 import com.cd2cd.vo.SysUserVo;
 
 @Service
@@ -64,15 +67,15 @@ public class SysUserServiceImpl implements SysUserService {
 	}
 
 	@Override
-	public ObjDataWrapper<SysUserVo, List<SysRole>, Object> detail(Integer userId) {
+	public ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object> detail(Integer userId) {
 		
-		ObjDataWrapper<SysUserVo, List<SysRole>, Object> objDataWrap = new ObjDataWrapper<SysUserVo, List<SysRole>, Object>();
+		ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object> objDataWrap = new ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object>();
 		
 		SysUser mSysUser = sysUserMapper.selectByPrimaryKey(userId);
 		List<SysRole> sysRoles = sysRoleMapper.querySysUserRoles(userId);
 		
 		SysUserVo data01 = BeanUtil.voConvert(mSysUser, SysUserVo.class);
-		List<SysRole> data02 = BeanUtil.voConvertList(sysRoles, SysRole.class); 
+		List<SysRoleVo> data02 = BeanUtil.voConvertList(sysRoles, SysRoleVo.class); 
 		objDataWrap.setData1(data01);
 		objDataWrap.setData2(data02);
 		
@@ -81,14 +84,21 @@ public class SysUserServiceImpl implements SysUserService {
 
 	@Override
 	public boolean del(Integer userId) {
-		int affected = sysRoleMapper.deleteByPrimaryKey(userId);
+		int affected = sysUserMapper.deleteByPrimaryKey(userId);
 		return (affected > 0 ? true : false);
 	}
 
 	@Override
 	public ServiceCode add(SysUserVo sysUserVo) {
 		
-		SysUser sysUser = BeanUtil.voConvert(sysUserVo, SysUser.class); 
+		SysUser sysUser = BeanUtil.voConvert(sysUserVo, SysUser.class);
+		sysUser.setCreateTime(new Date());
+		sysUser.setUpdateTime(new Date());
+		
+		// 密码加密处理
+		String password = MyMd5PasswordEncoder.md5Encode(sysUser.getPassword());
+		sysUser.setPassword(password);
+		
 		sysUserMapper.insertSelective(sysUser);
 		updateUserRoles(sysUserVo.getRoles(), sysUser.getId());
 		
@@ -99,6 +109,14 @@ public class SysUserServiceImpl implements SysUserService {
 	public ServiceCode modify(SysUserVo sysUserVo) {
 		
 		SysUser sysUser = BeanUtil.voConvert(sysUserVo, SysUser.class);
+		sysUser.setUpdateTime(new Date());
+		
+		if( StringUtils.isNotEmpty(sysUser.getPassword()) ) {
+			// 密码加密处理
+			String password = MyMd5PasswordEncoder.md5Encode(sysUser.getPassword());
+			sysUser.setPassword(password);
+		}
+		
 		sysUserMapper.updateByPrimaryKeySelective(sysUser);
 		updateUserRoles(sysUserVo.getRoles(), sysUserVo.getId());
 		

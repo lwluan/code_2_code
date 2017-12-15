@@ -105,19 +105,22 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.cd2cd.domain.SysAuthority">
-    insert into sys_authority (id, pid, guid, 
-      name, url, create_time, 
-      update_time)
-    values (#{id,jdbcType=INTEGER}, #{pid,jdbcType=INTEGER}, #{guid,jdbcType=VARCHAR}, 
-      #{name,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into sys_authority (pid, guid, name, 
+      url, create_time, update_time
+      )
+    values (#{pid,jdbcType=INTEGER}, #{guid,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
+      #{url,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.SysAuthority">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into sys_authority
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="pid != null">
         pid,
       </if>
@@ -138,9 +141,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
-      </if>
       <if test="pid != null">
         #{pid,jdbcType=INTEGER},
       </if>

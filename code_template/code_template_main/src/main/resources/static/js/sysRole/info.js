@@ -1,4 +1,4 @@
-define(['text!'+ctx+'/html/sysRole/info.html', 'rcss!/css/zTreeStyle/zTreeStyle', '/js/lib/jquery.ztree.all-3.5.min.js'], function ( template ) {
+define(['text!'+ctx+'/html/sysRole/info.html', 'rcss!'+ctx+'/css/zTreeStyle/zTreeStyle', ctx+'/js/lib/jquery.ztree.all-3.5.min.js'], function ( template ) {
 
     var initFormValidate = function() {
         /** 表单验证 **/
@@ -40,14 +40,14 @@ define(['text!'+ctx+'/html/sysRole/info.html', 'rcss!/css/zTreeStyle/zTreeStyle'
                 accessHttp({
                     url: buildUrl('/sysRole/detail/' + id),
                     success: function (res) {
-                        data.formData = res.data.sysRole;
+                        data.formData = res.data.data1;
 
-                        var authList = res.data.authList;
+                        var authList = res.data.data2;
                         // show tree
 
                         var setting = {
                             check: { enable: true },
-                            data: { simpleData: { enable: true } }
+                            data: { simpleData: { pIdKey:'pid', enable: true } }
                         };
 
                         zNodes = authList;
@@ -70,9 +70,12 @@ define(['text!'+ctx+'/html/sysRole/info.html', 'rcss!/css/zTreeStyle/zTreeStyle'
                     var postData = this.formData;
                     postData.authIds = authIds;
 
+                    let _url = '/sysRole/add';
+                    _url = postData.id ? '/sysRole/modify' : _url;
+                    
                     var that = this;
                     accessHttp({
-                        url: buildUrl('/sysRole/modify'),
+                        url: buildUrl(_url),
                         contentType: 'application/json; charset=utf-8',
                         data: JSON.stringify(postData),
                         type: 'post',

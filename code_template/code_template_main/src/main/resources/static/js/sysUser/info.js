@@ -94,7 +94,6 @@ define(['text!'+ctx+'/html/sysUser/info.html'], function( template ) {
                 if( $('#formValidate').valid() ) {
 
                     var postData = this.formData;
-                    Vue.delete(this.formData, 'allRoles');
                     postData.roles = data.checkRoles;
 
                     let _url = '/sysUser/add';

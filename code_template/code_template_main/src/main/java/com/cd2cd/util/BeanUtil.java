@@ -9,7 +9,6 @@ import org.springframework.beans.BeanUtils;
 
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DataPageWrapper;
-import com.cd2cd.vo.SysUserVo;
 
 /**
  * 对像转换
@@ -39,9 +38,9 @@ public class BeanUtil {
 		return targetObj;
 	}
 	
-	public static BaseRes<DataPageWrapper<SysUserVo>> genDataPageRes(Integer currPage, Integer pageSize) {
-		BaseRes<DataPageWrapper<SysUserVo>> res = new BaseRes<DataPageWrapper<SysUserVo>>();
-		DataPageWrapper<SysUserVo> dataPageWrapper = new DataPageWrapper<SysUserVo>();
+	public static <T> BaseRes<DataPageWrapper<T>> genDataPageRes(Integer currPage, Integer pageSize) {
+		BaseRes<DataPageWrapper<T>> res = new BaseRes<DataPageWrapper<T>>();
+		DataPageWrapper<T> dataPageWrapper = new DataPageWrapper<T>();
 		if( currPage != null) {
 			dataPageWrapper.setCurrPage(currPage);
 		}

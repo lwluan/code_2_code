@@ -10,6 +10,6 @@ import com.cd2cd.mapper.gen.SuperSysRoleMapper;
 @Mapper
 public interface SysRoleMapper extends SuperSysRoleMapper {
 	
-	List<SysRole> querySysUserRoles(Integer userId);
+	List<SysRole> querySysUserRoles(Integer roleId);
 	
 }
