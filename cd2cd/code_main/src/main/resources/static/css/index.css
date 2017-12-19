@@ -1,0 +1,88 @@
+.navbar {
+    margin-bottom: 1px;
+}
+.app-wrapper {
+    margin:0;
+    padding: 0;
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    width: 100%;
+    background-color: #ddd;
+}
+.slider-left {
+    width: 180px; background: #666;
+    height: 100%;
+    position: fixed;
+    top: 50px;
+}
+.menu-wrapper {
+    padding: 0;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+.menu-wrapper li {
+    border-radius: 0 !important;
+    padding: 0;
+
+}
+
+.menu-wrapper li span, .menu-wrapper li a {
+    height: 40px;
+    display: inline-block;
+    line-height: 40px;
+    padding-left: 15px;
+    cursor: pointer;
+    color: #333;
+    width: 100%;
+}
+
+.menu-wrapper li a {
+    color: #666;
+}
+
+
+.menu-wrapper>li>a>i {
+    font-size: 10px;
+    margin-right: 7px;
+}
+.menu-wrapper>li a i {
+    margin-right: 7px;
+}
+
+.menu-wrapper>li>ul li {
+    background-color: #eee;
+}
+.menu-wrapper .list-group {
+    margin: 0;
+}
+
+.body-content {
+    position: absolute;
+    left: 180px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+}
+/** 导行路径 */
+.nav-route {
+	margin-bottom: 2px;
+	border-radius: 0;
+}
+/** 工具栏 */
+.tool-bar-row {
+	padding: 10px;
+	background-color: #eee;
+}
+
+.role-checkbox {
+    margin-right: 10px;
+}
+
+.router-link-active {
+    background-color: #337ab7;
+    color: white !important;
+}

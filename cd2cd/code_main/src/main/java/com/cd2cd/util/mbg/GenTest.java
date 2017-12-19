@@ -23,7 +23,9 @@ public class GenTest {
 	private static Logger LOG = LoggerFactory.getLogger(GenTest.class);
 	public static void main(String[] args) {
 		GenTest generator = new GenTest();
-		generator.process("file/template_gen_tables.xml");
+//		generator.process("file/zp_tenant_gen_tables.xml");
+//		generator.process("file/template_gen_tables.xml");
+		generator.process("file/auto_code_gen_tables.xml");
 	}
 	
 	public void process(String fileName) {

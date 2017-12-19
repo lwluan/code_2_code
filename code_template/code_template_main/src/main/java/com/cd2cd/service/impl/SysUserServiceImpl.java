@@ -74,7 +74,10 @@ public class SysUserServiceImpl implements SysUserService {
 		SysUser mSysUser = sysUserMapper.selectByPrimaryKey(userId);
 		List<SysRole> sysRoles = sysRoleMapper.querySysUserRoles(userId);
 		
-		SysUserVo data01 = BeanUtil.voConvert(mSysUser, SysUserVo.class);
+		SysUserVo data01 = new SysUserVo();
+		if( mSysUser != null ) {
+			data01 = BeanUtil.voConvert(mSysUser, SysUserVo.class);
+		}
 		List<SysRoleVo> data02 = BeanUtil.voConvertList(sysRoles, SysRoleVo.class); 
 		objDataWrap.setData1(data01);
 		objDataWrap.setData2(data02);

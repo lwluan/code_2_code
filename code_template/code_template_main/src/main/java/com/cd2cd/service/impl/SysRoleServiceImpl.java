@@ -73,7 +73,10 @@ public class SysRoleServiceImpl implements SysRoleService {
 		SysRole mSysRole = sysRoleMapper.selectByPrimaryKey(id);
 		List<SysAuthority> sysRoles = sysAuthorityMapper.querySysRoleAuthorities(id);
 		
-		SysRoleVo data01 = BeanUtil.voConvert(mSysRole, SysRoleVo.class);
+		SysRoleVo data01 = new SysRoleVo();
+		if( null != mSysRole ) {
+			data01 = BeanUtil.voConvert(mSysRole, SysRoleVo.class);
+		}
 		List<SysAuthorityVo> data02 = BeanUtil.voConvertList(sysRoles, SysAuthorityVo.class); 
 		objDataWrap.setData1(data01);
 		objDataWrap.setData2(data02);
@@ -115,13 +118,13 @@ public class SysRoleServiceImpl implements SysRoleService {
 	 * @param roles
 	 * @param userId
 	 */
-	private void updateRoleAuthorities(List<Integer> authIds, Integer roleId) {
+	private void updateRoleAuthorities(List<String> authIds, Integer roleId) {
 		
 		SysAuthorityRoleRelCriteria example = new SysAuthorityRoleRelCriteria();
 		example.createCriteria().andRoleIdEqualTo(roleId);
 		sysAuthorityRoleRelMapper.deleteByExample(example);
 		
-		for( Integer authId: authIds ) {
+		for( String authId: authIds ) {
 			SysAuthorityRoleRel record = new SysAuthorityRoleRel();
 			record.setRoleId(roleId);
 			record.setAuthoritiesId(authId);
