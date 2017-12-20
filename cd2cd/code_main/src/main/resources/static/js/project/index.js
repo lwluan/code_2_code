@@ -11,8 +11,7 @@ const routes = [  ];
 
 const router = new VueRouter({
     routes: routes
-})
-
+});
 
 const mainVm = new Vue({
     router: router,

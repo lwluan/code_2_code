@@ -1,0 +1,22 @@
+.slider-left {
+	background-color: white;
+	width: 300px;
+	overflow: auto;
+	position: static;
+}
+
+.body-content {
+	left: 300px;
+}
+
+.pop-r-menu {
+	left: 200px;
+	top: 150px;
+	background-color: white;
+	border: 1px solid #999;
+	border-radius: 4px;
+	font-size: 13px !important;
+	line-height: 13px;
+	color: #666;
+	font-weight: 600;
+}

@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cd2cd.domain.SysAuthority;
 import com.cd2cd.service.SysAuthorityService;
@@ -23,12 +24,8 @@ public class AdminController {
 	@Resource
 	private SysAuthorityService sysAuthorityService;
 	
-	
-	@RequestMapping("login")
-	protected String login(Map<String, Object> model) {
-		return "";
-	}
-	@RequestMapping("index")
+	@RequestMapping(value = "/auths", produces="text/css;charset=UTF-8")
+	@ResponseBody
 	protected String template(Map<String, Object> model) {
 		
 		// 当前登录用户所有权限
@@ -43,14 +40,11 @@ public class AdminController {
 		
 		Collection<GrantedAuthority> noHasAuths = getNoHasAuthorities(authorities, allAuthorities);
 		
-		model.put("authorities", noHasAuths);
-		
-		// Authority=ROLE_101
-		// Authority=ROLE_102
-	    // Authority=ROLE_105
-		// Authority=ROLE_106
-		// ROLE_ANONYMOUS
-		return "index";
+		StringBuffer auths = new StringBuffer();
+		for( GrantedAuthority  ga: noHasAuths ) {
+			auths.append("." + ga.getAuthority() + "{ display: none !important;} \n");
+		}
+		return auths.toString();
 	}
 	
 	private List<GrantedAuthority> getNoHasAuthorities(Collection<GrantedAuthority> authorities, List<SysAuthority> allAuthorities) {
