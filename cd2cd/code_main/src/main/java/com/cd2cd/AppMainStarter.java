@@ -21,6 +21,6 @@ public class AppMainStarter extends WebMvcConfigurerAdapter {
 
 	@Override
 	public void addViewControllers(ViewControllerRegistry registry) {
-		registry.addRedirectViewController("/", "/admin/index");
+		registry.addRedirectViewController("/", "/html/index.html");
 	}
 }

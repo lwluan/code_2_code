@@ -10,7 +10,8 @@ require.config({
 
 const routes = [
     { path: '/sysUserList', component: createComponent('/js/sysUser/list.js') },
-    { path: '/sysRoleList', component: createComponent('/js/sysRole/list.js') }
+    { path: '/sysRoleList', component: createComponent('/js/sysRole/list.js') },
+    { path: '/proProjectList', component: createComponent('/js/proProject/list.js') }
 ]
 
 const router = new VueRouter({

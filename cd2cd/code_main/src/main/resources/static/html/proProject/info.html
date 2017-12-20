@@ -1,0 +1,86 @@
+<div class="modal fade" id="addEntityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> 添加项目 </h4>
+            </div>
+            <div class="modal-body">
+                <form id="formValidate" class="form-horizontal" novalidate>
+                    <div class="form-group">
+                        <label for="name" class="col-sm-2 control-label"> 账号 </label>
+                        <div class="col-sm-6">
+                            <input v-model="formData.name" type="text" class="form-control" name="name" id="name" placeholder="项目名称">
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * 项目名称不可为空 </span>
+                        </div>
+                    </div>
+					<div class="form-group">
+                        <label for="description" class="col-sm-2 control-label"> 项目介绍 </label>
+                        <div class="col-sm-6">
+                            <input v-model="formData.description" type="text" class="form-control" name="description" id="description" placeholder="项目介绍">
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * 项目介绍不可为空 </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="groupId" class="col-sm-2 control-label"> groupId </label>
+                        <div class="col-sm-6">
+                            <input v-model="formData.groupId" type="text" class="form-control" name="groupId" id="groupId" placeholder="groupId">
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * groupId不可为空 </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="artifactId" class="col-sm-2 control-label"> artifactId </label>
+                        <div class="col-sm-6">
+                            <input v-model="formData.artifactId" type="text" class="form-control" name="artifactId" id="artifactId" placeholder="artifactId">
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * artifactId不可为空 </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="packageType" class="col-sm-2 control-label"> 包结构类型 </label>
+                        <div class="col-sm-6">
+                        	<group-button 
+                        		v-bind:buttonName="'packageType'"
+	                        	v-bind:values="groupButton.values" 
+	                        	v-bind:selected="groupButton.selected" 
+	                        	v-on:changeSelected="groupButton.changeSelected" />
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * 包结构类型不可为空 </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="version" class="col-sm-2 control-label"> 项目版本 </label>
+                        <div class="col-sm-6">
+                            <input v-model="formData.version" type="text" class="form-control" name="version" id="version" placeholder="项目版本">
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * 项目版本不可为空 </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contextPath" class="col-sm-2 control-label"> 访问路径 </label>
+                        <div class="col-sm-6">
+                            <input v-model="formData.contextPath" type="text" class="form-control" name="contextPath" id="contextPath" placeholder="访问路径">
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * 访问路径不可为空 </span>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
+                <button v-on:click="subFormData()" type="button" class="btn btn-primary"> 确定 </button>
+            </div>
+        </div>
+    </div>
+
+</div>

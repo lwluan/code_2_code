@@ -1,0 +1,61 @@
+<div>
+    <div class="row tool-bar-row">
+        <input class="btn btn-default" v-on:click="$refs.entityInfo.showInfoPanel({})" type="button" value="添加">
+        <div class="pull-right">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" v-model="queryData.keyword" class="form-control" placeholder="name/groupId/artifactId">
+                </div>
+                <input v-on:click="queryPageData(1, queryData.pageSize)" class="btn btn-primary" type="button" value="搜索">
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td> 项目名称 </td>
+            <td> groupId </td>
+            <td> artifactId </td>
+            <td> packageType </td>
+            <td> 版本 </td>
+            <td> 访问路径 </td>
+            <td> 创建时间 </td>
+            <td> 更新时间 </td>
+            <td> 操作 </td>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr v-for="entityData in entityDataList" >
+            <td> <a v-bind:href="ctx + '/html/project/index.html?' + entityData.id">{{entityData.name}}</a> </td>
+            <td> {{entityData.groupId}} </td>
+            <td> {{entityData.artifactId}} </td>
+            <td> {{entityData.packageType}} </td>
+            <td> {{entityData.version}} </td>
+            <td> {{entityData.contextPath}} </td>
+            <td> {{entityData.createTime}} </td>
+            <td> {{entityData.updateTime}} </td>
+            <td>
+                <button v-on:click="$refs.entityInfo.showInfoPanel({id:entityData.id})" type="button" class="btn btn-info btn-xs"> 查看/修改 </button>
+                <button v-on:click="delRowData(entityData.id)" type="button" class="btn btn-danger btn-xs"> 删除 </button>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <table-page
+            v-bind:notification-change="tablePage.notificationChange"
+            v-bind:reload-notification="tablePage.reloadNotification"
+            v-bind:total-count="tablePage.totalCount"
+            v-bind:curr-page="tablePage.currPage"
+            v-on:change-page="queryPageData"></table-page>
+
+
+    <!-- 添加用户 -->
+    <entity-info ref="entityInfo" v-on:completed="reloadPage" />
+
+</div>

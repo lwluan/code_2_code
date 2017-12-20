@@ -10,8 +10,8 @@ define(['text!'+ctx+'/html/component/table-page.html'], function( template ) {
         endNum: 5,
         totalPage: 1,
         currPage: 1,
-        pageSize: 2,
-        pageNumArr: [2, 12, 20, 50, 100]
+        pageSize: 12,
+        pageNumArr: [12, 20, 50, 100]
     };
     var component = {
         props:['totalCount', 'notificationChange', 'reloadNotification'],
@@ -34,10 +34,6 @@ define(['text!'+ctx+'/html/component/table-page.html'], function( template ) {
                 var pageObj = evaluatePage(this.currPage, this.totalPage);
                 this.startNum = pageObj.startNum;
                 this.endNum = pageObj.endNum;
-
-                console.info('currPage='+this.currPage+',totalCount='+this.totalCount
-                    +',startNum=' + this.startNum + '.endNum=' + this.endNum
-                    +',pageSize=' + this.pageSize);
 
             }, changePageSize: function(pageSize) {
                 this.pageSize = pageSize;
