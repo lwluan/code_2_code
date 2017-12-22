@@ -21,7 +21,7 @@ function accessHttp(options) {
             });
 
         } else if( res.code == 10001 ) {
-            popModal('无权限访问', res.message, null, function() {
+            popModal('请求失败', res.msg, null, function() {
                 $('#pop_box').modal('hide');
             });
         } else {

@@ -14,6 +14,7 @@ import com.cd2cd.domain.gen.ProProjectCriteria.Criteria;
 import com.cd2cd.mapper.ProProjectMapper;
 import com.cd2cd.service.ProProjectService;
 import com.cd2cd.util.BeanUtil;
+import com.cd2cd.util.ProjectUtils;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DataPageWrapper;
 import com.cd2cd.vo.ProProjectVo;
@@ -83,6 +84,28 @@ public class ProProjectServiceImpl implements ProProjectService {
 		proProject.setUpdateTime(new Date());
 		proProjectMapper.updateByPrimaryKeySelective(proProject);
 		return ServiceCode.SUCCESS;
+	}
+
+	@Override
+	public BaseRes<String> genProject(Long id) {
+		
+		ProProject mProProject = proProjectMapper.selectByPrimaryKey(id);
+		
+		BaseRes<String> res = new BaseRes<String>();
+		
+		// copy project to folder
+		try {
+			ProjectUtils.genProject(mProProject);
+			res.setServiceCode(ServiceCode.SUCCESS);
+		} catch (Exception e) {
+			e.printStackTrace();
+			res.setServiceCode(ServiceCode.FAILED);
+			res.setMsg(e.getMessage());
+		}
+		return res;
+		
+		// replace package name from project file, folder
+		
 	}
 
 }

@@ -74,11 +74,27 @@
                             <span class="input-tip"> * 访问路径不可为空 </span>
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="localPath" class="col-sm-2 control-label"> 生成项目路径 </label>
+                        <div class="col-sm-6">
+                            <input v-model="formData.localPath" type="text" class="form-control" name="localPath" id="localPath" placeholder="生成项目路径">
+                        </div>
+                        <div class="help-block">
+                            <span class="input-tip"> * 访问路径不可为空 </span>
+                        </div>
+                    </div>
                 </form>
+                
+                <div id="project-alter" class="alert alert-success alert-dismissible hide" role="alert">
+			      <strong> 成功提示! </strong> 项目成功生成！
+			    </div>
+			    
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
                 <button v-on:click="subFormData()" type="button" class="btn btn-primary"> 确定 </button>
+                <button v-if="formData.id > 0" v-on:click="genProject()" type="button" class="btn btn-primary btn-success"> 生成项目 </button>
             </div>
         </div>
     </div>

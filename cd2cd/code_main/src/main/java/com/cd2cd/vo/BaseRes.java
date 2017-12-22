@@ -38,6 +38,9 @@ public class BaseRes<T> {
 	}
 
 	public Integer getCode() {
+		if( null != serviceCode ) {
+			return serviceCode.code;
+		}
 		return code;
 	}
 

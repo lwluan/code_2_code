@@ -695,6 +695,76 @@ public class ProProjectCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andLocalPathIsNull() {
+            addCriterion("local_path is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathIsNotNull() {
+            addCriterion("local_path is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathEqualTo(String value) {
+            addCriterion("local_path =", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathNotEqualTo(String value) {
+            addCriterion("local_path <>", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathGreaterThan(String value) {
+            addCriterion("local_path >", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathGreaterThanOrEqualTo(String value) {
+            addCriterion("local_path >=", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathLessThan(String value) {
+            addCriterion("local_path <", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathLessThanOrEqualTo(String value) {
+            addCriterion("local_path <=", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathLike(String value) {
+            addCriterion("local_path like", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathNotLike(String value) {
+            addCriterion("local_path not like", value, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathIn(List<String> values) {
+            addCriterion("local_path in", values, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathNotIn(List<String> values) {
+            addCriterion("local_path not in", values, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathBetween(String value1, String value2) {
+            addCriterion("local_path between", value1, value2, "localPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andLocalPathNotBetween(String value1, String value2) {
+            addCriterion("local_path not between", value1, value2, "localPath");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;

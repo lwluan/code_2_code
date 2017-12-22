@@ -90,4 +90,16 @@ public class ProProjectController extends BaseController {
 		res.setServiceCode(serviceCode);
 		return res;
 	}
+	
+	@RequestMapping(value = "genProject", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> genProject(
+			@Validated(value = {DValid.ModifyEntity.class}) 
+			@RequestBody ProProjectVo proProjectVo, 
+			BindingResult bindingResult) {
+		
+		proProjectService.modify(proProjectVo);
+		BaseRes<String> res = proProjectService.genProject(proProjectVo.getId());
+		
+		return res;
+	}
 }

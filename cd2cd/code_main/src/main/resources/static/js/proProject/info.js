@@ -57,15 +57,16 @@ define(['text!'+ctx+'/html/proProject/info.html'], function( template ) {
                 $('#addEntityModal').modal('show');
 
                 var id = formData.id;
-                id = id ? id : 0;
 
-                accessHttp({
-                    url: buildUrl('/proProject/detail/' + id),
-                    success: function (res) {
-                        data.formData = res.data;
-                        data.groupButton.selected = data.formData.packageType;
-                    }
-                });
+                if(id) {
+                	accessHttp({
+                        url: buildUrl('/proProject/detail/' + id),
+                        success: function (res) {
+                            data.formData = res.data;
+                            data.groupButton.selected = data.formData.packageType;
+                        }
+                    });
+                }
 
             },
 
@@ -87,6 +88,30 @@ define(['text!'+ctx+'/html/proProject/info.html'], function( template ) {
                         success: function (res) {
                             $('#addEntityModal').modal('hide');
                             that.$emit('completed');
+                        }
+                    });
+                }
+            },
+            genProject: function() {
+            	
+            	if( $('#formValidate').valid() ) {
+
+                    var postData = this.formData;
+                    var _url = '/proProject/genProject';
+
+                    var that = this;
+                    accessHttp({
+                        url: buildUrl(_url),
+                        contentType: 'application/json; charset=utf-8',
+                        data: JSON.stringify(postData),
+                        type: 'post',
+                        success: function (res) {
+                        	if(res.code == 10000 ) {
+	                        	$('#project-alter').removeClass('hide');
+	    		            	setTimeout(function(){
+	    		            		$('#project-alter').addClass('hide');
+	    		            	}, 1500);
+                        	}
                         }
                     });
                 }

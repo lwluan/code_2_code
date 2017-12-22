@@ -10,6 +10,7 @@
     <result column="package_type" jdbcType="VARCHAR" property="packageType" />
     <result column="version" jdbcType="VARCHAR" property="version" />
     <result column="context_path" jdbcType="VARCHAR" property="contextPath" />
+    <result column="local_path" jdbcType="VARCHAR" property="localPath" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -73,7 +74,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, description, group_id, artifact_id, package_type, version, context_path, 
-    create_time, update_time
+    local_path, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProProjectCriteria" resultMap="BaseResultMap">
     select
@@ -114,12 +115,12 @@
     </selectKey>
     insert into pro_project (name, description, group_id, 
       artifact_id, package_type, version, 
-      context_path, create_time, update_time
-      )
+      context_path, local_path, create_time, 
+      update_time)
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{groupId,jdbcType=VARCHAR}, 
       #{artifactId,jdbcType=VARCHAR}, #{packageType,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
-      #{contextPath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{contextPath,jdbcType=VARCHAR}, #{localPath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProProject">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -147,6 +148,9 @@
       </if>
       <if test="contextPath != null">
         context_path,
+      </if>
+      <if test="localPath != null">
+        local_path,
       </if>
       <if test="createTime != null">
         create_time,
@@ -176,6 +180,9 @@
       </if>
       <if test="contextPath != null">
         #{contextPath,jdbcType=VARCHAR},
+      </if>
+      <if test="localPath != null">
+        #{localPath,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -218,6 +225,9 @@
       <if test="record.contextPath != null">
         context_path = #{record.contextPath,jdbcType=VARCHAR},
       </if>
+      <if test="record.localPath != null">
+        local_path = #{record.localPath,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -239,6 +249,7 @@
       package_type = #{record.packageType,jdbcType=VARCHAR},
       version = #{record.version,jdbcType=VARCHAR},
       context_path = #{record.contextPath,jdbcType=VARCHAR},
+      local_path = #{record.localPath,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -269,6 +280,9 @@
       <if test="contextPath != null">
         context_path = #{contextPath,jdbcType=VARCHAR},
       </if>
+      <if test="localPath != null">
+        local_path = #{localPath,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -287,6 +301,7 @@
       package_type = #{packageType,jdbcType=VARCHAR},
       version = #{version,jdbcType=VARCHAR},
       context_path = #{contextPath,jdbcType=VARCHAR},
+      local_path = #{localPath,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

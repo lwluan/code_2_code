@@ -67,6 +67,14 @@
     bottom: 0;
     width: auto;
 }
+.main-content {
+	background-color: white;
+	position: absolute;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	top: 36px;
+}
 /** 导行路径 */
 .nav-route {
 	margin-bottom: 2px;
@@ -85,4 +93,7 @@
 .router-link-active {
     background-color: #337ab7;
     color: white !important;
+}
+.modal-footer {
+	text-align: center;
 }

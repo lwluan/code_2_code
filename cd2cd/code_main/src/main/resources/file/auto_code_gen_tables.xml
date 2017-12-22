@@ -54,5 +54,17 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
+		<table domainObjectName="ProDatabase" tableName="pro_database" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProTable" tableName="pro_table" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProTableColumn" tableName="pro_table_column" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
 	</context>
 </generatorConfiguration>

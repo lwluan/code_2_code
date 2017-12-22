@@ -17,4 +17,5 @@ public interface ProProjectService {
 	
 	ServiceCode modify(ProProjectVo proProjectVo);
 	
+	BaseRes<String> genProject(Long id);
 }

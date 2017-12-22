@@ -15,7 +15,7 @@
 	<name>code_template_main</name>
 
 	<properties>
-		<start-class>com.cd2cd.AppMainStarter</start-class>
+		<start-class>com.cd2cd.admin.AppMainStarter</start-class>
 		<main.basedir>${basedir}/../..</main.basedir>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>

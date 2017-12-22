@@ -41,6 +41,11 @@ public class SuperProProject implements Serializable {
      */
     private String contextPath;
 
+    /**
+     * 本地路径，用于本地开发使用
+     */
+    private String localPath;
+
     private Date createTime;
 
     private Date updateTime;
@@ -153,6 +158,20 @@ public class SuperProProject implements Serializable {
         this.contextPath = contextPath;
     }
 
+    /**
+     * 本地路径，用于本地开发使用
+     */
+    public String getLocalPath() {
+        return localPath;
+    }
+
+    /**
+     * 本地路径，用于本地开发使用
+     */
+    public void setLocalPath(String localPath) {
+        this.localPath = localPath;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -183,6 +202,7 @@ public class SuperProProject implements Serializable {
         sb.append(", packageType=").append(packageType);
         sb.append(", version=").append(version);
         sb.append(", contextPath=").append(contextPath);
+        sb.append(", localPath=").append(localPath);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -210,6 +230,7 @@ public class SuperProProject implements Serializable {
             && (this.getPackageType() == null ? other.getPackageType() == null : this.getPackageType().equals(other.getPackageType()))
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
             && (this.getContextPath() == null ? other.getContextPath() == null : this.getContextPath().equals(other.getContextPath()))
+            && (this.getLocalPath() == null ? other.getLocalPath() == null : this.getLocalPath().equals(other.getLocalPath()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -226,6 +247,7 @@ public class SuperProProject implements Serializable {
         result = prime * result + ((getPackageType() == null) ? 0 : getPackageType().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
         result = prime * result + ((getContextPath() == null) ? 0 : getContextPath().hashCode());
+        result = prime * result + ((getLocalPath() == null) ? 0 : getLocalPath().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

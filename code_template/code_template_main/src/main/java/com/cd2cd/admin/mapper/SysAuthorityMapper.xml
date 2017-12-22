@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cd2cd.admin.mapper.SysAuthorityMapper">
+
+  	<!-- 自定义sql -->
+	<select id="userAuthority" parameterType="Integer" resultMap="BaseResultMap">
+		select 
+			<include refid="Base_Column_List" /> 
+		from 
+			sys_authority
+		where 
+			guid in(select authorities_id from sys_authority_role_rel where 
+				role_id in(select role_id from sys_user_role_rel where user_id = #{userId})
+			)
+	</select>
+	
+	<select id="querySysRoleAuthorities" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+		select 
+            id, name, pid, guid
+            , ( case when ( 
+                select count(1) 
+                from sys_authority_role_rel 
+                where role_id = #{roleId,jdbcType=INTEGER} 
+                and sys_authority.guid = authorities_id limit 1 ) > 0 then true else false end 
+            ) checked
+        from 
+            sys_authority
+	</select>
+	
+	
+</mapper>
