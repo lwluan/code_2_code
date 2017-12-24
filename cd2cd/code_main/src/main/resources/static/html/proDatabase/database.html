@@ -1,0 +1,63 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		数据库 
+		<input v-show="entityForm.id > 0" v-on:click="delRowData(entityForm.id)" type="button" class="btn btn-default padding-btn btn-danger pull-right" value="删除" />
+	</div>
+	<div class="panel-body database-panel-body">
+		<br />
+		<form id="dbFormValidate" class="form-horizontal" novalidate>
+			<div class="form-group">
+				<label for="dbName" class="col-sm-2 control-label"> 数据库名 </label>
+				<div class="col-sm-6">
+					<input type="text" v-model="entityForm.dbName" class="form-control" id="dbName" name="dbName" placeholder="数据库名">
+				</div>
+				<div class="help-block">
+                    <span class="input-tip"> * 账号不可为空 </span>
+                </div>
+			</div>
+			<div class="form-group">
+				<label for="username" class="col-sm-2 control-label"> 用户名 </label>
+				<div class="col-sm-6">
+					<input type="text" v-model="entityForm.username" class="form-control" id="username" name="username" placeholder="用户名">
+				</div>
+				<div class="help-block">
+                    <span class="input-tip"> * 账号不可为空 </span>
+                </div>
+			</div>
+			<div class="form-group">
+				<label for="password" class="col-sm-2 control-label"> 密码 </label>
+				<div class="col-sm-6">
+					<input type="text" v-model="entityForm.password" class="form-control" id="password" name="password" placeholder="密码">
+				</div>
+				<div class="help-block">
+                    <span class="input-tip"> * 账号不可为空 </span>
+                </div>
+			</div>
+			<div class="form-group">
+				<label for="hostname" class="col-sm-2 control-label"> 地址 </label>
+				<div class="col-sm-6">
+					<input type="text" v-model="entityForm.hostname" value="localhost" class="form-control" id="hostname" name="hostname" placeholder="hostname">
+				</div>
+				<div class="help-block">
+                    <span class="input-tip"> * 账号不可为空 </span>
+                </div>
+			</div>
+			<div class="form-group">
+				<label for="port" class="col-sm-2 control-label"> 端口 </label>
+				<div class="col-sm-6">
+					<input type="text" v-model="entityForm.port" value="3306" class="form-control" id="port" name="port" placeholder="port">
+				</div>
+				<div class="help-block">
+                    <span class="input-tip"> * 账号不可为空 </span>
+                </div>
+			</div>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-10">
+					<input type="button" v-on:click="subFormData" class="btn btn-default" value="保存" />
+					<br />
+				</div>
+			</div>
+		</form>
+	</div>
+
+</div>

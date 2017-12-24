@@ -6,7 +6,9 @@ import java.util.Date;
 public class SuperProDatabase implements Serializable {
     private Long id;
 
-    private String name;
+    private String dbName;
+
+    private String username;
 
     private String password;
 
@@ -28,12 +30,20 @@ public class SuperProDatabase implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getDbName() {
+        return dbName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setDbName(String dbName) {
+        this.dbName = dbName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -83,7 +93,8 @@ public class SuperProDatabase implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", name=").append(name);
+        sb.append(", dbName=").append(dbName);
+        sb.append(", username=").append(username);
         sb.append(", password=").append(password);
         sb.append(", port=").append(port);
         sb.append(", hostname=").append(hostname);
@@ -107,7 +118,8 @@ public class SuperProDatabase implements Serializable {
         }
         SuperProDatabase other = (SuperProDatabase) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getDbName() == null ? other.getDbName() == null : this.getDbName().equals(other.getDbName()))
+            && (this.getUsername() == null ? other.getUsername() == null : this.getUsername().equals(other.getUsername()))
             && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
             && (this.getPort() == null ? other.getPort() == null : this.getPort().equals(other.getPort()))
             && (this.getHostname() == null ? other.getHostname() == null : this.getHostname().equals(other.getHostname()))
@@ -120,7 +132,8 @@ public class SuperProDatabase implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getDbName() == null) ? 0 : getDbName().hashCode());
+        result = prime * result + ((getUsername() == null) ? 0 : getUsername().hashCode());
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
         result = prime * result + ((getPort() == null) ? 0 : getPort().hashCode());
         result = prime * result + ((getHostname() == null) ? 0 : getHostname().hashCode());
