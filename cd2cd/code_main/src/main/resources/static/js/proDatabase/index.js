@@ -27,24 +27,24 @@ define(['text!'+ctx+'/html/proDatabase/index.html',
                     			onClick: function(event, treeId, treeNode, clickFlag) {
                     				var type = treeNode.type;
                     				if( type == 1 ) {
-                    					that.showPanel = 'db';
                     					that.showDbDetail(treeNode.value);
                     				} else {
-                    					that.showPanel = 'tab';
-                    					that.showTableDetail(treeNode.value);
+                    					that.showTableDetail({id:treeNode.value});
                     				}
                     			},
                     		}
                         };
 
-                        var zNodes = res.data;;
+                        var zNodes = res.data;
                         $.fn.zTree.init($("#databaseTree"), setting, zNodes);
                     }
                 });
             }, showDbDetail: function(id) {
+            	this.showPanel = 'db';
             	this.$refs.databasePanel.showDetail(id)
-            }, showTableDetail: function(tabForm) {
-            	
+            }, showTableDetail: function(params) {
+            	this.showPanel = 'tab';
+            	this.$refs.dbTablePanel.showDetail(params);
             }
         }, mounted: function(){
         	this.initDbTree();

@@ -20,5 +20,11 @@ public interface ProDatabaseService {
 	boolean delDb(Long id);
 
 	ProTableVo tableDetail(Long id);
+
+	ProTableVo addTable(ProTableVo proTableVo);
+
+	boolean modifyTable(ProTableVo proTableVo);
+
+	boolean delTable(Long id);
 	
 }

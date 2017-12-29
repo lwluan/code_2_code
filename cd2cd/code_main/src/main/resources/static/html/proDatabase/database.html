@@ -1,7 +1,6 @@
 <div class="panel panel-default">
 	<div class="panel-heading">
 		数据库 
-		<input v-show="entityForm.id > 0" v-on:click="delRowData(entityForm.id)" type="button" class="btn btn-default padding-btn btn-danger pull-right" value="删除" />
 	</div>
 	<div class="panel-body database-panel-body">
 		<br />
@@ -53,7 +52,13 @@
 			</div>
 			<div class="form-group">
 				<div class="col-sm-offset-2 col-sm-10">
+					<input v-show="entityForm.id > 0"
+					v-on:click="$emit('toAddTable', {databaseId:entityForm.id})" 
+					type="button" value="添加表" class="btn btn-info"  />
 					<input type="button" v-on:click="subFormData" class="btn btn-default" value="保存" />
+					<input v-show="entityForm.id > 0" v-on:click="delRowData(entityForm.id)" type="button" class="btn btn-default btn-danger" value="删除" />
+					<input v-show="entityForm.id > 0" type="button" class="btn btn-default btn-info" value="同步数据到系统中" />
+					<input v-show="entityForm.id > 0" type="button" class="btn btn-default btn-success" value="同步数据到数据库" />
 					<br />
 				</div>
 			</div>

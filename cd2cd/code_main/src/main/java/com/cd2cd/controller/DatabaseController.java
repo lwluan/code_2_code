@@ -95,4 +95,47 @@ public class DatabaseController {
 		res.setServiceCode(ServiceCode.SUCCESS);
 		return res;
 	} 
+	
+	@RequestMapping(value = "addTable", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProTableVo> addTable (
+			@Validated(value = {DValid.AddEntity.class}) 
+			@RequestBody ProTableVo proTableVo, 
+			BindingResult bindingResult) {
+		
+		BaseRes<ProTableVo> res = new BaseRes<ProTableVo>();
+		ProTableVo mProTableVo = proDatabaseService.addTable(proTableVo);
+		res.setData(mProTableVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		
+		return res;
+	}
+	
+	@RequestMapping(value = "modifyTable", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> modifyTable (
+			@Validated(value = {DValid.ModifyEntity.class}) 
+			@RequestBody ProTableVo proTableVo, 
+			BindingResult bindingResult) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		boolean success = proDatabaseService.modifyTable(proTableVo);
+		if( success ) {
+			res.setServiceCode(ServiceCode.SUCCESS);
+		} else {
+			res.setServiceCode(ServiceCode.FAILED);
+		}
+		return res;
+	}
+	
+	@RequestMapping(value = "delTable", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<String> delTable (ProTableVo proTableVo) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		boolean success = proDatabaseService.delTable(proTableVo.getId());
+		if( success ) {
+			res.setServiceCode(ServiceCode.SUCCESS);
+		} else {
+			res.setServiceCode(ServiceCode.FAILED);
+		}
+		return res;
+	}
 }

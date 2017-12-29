@@ -1,6 +1,7 @@
 package com.cd2cd.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -120,6 +121,25 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 			return mProTableVo;
 		}
 		return null;
+	}
+
+	@Override
+	public ProTableVo addTable(ProTableVo proTableVo) {
+		proTableVo.setCreateTime(new Date());
+		proTableVo.setUpdateTime(new Date());
+		proTableMapper.insert(proTableVo);
+		return proTableVo;
+	}
+
+	@Override
+	public boolean modifyTable(ProTableVo proTableVo) {
+		proTableVo.setUpdateTime(new Date());
+		return 0 < proTableMapper.updateByPrimaryKeySelective(proTableVo);
+	}
+
+	@Override
+	public boolean delTable(Long id) {
+		return 0 < proTableMapper.deleteByPrimaryKey(id);
 	}
 
 }
