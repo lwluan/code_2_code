@@ -1,6 +1,6 @@
 <div>
     <div class="row tool-bar-row">
-        <input class="btn btn-default sysUserAddBtn ROLE_106" v-on:click="$refs.sysUserInfo.showInfoPanel({})" type="button" value="添加">
+        <input class="btn btn-default ROLE_106" v-on:click="$refs.entityDataInfo.showInfoPanel({})" type="button" value="添加">
         <div class="pull-right">
             <form class="form-inline">
                 <div class="form-group">
@@ -28,17 +28,17 @@
 
         <tbody>
 
-        <tr v-for="sysUser in sysUserList" >
-            <td> {{sysUser.id}} </td>
-            <td> {{sysUser.username}} </td>
-            <td> {{sysUser.nickname}} </td>
-            <td> {{sysUser.email}} </td>
-            <td> {{sysUser.mobile}} </td>
-            <td> {{sysUser.create_time}} </td>
-            <td> {{sysUser.update_time}} </td>
+        <tr v-for="entityData in entityDataList" >
+            <td> {{entityData.id}} </td>
+            <td> {{entityData.username}} </td>
+            <td> {{entityData.nickname}} </td>
+            <td> {{entityData.email}} </td>
+            <td> {{entityData.mobile}} </td>
+            <td> {{entityData.create_time}} </td>
+            <td> {{entityData.update_time}} </td>
             <td>
-                <button v-on:click="$refs.sysUserInfo.showInfoPanel({id:sysUser.id})" type="button" class="btn btn-info btn-xs ROLE_102"> 查看/修改 </button>
-                <button v-on:click="delRowData(sysUser.id)" type="button" class="btn btn-danger btn-xs ROLE_104"> 删除 </button>
+                <button v-on:click="$refs.entityDataInfo.showInfoPanel({id:entityData.id})" type="button" class="btn btn-info btn-xs ROLE_102"> 查看/修改 </button>
+                <button v-on:click="delRowData(entityData.id)" type="button" class="btn btn-danger btn-xs ROLE_104"> 删除 </button>
             </td>
         </tr>
 
@@ -55,6 +55,8 @@
 
 
     <!-- 添加用户 -->
-    <sys-user-info ref="sysUserInfo" v-on:completed="reloadPage" />
-
+    <sys-user-info ref="entityDataInfo" v-on:completed="reloadPage" />
+	
+	<!-- 过滤条件 -->
+	<list-query-filter></list-query-filter>
 </div>

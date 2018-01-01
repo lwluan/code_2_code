@@ -32,7 +32,7 @@ define(['text!'+ctx+'/html/sysRole/info.html', 'rcss!'+ctx+'/css/zTreeStyle/zTre
         methods: {
             showInfoPanel: function (formData) {
                 this.formData = formData;
-                $('#addRoleModal').modal('show');
+                $('#addEntityModal').modal('show');
 
                 var id = formData.id;
                 id = id ? id : 0;
@@ -80,7 +80,7 @@ define(['text!'+ctx+'/html/sysRole/info.html', 'rcss!'+ctx+'/css/zTreeStyle/zTre
                         data: JSON.stringify(postData),
                         type: 'post',
                         success: function (res) {
-                            $('#addRoleModal').modal('hide');
+                            $('#addEntityModal').modal('hide');
                             that.$emit('completed');
                         }
                     });

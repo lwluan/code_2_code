@@ -64,7 +64,7 @@ define(['text!'+ctx+'/html/sysUser/info.html'], function( template ) {
                 }
 
                 this.formData = formData;
-                $('#addUserModal').modal('show');
+                $('#addEntityModal').modal('show');
 
                 data.checkRoles = [];
 
@@ -106,7 +106,7 @@ define(['text!'+ctx+'/html/sysUser/info.html'], function( template ) {
                         data: JSON.stringify(postData),
                         type: 'post',
                         success: function (res) {
-                            $('#addUserModal').modal('hide');
+                            $('#addEntityModal').modal('hide');
 
                             that.$emit('completed');
                         }

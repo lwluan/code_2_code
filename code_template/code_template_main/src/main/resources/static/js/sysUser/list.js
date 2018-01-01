@@ -4,7 +4,7 @@ define(['text!'+ctx+'/html/sysUser/list.html'], function( template ) {
 
     var data = {
         tablePage:{totalCount: 0, currPage: 0, notificationChange: 0, reloadNotification: 0},
-        sysUserList: [],
+        entityDataList: [],
         queryData: { currPage: 1, pageSize: 5, keyword: null},
     };
 
@@ -25,7 +25,7 @@ define(['text!'+ctx+'/html/sysUser/list.html'], function( template ) {
                 accessHttp({
                     url: buildUrl('/sysUser/list?' + queryStr),
                     success: function (res) {
-                        that.sysUserList = res.data.rows;
+                        that.entityDataList = res.data.rows;
                         that.tablePage.totalCount = res.data.totalCount;
                         that.tablePage.notificationChange = new Date().getTime();
                     }

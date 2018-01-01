@@ -3,7 +3,7 @@ define(['text!'+ctx+'/html/sysRole/list.html'], function ( template ) {
     var data = {
         tablePage:{totalCount: 0, currPage: 0, notificationChange: 0, reloadNotification: 0},
         queryData: {currPage: 1, pageSize: 5, keyword: null},
-        sysRoleList: []
+        entityDataList: []
     };
 
     var component =  {
@@ -25,7 +25,7 @@ define(['text!'+ctx+'/html/sysRole/list.html'], function ( template ) {
                 accessHttp({
                     url: buildUrl('/sysRole/list?' + queryStr),
                     success: function (res) {
-                        data.sysRoleList = res.data.rows;
+                        data.entityDataList = res.data.rows;
                         that.tablePage.totalCount = res.data.totalCount;
                         that.tablePage.notificationChange = new Date().getTime();
                     }

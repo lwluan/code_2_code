@@ -86,3 +86,30 @@
     background-color: #337ab7;
     color: white !important;
 }
+
+
+/* ------- 右边筛选框 -------- */
+.filter-btn {
+	position: absolute;
+	left: -41px;
+	top: 100px;
+	z-index: 999;
+	width: 40px;
+	height: 70px;
+	background-color: rgba(0,153, 255, 70);
+	border-radius: 4px 0 0 4px;
+	opacity: 0.7;
+	text-align: center;
+	vertical-align: middle;
+	padding: 10px;
+}
+.filter-btn i {
+	font-size: 22px;
+	color: white;
+}
+.right-filter-panel {
+	position: fixed;
+	right: 0;
+	top: 50px;
+	z-index: 998;
+}

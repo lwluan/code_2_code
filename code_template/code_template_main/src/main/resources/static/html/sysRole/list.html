@@ -1,6 +1,6 @@
 <div>
     <div class="row tool-bar-row">
-        <input class="btn btn-default sysRoleAddBtn ROLE_206" v-on:click="$refs.sysRoleInfo.showInfoPanel({})" type="button" value="添加">
+        <input class="btn btn-default ROLE_206" v-on:click="$refs.entityDataInfo.showInfoPanel({})" type="button" value="添加">
         <div class="pull-right">
             <form class="form-inline">
                 <div class="form-group">
@@ -26,15 +26,15 @@
 
         <tbody>
 
-        <tr v-for="sysRole in sysRoleList" >
-            <td> {{sysRole.id}} </td>
-            <td> {{sysRole.name}} </td>
-            <td> {{sysRole.description}} </td>
-            <td> {{sysRole.create_time}} </td>
-            <td> {{sysRole.update_time}} </td>
+        <tr v-for="entityData in entityDataList" >
+            <td> {{entityData.id}} </td>
+            <td> {{entityData.name}} </td>
+            <td> {{entityData.description}} </td>
+            <td> {{entityData.create_time}} </td>
+            <td> {{entityData.update_time}} </td>
             <td>
-                <button v-on:click="$refs.sysRoleInfo.showInfoPanel({id:sysRole.id})" type="button" class="btn btn-info btn-xs"> 查看/修改 </button>
-                <button v-on:click="delRowData(sysRole.id)" type="button" class="btn btn-danger btn-xs ROLE_204"> 删除 </button>
+                <button v-on:click="$refs.entityDataInfo.showInfoPanel({id:entityData.id})" type="button" class="btn btn-info btn-xs"> 查看/修改 </button>
+                <button v-on:click="delRowData(entityData.id)" type="button" class="btn btn-danger btn-xs ROLE_204"> 删除 </button>
             </td>
         </tr>
 
@@ -51,6 +51,6 @@
 
 
     <!-- 添加用户 -->
-    <sys-role-info ref="sysRoleInfo" v-on:completed="reloadPage"></sys-role-info>
+    <sys-role-info ref="entityDataInfo" v-on:completed="reloadPage"></sys-role-info>
 
 </div>

@@ -158,3 +158,39 @@ $.validator.addMethod("mobile", function(value, element) {
     var mobile = /^((13[0-9])|(14[5|7])|(15([0-3]|[5-9]))|(18[0,5-9]))\d{8}$/;
     return this.optional(element) || (length == 11 && mobile.test(value));
 }, "请正确填写您的手机号码");
+
+
+/** - - - - - 列表右侧筛选事件 - - - - - */
+function toggleFiletrPanel(ele) {
+	var filterPanel = $(ele).parents('.right-filter-panel');
+	var width = filterPanel.width() + 5;
+	var right = filterPanel.css('right').replace('px', '');
+	
+	if(right < 0) {
+		filterPanel.animate({'right': '0px'});
+	} else {
+		filterPanel.animate({'right': -width});
+	}
+}
+$(document.body).on('click', '.filter-btn',function(){
+	toggleFiletrPanel(this);
+});
+$(document).bind("click", function (e){
+	var len = $((e.target || e.srcElement)).closest(".right-filter-panel").length;
+    if ( len == 0) {
+    	var filterPanel = $(document).find('.right-filter-panel');
+    	if(filterPanel.length > 0) {
+	    	var right = filterPanel.css('right').replace('px', '');
+	    	var ele = filterPanel.find('.filter-btn');
+	    	
+	    	if(right > -60) {
+	    		toggleFiletrPanel(ele[0]);
+	    	}
+    	}
+    }
+});
+
+
+
+
+
