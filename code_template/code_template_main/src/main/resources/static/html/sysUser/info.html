@@ -68,6 +68,18 @@
                             <span class="input-tip"> * 手机号不可为空 </span>
                         </div>
                     </div>
+                    
+                    <!-- 用户状态 -->
+                    <form-group-btns 
+                    v-model="formData.status"
+                    v-bind:colWidth="13" 
+                    v-bind:label="'用户状态'"
+                    v-bind:values="[{key:'enable', label:'启用'}, {key:'disable', label:'禁用'}]"
+                    v-bind:selected="formData.status"
+                    v-on:changeSelected="function(val){formData.status=val;}"
+                    v-bind:name="'status'" 
+                    v-bind:tip="'* 用户状态不可为空'" >
+                    </form-group-btns>
 
                     <div class="form-group">
                         <label class="col-sm-2 control-label"> 角色选择 </label>

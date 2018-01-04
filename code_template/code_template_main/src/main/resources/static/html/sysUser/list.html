@@ -7,7 +7,7 @@
                     <input type="text" v-model="queryData.keyword" class="form-control" id="exampleInputAmount"
                            placeholder="username/email/mobile">
                 </div>
-                <input v-on:click="queryPageData(1)" class="btn btn-primary" type="button" value="搜索">
+                <input v-on:click="queryPageData(1, queryData.pageSize)" class="btn btn-primary" type="button" value="搜索">
             </form>
         </div>
     </div>
@@ -53,10 +53,10 @@
             v-bind:curr-page="tablePage.currPage"
             v-on:change-page="queryPageData"></table-page>
 
-
     <!-- 添加用户 -->
-    <sys-user-info ref="entityDataInfo" v-on:completed="reloadPage" />
+    <sys-user-info ref="entityDataInfo" v-on:completed="reloadPage" ></sys-user-info>
 	
 	<!-- 过滤条件 -->
-	<list-query-filter></list-query-filter>
+	<list-query-filter v-bind:condition-set="conditionSet" v-on:query-complete="queryPageDataByCondition" ></list-query-filter>
+	
 </div>

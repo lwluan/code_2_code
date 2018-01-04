@@ -91,17 +91,17 @@
 /* ------- 右边筛选框 -------- */
 .filter-btn {
 	position: absolute;
-	left: -41px;
+	left: -27px;
 	top: 100px;
 	z-index: 999;
-	width: 40px;
-	height: 70px;
+	width: 26px;
+	height: 60px;
 	background-color: rgba(0,153, 255, 70);
 	border-radius: 4px 0 0 4px;
 	opacity: 0.7;
 	text-align: center;
 	vertical-align: middle;
-	padding: 10px;
+	padding: 2px;
 }
 .filter-btn i {
 	font-size: 22px;
@@ -112,4 +112,5 @@
 	right: 0;
 	top: 50px;
 	z-index: 998;
+	min-width: 400px;
 }

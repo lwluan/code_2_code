@@ -35,10 +35,6 @@ define(['text!'+ctx+'/html/component/table-page.html'], function( template ) {
                 this.startNum = pageObj.startNum;
                 this.endNum = pageObj.endNum;
 
-                console.info('currPage='+this.currPage+',totalCount='+this.totalCount
-                    +',startNum=' + this.startNum + '.endNum=' + this.endNum
-                    +',pageSize=' + this.pageSize);
-
             }, changePageSize: function(pageSize) {
                 this.pageSize = pageSize;
                 this.queryPageData(1);

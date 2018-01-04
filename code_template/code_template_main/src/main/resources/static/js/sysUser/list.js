@@ -1,8 +1,29 @@
 define(['text!'+ctx+'/html/sysUser/list.html'], function( template ) {
 
-    'use strict'
+	
+	var conditionSet = [ {
+		type : 'group-button',
+		name : 'status',
+		label : '状态',
+		defaultVal : '',
+		changedVal : '',
+		values : [ 
+		           { key : '', label : '全部' }, 
+		           { key : 'enable', label : '启用' }, 
+		           { key : 'disable', label : '禁用' } ]
+	}, {
+		type : 'select',
+		name : 'status1',
+		label : '状态',
+		defaultVal : '',
+		changedVal : '',
+		values : [ { key : '', label : '全部' },
+		           { key : 'enable', label : '启用' }, 
+		           { key : 'disable', label : '禁用' } ]
+	} ];
 
     var data = {
+    	conditionSet: conditionSet,
         tablePage:{totalCount: 0, currPage: 0, notificationChange: 0, reloadNotification: 0},
         entityDataList: [],
         queryData: { currPage: 1, pageSize: 5, keyword: null},
@@ -15,11 +36,15 @@ define(['text!'+ctx+'/html/sysUser/list.html'], function( template ) {
         },
         data: function() { return data;  },
         methods: {
-            queryPageData: function (currPage, pageSize) {
+        	queryPageDataByCondition: function(condition) {
+        		this.queryPageData(this.queryData.currPage, this.queryData.pageSize, condition);
+        	},
+            queryPageData: function (currPage, pageSize, condition) {
 
                 this.queryData.pageSize = pageSize;
                 this.queryData.currPage = currPage;
-                var queryStr = $.param(this.queryData);
+                var _queryData = $.extend({}, condition, this.queryData);
+                var queryStr = $.param(_queryData);
 
                 var that = this;
                 accessHttp({

@@ -55,6 +55,9 @@ public class SysUserServiceImpl implements SysUserService {
 		if( StringUtils.isNotEmpty(sysUserVo.getUsername()) ) {
 			mCriteria.andUsernameLike(sysUserVo.getUsername() + "%");
 		}
+		if( StringUtils.isNotEmpty(sysUserVo.getStatus()) ) {
+			mCriteria.andStatusEqualTo(sysUserVo.getStatus());
+		}
 		
 		long totalCount = sysUserMapper.countByExample(example);
 		res.getData().setTotalCount(totalCount);
@@ -72,6 +75,7 @@ public class SysUserServiceImpl implements SysUserService {
 		ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object> objDataWrap = new ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object>();
 		
 		SysUser mSysUser = sysUserMapper.selectByPrimaryKey(userId);
+		mSysUser.setPassword(null);
 		List<SysRole> sysRoles = sysRoleMapper.querySysUserRoles(userId);
 		
 		SysUserVo data01 = new SysUserVo();
