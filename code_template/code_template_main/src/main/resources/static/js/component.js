@@ -7,4 +7,6 @@ Vue.component('form-datetime-input', createComponent('/js/component/form-datetim
 Vue.component('form-group-btns', createComponent('/js/component/form-group-btns.js'));
 Vue.component('group-button', createComponent('/js/component/group-button.js'));
 Vue.component('list-query-filter', createComponent('/js/component/list-query-filter.js'));
+Vue.component('list-column-option', createComponent('/js/component/list-column-option.js'));
+
 
