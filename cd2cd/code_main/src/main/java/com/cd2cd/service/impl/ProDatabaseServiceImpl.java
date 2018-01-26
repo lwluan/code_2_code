@@ -142,4 +142,23 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 		return 0 < proTableMapper.deleteByPrimaryKey(id);
 	}
 
+	@Override
+	public ProTableColumnVo addTableColumn(ProTableColumnVo proTableColumnVo) {
+		proTableColumnVo.setCreateTime(new Date());
+		proTableColumnVo.setUpdateTime(new Date());
+		proTableColumnMapper.insert(proTableColumnVo);
+		return proTableColumnVo;
+	}
+
+	@Override
+	public boolean modifyTableColumn(ProTableColumnVo proTableColumnVo) {
+		proTableColumnVo.setUpdateTime(new Date());
+		return 0 < proTableColumnMapper.updateByPrimaryKeySelective(proTableColumnVo);
+	}
+
+	@Override
+	public boolean delTableColumn(Long id) {
+		return 0 < proTableColumnMapper.deleteByPrimaryKey(id);
+	}
+
 }

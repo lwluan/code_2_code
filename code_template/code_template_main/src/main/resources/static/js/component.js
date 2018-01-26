@@ -10,3 +10,7 @@ Vue.component('list-query-filter', createComponent('/js/component/list-query-fil
 Vue.component('list-column-option', createComponent('/js/component/list-column-option.js'));
 
 
+//filter
+Vue.filter("date", function(input) {
+	return dateFmt(input);
+});

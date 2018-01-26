@@ -18,6 +18,7 @@ import com.cd2cd.service.ProDatabaseService;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DbTreeNode;
 import com.cd2cd.vo.ProDatabaseVo;
+import com.cd2cd.vo.ProTableColumnVo;
 import com.cd2cd.vo.ProTableVo;
 
 @Controller
@@ -138,4 +139,49 @@ public class DatabaseController {
 		}
 		return res;
 	}
+	
+	// table column
+	@RequestMapping(value = "addTableColumn", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProTableColumnVo> addTableColumn (
+			@Validated(value = {DValid.AddEntity.class}) 
+			@RequestBody ProTableColumnVo proTableColumnVo, 
+			BindingResult bindingResult) {
+		
+		BaseRes<ProTableColumnVo> res = new BaseRes<ProTableColumnVo>();
+		ProTableColumnVo mProTableColumnVo = proDatabaseService.addTableColumn(proTableColumnVo);
+		res.setData(mProTableColumnVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		
+		return res;
+	}
+	
+	@RequestMapping(value = "modifyTableColumn", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> modifyTableColumn (
+			@Validated(value = {DValid.ModifyEntity.class}) 
+			@RequestBody ProTableColumnVo proTableColumnVo, 
+			BindingResult bindingResult) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		boolean success = proDatabaseService.modifyTableColumn(proTableColumnVo);
+		if( success ) {
+			res.setServiceCode(ServiceCode.SUCCESS);
+		} else {
+			res.setServiceCode(ServiceCode.FAILED);
+		}
+		return res;
+	}
+	
+	@RequestMapping(value = "delTableColumn", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<String> delTableColumn (ProTableColumnVo proTableColumnVo) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		boolean success = proDatabaseService.delTableColumn(proTableColumnVo.getId());
+		if( success ) {
+			res.setServiceCode(ServiceCode.SUCCESS);
+		} else {
+			res.setServiceCode(ServiceCode.FAILED);
+		}
+		return res;
+	}
+	
 }

@@ -1,8 +1,6 @@
 define(['text!' + ctx + '/html/project/left-slider.html', 
         'rcss!' + ctx + '/css/zTreeStyle/zTreeStyle', 
-        ctx + '/js/lib/jquery.ztree.all-3.5.min.js',
-        ctx + '/js/lib/jquery.cleverTabs.js',
-        ctx + '/js/lib/jquery.contextMenu.js'], function( left_resource ){
+        ctx + '/js/lib/jquery.ztree.all-3.5.min.js'], function( left_resource ){
 
 		var setting = {
 			data : {
@@ -163,39 +161,35 @@ define(['text!' + ctx + '/html/project/left-slider.html',
 			fileType : 'page',
 			icon : ctx + "/images/sourceEditor.gif"
 		} ];
+		
 
 	function onClick(event, treeId, treeNode, clickFlag) {
-		if (treeNode.name.indexOf(".java") != -1
-				|| treeNode.name.indexOf(".jsp") != -1
-				|| treeNode.name.indexOf(".xml") != -1
-				|| treeNode.name.indexOf(".sql") != -1) {
-			var param = "?filecode=1607121356384496&packageName=com.test.aa&className=Action&folder=action&fileName="
-					+ treeNode.name;
-			
-			console.info(JSON.stringify(treeNode));
-			
-			var fileType = treeNode.fileType;
-			
-			tabs.add({
-				url : '/backend/classfile/showfile?filetype='+ fileType,
-				label : treeNode.name
-			});
-			// window.self.location = "/front/code_searchFileContent.action" + param;
-		}
+		console.info(JSON.stringify(treeNode));
+		var fileType = treeNode.fileType;
 	}
 
 	function zTreeOnRightClick(event, treeId, treeNode) {  
-        if (!treeNode) {  
-            zTree.cancelSelectedNode();  
-            showRMenu("root", event.clientX, event.clientY);  
-        } else if (treeNode && !treeNode.noR) { //noR属性为true表示禁止右键菜单  
-            if (treeNode.newrole && event.target.tagName != "a" && $(event.target).parents("a").length == 0) {  
-                zTree.cancelSelectedNode();  
-                showRMenu("root", event.clientX, event.clientY);  
-            } else {  
-                zTree.selectNode(treeNode);  
-                showRMenu("node", event.clientX, event.clientY);  
-            }  
+		
+		console.info('treeId=' + treeId + ',treeNode=' + JSON.stringify(treeNode));
+		
+		/**
+		 * package 	右击时: 显示【添加】，隐藏【删除】
+		 * file 	右击时: 显示【添加】，隐藏【添加】
+		 * page 	右击时: 显示【添加】，隐藏【添加】
+		 * 
+		 **/
+        if (treeNode) {    
+        	var fileType = treeNode.fileType;
+        	console.info('fileType=' + fileType);
+        	if( 'package' == fileType ) {
+	            $('#r-menu-remove-btn').hide();
+	            $('#r-menu-add-btn').show();
+        	} else {
+        		$('#r-menu-remove-btn').show();
+	            $('#r-menu-add-btn').hide();
+        	}
+        	zTree.selectNode(treeNode);  
+            showRMenu("node", event.clientX, event.clientY);
         }  
     }  
 	
@@ -207,39 +201,18 @@ define(['text!' + ctx + '/html/project/left-slider.html',
             $("#m_check").hide();  
             $("#m_unCheck").hide();  
         }  
-        $("#rMenu").css({"top":y+"px", "left":x+"px", "display":"block"});  
+        $("#rMenu").css({"top":(y - 40)+"px", "left":x+"px", "display":"block"});  
     }  
 	
-	// 树添加结点
-	function addNodeType(nodeType) {
-		$('#rMenu').hide();
-		tabs.add({
-			url : '/backend/classFile/showFile?filetype='+nodeType,
-			label : '新建【' + nodeType + '】'
-		});
-	}
-	
-	var tabs;
 	var zTree;
 	
-	$("body").bind( // 鼠标点击事件不在节点上时隐藏右键菜单  
-    "mousedown",  
-    function(event) {  
+	// 鼠标点击事件不在节点上时隐藏右键菜单
+	$("body").bind("mousedown", function(event) {  
         if ( ! (event.target.id == "rMenu" || $(event.target).parents("#rMenu").length > 0)) {
-        	
             $("#rMenu").hide();
-            
         }  
     });  
 	
-	tabs = $('#tabs').cleverTabs();
-	
-	/*
-	tabs.add({
-		url : 'http://localhost:9001/project/index?2',
-		label : 'Dao.java'
-	});
-	*/
 	
     var data = { };
     var component = {

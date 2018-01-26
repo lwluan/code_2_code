@@ -7,16 +7,40 @@
 
 .body-content {
 	left: 300px;
+	border-left: 1px solid #ddd;
 }
 
 .pop-r-menu {
+	position: absolute;
 	left: 200px;
 	top: 150px;
 	background-color: white;
-	border: 1px solid #999;
 	border-radius: 4px;
 	font-size: 13px !important;
 	line-height: 13px;
 	color: #666;
 	font-weight: 600;
+	z-index: 888;
 }
+
+.tool-bar-row {
+	margin-left: 285px;
+}
+.pro-navbar-header {
+	width: 285px;
+}
+.left-slider-ctl {
+	float: right;
+	font-size: 24px;
+	padding: 10px 10px 5px 10px;
+	cursor: pointer;
+}
+.display-inline {
+	display: inline-block;
+}
+
+
+/** tabs */
+
+
+

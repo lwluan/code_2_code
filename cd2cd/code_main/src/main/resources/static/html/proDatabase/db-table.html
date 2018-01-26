@@ -1,7 +1,7 @@
 <div class="panel panel-default">
 	<div class="panel-heading"> 
 	{{entityForm.name}}&nbsp;
-	<input type="button" class="btn btn-default padding-btn btn-danger pull-right" value="删除" />
+	<input v-on:click="delTable()" type="button" class="btn btn-default padding-btn btn-danger pull-right" value="删除" />
 	</div>
 	<div class="panel-body">
 		<form id="tableFormValidate" class="form-inline" novalidate>
@@ -14,7 +14,7 @@
 				<input type="text" v-model="entityForm.comment" class="form-control" id="table_comment" name="table_comment" placeholder="表名">
 			</div>
 			<button v-on:click="subTableForm" type="button" class="btn btn-default btn-info"> 保存 </button>
-			<input v-on:click="addTableRow" class="btn btn-default btn-success" type="button" value="添加字段" >
+			<input v-show="entityForm.id" v-on:click="addTableRow" class="btn btn-default btn-success" type="button" value="添加字段" >
 		</form>
 		<hr />
 		<!-- columns  -->
@@ -31,22 +31,22 @@
 	        </thead>
 	
 	        <tbody>
-		        <tr v-for="col in tabColumns" >
-		            <td> <input type="text" v-model="col.name" /> </td>
-		            <td> <input type="text" v-model="col.comment" /> </td>
+		        <tr v-for="(col, index) in tabColumns" >
+		            <td> <input v-on:change="changeValue(col, index)" type="text" v-model="col.name" /> </td>
+		            <td> <input v-on:change="changeValue(col, index)" type="text" v-model="col.comment" /> </td>
 		            <td>
-		            <input type="text" v-model="col.mysqlType" />
+		            <input v-on:change="changeValue(col, index)" type="text" v-model="col.mysqlType" />
 		            </td>
-		            <td> <input type="text" v-model="col.defaultValue" /> </td>
+		            <td> <input v-on:change="changeValue(col, index)" type="text" v-model="col.defaultValue" /> </td>
 		            <td> 
-		            <select v-model="col.allowNull">
+		            <select v-on:change="changeValue(col, index)" v-model="col.allowNull">
 		            	<option value="true">true</option>
     					<option value="false">false</option>
 		            </select>
 		            </td>
 		            <td>
-		            	<button v-show="" v-on:click="" type="button" class="btn btn-success btn-xs"> 保存 </button>
-		                <button v-on:click="delRowData(col.id)" type="button" class="btn btn-danger btn-xs"> 删除 </button>
+		            	<button v-show=" ! col.id || col.__changed " v-on:click="saveTableRow(col, index)" type="button" class="btn btn-success btn-xs"> 保存 </button>
+		                <button v-on:click="delTableRow(col, index)" type="button" class="btn btn-danger btn-xs"> 删除 </button>
 		            </td>
 		        </tr>
 	        </tbody>

@@ -35,8 +35,8 @@
             <td> {{entityData.packageType}} </td>
             <td> {{entityData.version}} </td>
             <td> {{entityData.contextPath}} </td>
-            <td> {{entityData.createTime}} </td>
-            <td> {{entityData.updateTime}} </td>
+            <td> {{entityData.createTime |date }} </td>
+            <td> {{entityData.updateTime |date }} </td>
             <td>
                 <button v-on:click="$refs.entityInfo.showInfoPanel({id:entityData.id})" type="button" class="btn btn-info btn-xs"> 查看/修改 </button>
                 <button v-on:click="delRowData(entityData.id)" type="button" class="btn btn-danger btn-xs"> 删除 </button>

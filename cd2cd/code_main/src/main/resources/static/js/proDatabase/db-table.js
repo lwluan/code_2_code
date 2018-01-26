@@ -1,7 +1,7 @@
 define([ 'text!' + ctx + '/html/proDatabase/db-table.html'], function(template) {
 
 	var initFormValidate = function() {
-        /** 表单验证 **/
+        /** 表单验证 * */
         var formValidate = $('#dbFormValidate').validate({
             rules:{
             	table_name:{ required:true },
@@ -68,7 +68,23 @@ define([ 'text!' + ctx + '/html/proDatabase/db-table.html'], function(template) 
                         }
                     });
                 }
-			}, addTableRow: function() {
+                
+			}, delTable: function() {
+				var that = this;
+				popModal('确认提示', '确定是否删除？', null, function() {
+                    $('#pop_box').modal('hide');
+                    accessHttp({
+                        url: buildUrl('/database/delTable?id=' + that.entityForm.id),
+                        success: function (res) {
+                        	var newEntity = { databaseId: that.entityForm.databaseId };
+            				that.entityForm = newEntity;
+                        	that.$emit('completed');
+                        }
+                    });
+                });
+			}, 
+			// 表行操作
+			addTableRow: function() {
 				var hasEmpty = true;
 				for(var i=0; i<this.tabColumns.length; i++) {
 					var tc = this.tabColumns[i];
@@ -78,8 +94,39 @@ define([ 'text!' + ctx + '/html/proDatabase/db-table.html'], function(template) 
 					}
 				}
 				if( hasEmpty ) {
-					this.tabColumns.push({});
+					this.tabColumns.push({tableId:this.entityForm.id, allowNull: true});
 				}
+			}, delTableRow: function(col, index) {
+				var that = this;
+                popModal('确认提示', '确定是否删除？', null, function() {
+                    $('#pop_box').modal('hide');
+                    accessHttp({
+                        url: buildUrl('/database/delTableColumn?id=' + col.id),
+                        success: function (res) {
+                        	that.tabColumns.splice(index, 1);
+                        }
+                    });
+                });
+			}, saveTableRow: function(column, index) {
+				var that = this;
+				var _url = '/database/addTableColumn';
+                _url = column.id ? '/database/modifyTableColumn' : _url;
+                accessHttp({
+                    url: buildUrl(_url),
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(column),
+                    type: 'post',
+                    success: function (res) {
+                    	if( res.data ) {
+                    		column.id = res.data.id;
+                    	}
+                    	column['__changed'] = false;
+                    	Vue.set(that.tabColumns, index, column);
+                    }
+                });
+			}, changeValue: function(column, index) {
+				column['__changed'] = true;
+				Vue.set(this.tabColumns, index, column);
 			}
 		}, mounted : function() {
 			this.formValidate = initFormValidate();

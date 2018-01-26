@@ -5,6 +5,7 @@ import java.util.List;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DbTreeNode;
 import com.cd2cd.vo.ProDatabaseVo;
+import com.cd2cd.vo.ProTableColumnVo;
 import com.cd2cd.vo.ProTableVo;
 
 public interface ProDatabaseService {
@@ -26,5 +27,11 @@ public interface ProDatabaseService {
 	boolean modifyTable(ProTableVo proTableVo);
 
 	boolean delTable(Long id);
+
+	ProTableColumnVo addTableColumn(ProTableColumnVo proTableColumnVo);
+
+	boolean modifyTableColumn(ProTableColumnVo proTableColumnVo);
+
+	boolean delTableColumn(Long id);
 	
 }
