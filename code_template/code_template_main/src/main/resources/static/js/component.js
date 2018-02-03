@@ -8,7 +8,7 @@ Vue.component('form-group-btns', createComponent('/js/component/form-group-btns.
 Vue.component('group-button', createComponent('/js/component/group-button.js'));
 Vue.component('list-query-filter', createComponent('/js/component/list-query-filter.js'));
 Vue.component('list-column-option', createComponent('/js/component/list-column-option.js'));
-
+Vue.component('dropdown-menu', createComponent('/js/component/dropdown-menu.js'));
 
 //filter
 Vue.filter("date", function(input) {

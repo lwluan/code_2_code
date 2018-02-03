@@ -220,6 +220,12 @@ define(['text!' + ctx + '/html/project/left-slider.html',
         data: function(){ return data; },
         methods: {
         	
+        	fetchProjectFileTree: function(packageType, modulId) {
+        		
+        		console.info('fetchProjectFileTree packageType=' + packageType + ',modulId=' + modulId);
+        		
+        	}
+        	
         }, created: function() {
         	
         }, mounted: function() {

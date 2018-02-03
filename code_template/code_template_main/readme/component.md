@@ -9,4 +9,16 @@
 	.no-show 初始不显示
 	.ignore  不进行控制
 	
-## 	
+## 	dropdown-menu
+	<dropdown-menu
+		v-bind:buttonName="'packageType'"
+	   	v-bind:values="packageTypeDropdown.values" 
+	   	v-bind:selected="packageTypeDropdown.selected" 
+	   	v-on:changeSelected="packageTypeDropdownChange" />
+	   	
+	   	modulTypeDropdown: { 
+        	values: [{label: '全部模块', key: '0'}],
+        	selected: {label: '全部模块', key: '0'},
+        },
+        
+##         

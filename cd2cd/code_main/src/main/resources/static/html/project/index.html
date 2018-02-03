@@ -16,12 +16,16 @@
 <div id="app">
 
     <!-- header -->
-    <top-toolbar></top-toolbar>
+    <top-toolbar
+    	v-on:change_file_free="function(a, b){ $refs.leftSlider.fetchProjectFileTree(a, b); }" 
+    	>
+    </top-toolbar>
 
     <div class="container-fluid app-wrapper">
 
         <!-- slider -->
-        <left-slider></left-slider>
+        <left-slider ref="leftSlider">
+        </left-slider>
 
         <div class="body-content">
 
@@ -47,12 +51,11 @@
 <script src="/code_main/js/lib/bootstrap.min.js"></script>
 <script src="/code_main/js/lib/vue.min.js"></script>
 <script src="/code_main/js/lib/jquery.validate.min.js"></script>
-<script src="/code_main/js/lib/vue-router.js"></script>
 <script src="/code_main/js/lib/require.js"></script>
 <script src="/code_main/js/comm.js"></script>
-<script src="/code_main/js/component.js"></script>
+<script src="/code_main/js/component.js?t=00"></script>
 <script src="/code_main/js/project/pro_comm.js"></script>
-<script src="/code_main/js/project/index.js"></script>
+<script src="/code_main/js/project/index.js?t=ss8"></script>
 
 </body>
 </html>

@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cd2cd.mapper.gen.SuperProModuleMapper">
-  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProModule">
+<mapper namespace="com.cd2cd.mapper.gen.SuperProFileMapper">
+  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProFile">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="module_id" jdbcType="BIGINT" property="moduleId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="show_name" jdbcType="VARCHAR" property="showName" />
-    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="dtype" jdbcType="VARCHAR" property="dtype" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -68,15 +69,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, show_name, description, create_time, update_time
+    id, module_id, name, type, dtype, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProModuleCriteria" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from pro_module
+    from pro_file
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -90,42 +91,47 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from pro_module
+    from pro_file
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from pro_module
+    delete from pro_file
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProModuleCriteria">
-    delete from pro_module
+  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria">
+    delete from pro_file
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cd2cd.domain.ProModule">
+  <insert id="insert" parameterType="com.cd2cd.domain.ProFile">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_module (name, show_name, description, 
-      create_time, update_time)
-    values (#{name,jdbcType=VARCHAR}, #{showName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into pro_file (module_id, name, type, 
+      dtype, create_time, update_time
+      )
+    values (#{moduleId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{dtype,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProModule">
+  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProFile">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_module
+    insert into pro_file
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="moduleId != null">
+        module_id,
+      </if>
       <if test="name != null">
         name,
       </if>
-      <if test="showName != null">
-        show_name,
+      <if test="type != null">
+        type,
       </if>
-      <if test="description != null">
-        description,
+      <if test="dtype != null">
+        dtype,
       </if>
       <if test="createTime != null">
         create_time,
@@ -135,14 +141,17 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="moduleId != null">
+        #{moduleId,jdbcType=BIGINT},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="showName != null">
-        #{showName,jdbcType=VARCHAR},
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        #{description,jdbcType=VARCHAR},
+      <if test="dtype != null">
+        #{dtype,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -152,26 +161,29 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProModuleCriteria" resultType="java.lang.Long">
-    select count(*) from pro_module
+  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria" resultType="java.lang.Long">
+    select count(*) from pro_file
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update pro_module
+    update pro_file
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
+      <if test="record.moduleId != null">
+        module_id = #{record.moduleId,jdbcType=BIGINT},
+      </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.showName != null">
-        show_name = #{record.showName,jdbcType=VARCHAR},
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
       </if>
-      <if test="record.description != null">
-        description = #{record.description,jdbcType=VARCHAR},
+      <if test="record.dtype != null">
+        dtype = #{record.dtype,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -185,28 +197,32 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update pro_module
+    update pro_file
     set id = #{record.id,jdbcType=BIGINT},
+      module_id = #{record.moduleId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
-      show_name = #{record.showName,jdbcType=VARCHAR},
-      description = #{record.description,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      dtype = #{record.dtype,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProModule">
-    update pro_module
+  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProFile">
+    update pro_file
     <set>
+      <if test="moduleId != null">
+        module_id = #{moduleId,jdbcType=BIGINT},
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="showName != null">
-        show_name = #{showName,jdbcType=VARCHAR},
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
       </if>
-      <if test="description != null">
-        description = #{description,jdbcType=VARCHAR},
+      <if test="dtype != null">
+        dtype = #{dtype,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -217,11 +233,12 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProModule">
-    update pro_module
-    set name = #{name,jdbcType=VARCHAR},
-      show_name = #{showName,jdbcType=VARCHAR},
-      description = #{description,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProFile">
+    update pro_file
+    set module_id = #{moduleId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      dtype = #{dtype,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

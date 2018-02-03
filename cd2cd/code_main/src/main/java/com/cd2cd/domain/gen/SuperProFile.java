@@ -3,23 +3,28 @@ package com.cd2cd.domain.gen;
 import java.io.Serializable;
 import java.util.Date;
 
-public class SuperProModule implements Serializable {
+public class SuperProFile implements Serializable {
     private Long id;
 
     /**
-     * 程序名称
+     * 模块ID
+     */
+    private Long moduleId;
+
+    /**
+     * 文件名称
      */
     private String name;
 
     /**
-     * 显示名称
+     * 文件类型：vo|dao|service|controller|domain
      */
-    private String showName;
+    private String type;
 
     /**
-     * 描述
+     * 类类型：class|generics|enum|interface|abstruct
      */
-    private String description;
+    private String dtype;
 
     private Date createTime;
 
@@ -36,45 +41,59 @@ public class SuperProModule implements Serializable {
     }
 
     /**
-     * 程序名称
+     * 模块ID
+     */
+    public Long getModuleId() {
+        return moduleId;
+    }
+
+    /**
+     * 模块ID
+     */
+    public void setModuleId(Long moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    /**
+     * 文件名称
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 程序名称
+     * 文件名称
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 显示名称
+     * 文件类型：vo|dao|service|controller|domain
      */
-    public String getShowName() {
-        return showName;
+    public String getType() {
+        return type;
     }
 
     /**
-     * 显示名称
+     * 文件类型：vo|dao|service|controller|domain
      */
-    public void setShowName(String showName) {
-        this.showName = showName;
+    public void setType(String type) {
+        this.type = type;
     }
 
     /**
-     * 描述
+     * 类类型：class|generics|enum|interface|abstruct
      */
-    public String getDescription() {
-        return description;
+    public String getDtype() {
+        return dtype;
     }
 
     /**
-     * 描述
+     * 类类型：class|generics|enum|interface|abstruct
      */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDtype(String dtype) {
+        this.dtype = dtype;
     }
 
     public Date getCreateTime() {
@@ -100,9 +119,10 @@ public class SuperProModule implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", moduleId=").append(moduleId);
         sb.append(", name=").append(name);
-        sb.append(", showName=").append(showName);
-        sb.append(", description=").append(description);
+        sb.append(", type=").append(type);
+        sb.append(", dtype=").append(dtype);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -121,11 +141,12 @@ public class SuperProModule implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        SuperProModule other = (SuperProModule) that;
+        SuperProFile other = (SuperProFile) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
+            && (this.getModuleId() == null ? other.getModuleId() == null : this.getModuleId().equals(other.getModuleId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getShowName() == null ? other.getShowName() == null : this.getShowName().equals(other.getShowName()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
+            && (this.getDtype() == null ? other.getDtype() == null : this.getDtype().equals(other.getDtype()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -135,9 +156,10 @@ public class SuperProModule implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+        result = prime * result + ((getModuleId() == null) ? 0 : getModuleId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getShowName() == null) ? 0 : getShowName().hashCode());
-        result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
+        result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
+        result = prime * result + ((getDtype() == null) ? 0 : getDtype().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

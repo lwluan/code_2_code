@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ProModuleCriteria {
+public class ProFileCriteria {
     protected String orderByClause;
 
     protected boolean distinct;
@@ -15,7 +15,7 @@ public class ProModuleCriteria {
 
     protected Integer mysqlLength;
 
-    public ProModuleCriteria() {
+    public ProFileCriteria() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -205,6 +205,66 @@ public class ProModuleCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andModuleIdIsNull() {
+            addCriterion("module_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdIsNotNull() {
+            addCriterion("module_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdEqualTo(Long value) {
+            addCriterion("module_id =", value, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdNotEqualTo(Long value) {
+            addCriterion("module_id <>", value, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdGreaterThan(Long value) {
+            addCriterion("module_id >", value, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("module_id >=", value, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdLessThan(Long value) {
+            addCriterion("module_id <", value, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdLessThanOrEqualTo(Long value) {
+            addCriterion("module_id <=", value, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdIn(List<Long> values) {
+            addCriterion("module_id in", values, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdNotIn(List<Long> values) {
+            addCriterion("module_id not in", values, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdBetween(Long value1, Long value2) {
+            addCriterion("module_id between", value1, value2, "moduleId");
+            return (Criteria) this;
+        }
+
+        public Criteria andModuleIdNotBetween(Long value1, Long value2) {
+            addCriterion("module_id not between", value1, value2, "moduleId");
+            return (Criteria) this;
+        }
+
         public Criteria andNameIsNull() {
             addCriterion("name is null");
             return (Criteria) this;
@@ -275,143 +335,143 @@ public class ProModuleCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andShowNameIsNull() {
-            addCriterion("show_name is null");
+        public Criteria andTypeIsNull() {
+            addCriterion("type is null");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameIsNotNull() {
-            addCriterion("show_name is not null");
+        public Criteria andTypeIsNotNull() {
+            addCriterion("type is not null");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameEqualTo(String value) {
-            addCriterion("show_name =", value, "showName");
+        public Criteria andTypeEqualTo(String value) {
+            addCriterion("type =", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameNotEqualTo(String value) {
-            addCriterion("show_name <>", value, "showName");
+        public Criteria andTypeNotEqualTo(String value) {
+            addCriterion("type <>", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameGreaterThan(String value) {
-            addCriterion("show_name >", value, "showName");
+        public Criteria andTypeGreaterThan(String value) {
+            addCriterion("type >", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameGreaterThanOrEqualTo(String value) {
-            addCriterion("show_name >=", value, "showName");
+        public Criteria andTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("type >=", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameLessThan(String value) {
-            addCriterion("show_name <", value, "showName");
+        public Criteria andTypeLessThan(String value) {
+            addCriterion("type <", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameLessThanOrEqualTo(String value) {
-            addCriterion("show_name <=", value, "showName");
+        public Criteria andTypeLessThanOrEqualTo(String value) {
+            addCriterion("type <=", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameLike(String value) {
-            addCriterion("show_name like", value, "showName");
+        public Criteria andTypeLike(String value) {
+            addCriterion("type like", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameNotLike(String value) {
-            addCriterion("show_name not like", value, "showName");
+        public Criteria andTypeNotLike(String value) {
+            addCriterion("type not like", value, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameIn(List<String> values) {
-            addCriterion("show_name in", values, "showName");
+        public Criteria andTypeIn(List<String> values) {
+            addCriterion("type in", values, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameNotIn(List<String> values) {
-            addCriterion("show_name not in", values, "showName");
+        public Criteria andTypeNotIn(List<String> values) {
+            addCriterion("type not in", values, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameBetween(String value1, String value2) {
-            addCriterion("show_name between", value1, value2, "showName");
+        public Criteria andTypeBetween(String value1, String value2) {
+            addCriterion("type between", value1, value2, "type");
             return (Criteria) this;
         }
 
-        public Criteria andShowNameNotBetween(String value1, String value2) {
-            addCriterion("show_name not between", value1, value2, "showName");
+        public Criteria andTypeNotBetween(String value1, String value2) {
+            addCriterion("type not between", value1, value2, "type");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionIsNull() {
-            addCriterion("description is null");
+        public Criteria andDtypeIsNull() {
+            addCriterion("dtype is null");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionIsNotNull() {
-            addCriterion("description is not null");
+        public Criteria andDtypeIsNotNull() {
+            addCriterion("dtype is not null");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionEqualTo(String value) {
-            addCriterion("description =", value, "description");
+        public Criteria andDtypeEqualTo(String value) {
+            addCriterion("dtype =", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionNotEqualTo(String value) {
-            addCriterion("description <>", value, "description");
+        public Criteria andDtypeNotEqualTo(String value) {
+            addCriterion("dtype <>", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionGreaterThan(String value) {
-            addCriterion("description >", value, "description");
+        public Criteria andDtypeGreaterThan(String value) {
+            addCriterion("dtype >", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionGreaterThanOrEqualTo(String value) {
-            addCriterion("description >=", value, "description");
+        public Criteria andDtypeGreaterThanOrEqualTo(String value) {
+            addCriterion("dtype >=", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionLessThan(String value) {
-            addCriterion("description <", value, "description");
+        public Criteria andDtypeLessThan(String value) {
+            addCriterion("dtype <", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionLessThanOrEqualTo(String value) {
-            addCriterion("description <=", value, "description");
+        public Criteria andDtypeLessThanOrEqualTo(String value) {
+            addCriterion("dtype <=", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionLike(String value) {
-            addCriterion("description like", value, "description");
+        public Criteria andDtypeLike(String value) {
+            addCriterion("dtype like", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionNotLike(String value) {
-            addCriterion("description not like", value, "description");
+        public Criteria andDtypeNotLike(String value) {
+            addCriterion("dtype not like", value, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionIn(List<String> values) {
-            addCriterion("description in", values, "description");
+        public Criteria andDtypeIn(List<String> values) {
+            addCriterion("dtype in", values, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionNotIn(List<String> values) {
-            addCriterion("description not in", values, "description");
+        public Criteria andDtypeNotIn(List<String> values) {
+            addCriterion("dtype not in", values, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionBetween(String value1, String value2) {
-            addCriterion("description between", value1, value2, "description");
+        public Criteria andDtypeBetween(String value1, String value2) {
+            addCriterion("dtype between", value1, value2, "dtype");
             return (Criteria) this;
         }
 
-        public Criteria andDescriptionNotBetween(String value1, String value2) {
-            addCriterion("description not between", value1, value2, "description");
+        public Criteria andDtypeNotBetween(String value1, String value2) {
+            addCriterion("dtype not between", value1, value2, "dtype");
             return (Criteria) this;
         }
 

@@ -1,0 +1,14 @@
+<div class="dropdown display-inline">
+	<button class="btn btn-default dropdown-toggle" type="button"
+		v-bind:id="buttonName + '-menu'" data-toggle="dropdown" aria-haspopup="true"
+		aria-expanded="true">
+		{{selectedObj.label}} <span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" v-bind:aria-labelledby="buttonName + '-menu'">
+	
+	<li v-for="value in values" ><a href="javascript:;" 
+		v-on:click="selectItem(value)" > {{value.label}} </a></li>
+	</ul>
+	
+	<input type="hidden" v-model="selectedObj.key" class="form-control" v-bind:name="buttonName" v-bind:id="buttonName" >
+</div>

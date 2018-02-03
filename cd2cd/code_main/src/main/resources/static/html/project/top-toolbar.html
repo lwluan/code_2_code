@@ -8,29 +8,23 @@
 		</div>
 
 		<div class="tool-bar-row">
-			<div class="dropdown display-inline">
-				<button class="btn btn-default dropdown-toggle" type="button"
-					id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="true">
-					Package Presentation <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-					<li><a href="#"> Flat </a></li>
-					<li><a href="#"> Hierarchical </a></li>
-				</ul>
-			</div>
 			
-			<div class="dropdown display-inline">
-				<button class="btn btn-default dropdown-toggle" type="button"
-					id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true"
-					aria-expanded="true">
-					模块过滤 <span class="caret"></span>
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-					<li><a href="#"> 用户模块 </a></li>
-					<li><a href="#"> 产品模块 </a></li>
-				</ul>
-			</div>
+			<!-- 包展示类型 -->
+			<dropdown-menu
+			v-bind:buttonName="'packageType'"
+           	v-bind:values="packageTypeDropdown.values" 
+           	v-bind:selected="packageTypeDropdown.selected" 
+           	v-on:changeSelected="packageTypeDropdownChange" 
+			></dropdown-menu>
+			
+			<!-- 显示模块过滤 -->
+			<dropdown-menu
+			v-bind:buttonName="'modulId'"
+           	v-bind:values="modulTypeDropdown.values" 
+           	v-bind:selected="modulTypeDropdown.selected" 
+           	v-on:changeSelected="modulTypeDropdownChange" 
+			></dropdown-menu>
+			
 			
 			<input type="button" value="项目详情" class="btn btn-defalut"> 
 			<input type="button" value="模块管理" class="btn btn-defalut">

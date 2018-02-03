@@ -7,17 +7,17 @@ require.config({
     }
 });
 
-const routes = [  ];
-
-const router = new VueRouter({
-    routes: routes
-});
 
 const mainVm = new Vue({
-    router: router,
+	el: '#app',
     data: {},
     components: {
         'top-toolbar': createComponent('/js/project/top-toolbar.js'),
         'left-slider': createComponent('/js/project/left-slider.js'),
+    },
+    methods: {
+    	test: function(a, b) {
+    		console.info(a + '|||' + b);
+    	}
     }
-}).$mount('#app')
+});
