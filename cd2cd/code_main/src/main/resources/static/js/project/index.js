@@ -7,6 +7,8 @@ require.config({
     }
 });
 
+var projectId = $.getUrlParam('projectId');
+console.info('projectId=' + projectId);
 
 const mainVm = new Vue({
 	el: '#app',
@@ -14,6 +16,8 @@ const mainVm = new Vue({
     components: {
         'top-toolbar': createComponent('/js/project/top-toolbar.js'),
         'left-slider': createComponent('/js/project/left-slider.js'),
+        'project-info': createComponent('/js/project/project-info.js'),
+        'project-module': createComponent('/js/project/project-module.js'),
     },
     methods: {
     	test: function(a, b) {

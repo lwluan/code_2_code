@@ -19,15 +19,15 @@
 			
 			<!-- 显示模块过滤 -->
 			<dropdown-menu
-			v-bind:buttonName="'modulId'"
+			v-bind:buttonName="'moduleId'"
            	v-bind:values="modulTypeDropdown.values" 
            	v-bind:selected="modulTypeDropdown.selected" 
            	v-on:changeSelected="modulTypeDropdownChange" 
 			></dropdown-menu>
 			
 			
-			<input type="button" value="项目详情" class="btn btn-defalut"> 
-			<input type="button" value="模块管理" class="btn btn-defalut">
+			<input v-on:click="$emit('show_project_info');" type="button" value="项目详情" class="btn btn-defalut"> 
+			<input v-on:click="$emit('show_project_module');" type="button" value="模块管理" class="btn btn-defalut">
 		</div>
 
 	</div>

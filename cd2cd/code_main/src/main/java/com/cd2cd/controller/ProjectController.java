@@ -17,10 +17,10 @@ public class ProjectController {
 	/**
 	 * 获取项目树结构
 	 * @param packageType: Flat \ Hierachical
-	 * @param modulId: 只显示对应模块
+	 * @param moduleId: 只显示对应模块
 	 */
 	@RequestMapping("fetchProjectFileTree")
-	public void fetchProjectFileTree(String packageType, Long modulId) {
+	public void fetchProjectFileTree(String packageType, Long moduleId) {
 		
 	}
 	

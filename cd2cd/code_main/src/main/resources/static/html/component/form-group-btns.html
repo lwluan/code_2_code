@@ -6,14 +6,13 @@
 			v-for="value in values" 
 			v-on:click="selectItem(value.key);" 
 			v-bind:class="{ active: value.key == selectedKey }" > {{value.label}} </button>
-		
-		</div>	
+			
+		</div>
 		<input type="hidden" v-model="selectedKey" 
-		v-bind:value="value" 
-		class="form-control" 
-		v-bind:name="name" 
-		v-bind:id="name" >
-		
+			v-bind:value="value" 
+			class="form-control" 
+			v-bind:name="name" 
+			v-bind:id="name" >
 	</div>
 	<div class="help-block">
 		<span class="input-tip"> {{tip}} </span>

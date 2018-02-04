@@ -159,3 +159,12 @@ $.validator.addMethod("mobile", function(value, element) {
     return this.optional(element) || (length == 11 && mobile.test(value));
 }, "请正确填写您的手机号码");
 
+(function($) {
+	$.getUrlParam = function(name) {
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.substr(1).match(reg);
+		if (r != null)
+			return unescape(r[2]);
+		return null;
+	}
+})(jQuery);

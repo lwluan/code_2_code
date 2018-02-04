@@ -29,7 +29,7 @@
         <tbody>
 
         <tr v-for="entityData in entityDataList" >
-            <td> <a v-bind:href="ctx + '/html/project/index.html?' + entityData.id">{{entityData.name}}</a> </td>
+            <td> <a v-bind:href="ctx + '/html/project/index.html?projectId=' + entityData.id">{{entityData.name}}</a> </td>
             <td> {{entityData.groupId}} </td>
             <td> {{entityData.artifactId}} </td>
             <td> {{entityData.packageType}} </td>

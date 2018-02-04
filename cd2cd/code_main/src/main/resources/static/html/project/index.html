@@ -17,7 +17,9 @@
 
     <!-- header -->
     <top-toolbar
-    	v-on:change_file_free="function(a, b){ $refs.leftSlider.fetchProjectFileTree(a, b); }" 
+    	v-on:change_file_free = "function(a, b){ $refs.leftSlider.fetchProjectFileTree(a, b); }"
+    	v-on:show_project_info = "function(){ $refs.projectInfo.showProjectInfo(); }" 
+    	v-on:show_project_module = "function(){ $refs.projectModule.showProjectModule(); }"
     	>
     </top-toolbar>
 
@@ -41,6 +43,11 @@
     <!-- 弹出提示框 -->
     <confirm-box></confirm-box>
 
+	<!-- 项目详情 -->
+	<project-info ref="projectInfo"></project-info>
+	
+	<project-module ref="projectModule"></project-module>
+	
 </div>
 
 

@@ -161,4 +161,15 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 		return 0 < proTableColumnMapper.deleteByPrimaryKey(id);
 	}
 
+	@Override
+	public BaseRes<List<ProDatabaseVo>> databaseList() {
+		List<ProDatabase> databases = proDatabaseMapper.selectByExample(null);
+		
+		BaseRes<List<ProDatabaseVo>> res = new BaseRes<List<ProDatabaseVo>>();
+		List<ProDatabaseVo> list = BeanUtil.voConvertList(databases, ProDatabaseVo.class);
+		
+		res.setData(list);
+		return res;
+	}
+
 }

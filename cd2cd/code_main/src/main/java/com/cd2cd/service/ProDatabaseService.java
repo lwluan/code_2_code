@@ -10,6 +10,8 @@ import com.cd2cd.vo.ProTableVo;
 
 public interface ProDatabaseService {
 	
+	BaseRes<List<ProDatabaseVo>> databaseList();
+	
 	BaseRes<List<DbTreeNode>> databaseTree();
 	
 	ProDatabaseVo dbDetail(Long id);

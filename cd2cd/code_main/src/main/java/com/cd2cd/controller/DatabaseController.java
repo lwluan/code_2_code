@@ -28,6 +28,12 @@ public class DatabaseController {
 	@Resource
 	private ProDatabaseService proDatabaseService;
 	
+	@RequestMapping("databaseList")
+	public @ResponseBody BaseRes<List<ProDatabaseVo>> databaseList() {
+		BaseRes<List<ProDatabaseVo>> res = proDatabaseService.databaseList();
+		return res;
+	}
+	
 	@RequestMapping("databaseTree")
 	public @ResponseBody BaseRes<List<DbTreeNode>> databaseTree() {
 		BaseRes<List<DbTreeNode>> res = proDatabaseService.databaseTree();
