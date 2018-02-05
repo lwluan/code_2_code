@@ -77,6 +77,7 @@ public class SysUserServiceImpl implements SysUserService {
 		SysUserVo data01 = new SysUserVo();
 		if( mSysUser != null ) {
 			data01 = BeanUtil.voConvert(mSysUser, SysUserVo.class);
+			data01.setPassword(null);
 		}
 		List<SysRoleVo> data02 = BeanUtil.voConvertList(sysRoles, SysRoleVo.class); 
 		objDataWrap.setData1(data01);

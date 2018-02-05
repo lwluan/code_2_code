@@ -9,9 +9,8 @@ define([ 'text!' + ctx + '/html/component/form-checkbox.html' ], function(templa
 		template : template,
 		data : function() {
 			return { 
-				colWidthClass: 'col-sm-12',
+				colWidthClass: '',
 				checkedVals: [],
-				
 			};
 		},
 		methods : {

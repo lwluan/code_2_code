@@ -3,16 +3,18 @@
 	<div class="col-sm-6">
 		<div class="btn-group" role="group">
 			<button type="button" class="btn btn-default"
-			v-for="value in values" 
-			v-on:click="selectItem(value.key);" 
-			v-bind:class="{ active: value.key == selectedKey }" > {{value.label}} </button>
-			
-		</div>
+				v-for="val in values" 
+				v-on:click="selectItem(val.key);" 
+				v-bind:class="{ active: val.key == value }" > {{val.label}} 
+			</button>
+		
+		</div>	
 		<input type="hidden" v-model="selectedKey" 
-			v-bind:value="value" 
-			class="form-control" 
-			v-bind:name="name" 
-			v-bind:id="name" >
+		v-bind:value="value" 
+		class="form-control" 
+		v-bind:name="name" 
+		v-bind:id="name" >
+		
 	</div>
 	<div class="help-block">
 		<span class="input-tip"> {{tip}} </span>

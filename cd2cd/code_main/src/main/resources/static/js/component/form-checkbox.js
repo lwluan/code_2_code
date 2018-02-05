@@ -9,7 +9,7 @@ define([ 'text!' + ctx + '/html/component/form-checkbox.html' ], function(templa
 		template : template,
 		data : function() {
 			return { 
-				colWidthClass: 'col-sm-12',
+				colWidthClass: '',
 				checkedVals: [],
 				
 			};
@@ -33,8 +33,6 @@ define([ 'text!' + ctx + '/html/component/form-checkbox.html' ], function(templa
 			
 		}, watch : {
 			value : function(val) {
-				
-				console.info('----' + val);
 				this.checkedVals = val;
 			}
 		}
