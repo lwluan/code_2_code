@@ -35,7 +35,6 @@ define(['text!'+ctx+'/html/sysUser/info.html'], function( template ) {
     var data = {
         formData: {},
         sysRoles: [],
-        checkRoles: [],
         formValidate: {}
     };
 
@@ -75,11 +74,13 @@ define(['text!'+ctx+'/html/sysUser/info.html'], function( template ) {
                     url: buildUrl('/sysUser/detail/' + id),
                     success: function (res) {
                         data.formData = res.data.data1;
-                        data.sysRoles = res.data.data2;
+                        data.sysRoles = [];
 
+                        data.formData.roles = [];
                         $(res.data.data2).each(function(){
-                            if(this.hasRole ===1 ) {
-                                data.checkRoles.push(this.id);
+                        	data.sysRoles.push({key: this.id, label: this.name});
+                            if(this.hasRole === 1 ) {
+                                data.formData.roles.push(this.id);
                             }
                         })
 
@@ -94,7 +95,6 @@ define(['text!'+ctx+'/html/sysUser/info.html'], function( template ) {
                 if( $('#formValidate').valid() ) {
 
                     var postData = this.formData;
-                    postData.roles = data.checkRoles;
 
                     let _url = '/sysUser/add';
                     _url = postData.id ? '/sysUser/modify' : _url;

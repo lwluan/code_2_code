@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+	<context id="tables" targetRuntime="MyBatis3">
+		<property name="beginningDelimiter" value="`"/>
+		<property name="endingDelimiter" value="`"/>  
+		<property name="mergeable" value="true"/>
+		
+		<!-- 插件是顺序执行 -->
+		<plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+			<property name="searchString" value="Example$" />
+			<property name="replaceString" value="Criteria" />
+		</plugin>
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+		<plugin type="com.cd2cd.admin.util.mbg.AnnotationPlugin" />
+		<plugin type="com.cd2cd.admin.util.mbg.MysqlPaginationPlugin" />
+		
+		<!-- xml扩展 -->
+		<plugin type="com.cd2cd.admin.util.mbg.MapperExtPlugin" /> 
+		<plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
+		
+		<commentGenerator type="com.cd2cd.admin.util.mbg.MyCommentGenerator">
+			<property name="suppressAllComments" value="true"/>
+		</commentGenerator>
+		
+		 <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://127.0.0.1:3306/auto_code" userId="root" password="root" >
+		</jdbcConnection>
+		
+		<!-- targetProject 项目在本地的位置  /home/dev_user/project_name/src/main/java/ -->
+		<javaModelGenerator targetPackage="com.cd2cd.admin.domain" targetProject="/home/dev_user/project_name/src/main/java/" />
+		<sqlMapGenerator targetPackage="com.cd2cd.admin.mapper" targetProject="/home/dev_user/project_name/src/main/java/" />
+		<javaClientGenerator targetPackage="com.cd2cd.admin.mapper" targetProject="/home/dev_user/project_name/src/main/java/" type="XMLMAPPER" />
+		
+		<!-- sys table -->
+		<table domainObjectName="SysUser" tableName="sys_user" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+	</context>
+</generatorConfiguration>

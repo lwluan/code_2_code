@@ -75,6 +75,9 @@ public class SysUserServiceImpl implements SysUserService {
 		ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object> objDataWrap = new ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object>();
 		
 		SysUser mSysUser = sysUserMapper.selectByPrimaryKey(userId);
+		if( null == mSysUser ) {
+			mSysUser = new SysUser();
+		}
 		mSysUser.setPassword(null);
 		List<SysRole> sysRoles = sysRoleMapper.querySysUserRoles(userId);
 		

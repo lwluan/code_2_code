@@ -9,25 +9,13 @@
 
                 <form id="formValidate" class="form-horizontal" novalidate>
 
-                    <div class="form-group">
-                        <label for="name" class="col-sm-2 control-label"> 角色名称 </label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.name" type="text" class="form-control" name="name" id="name" placeholder="角色名称">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 账号不可为空 </span>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="description" class="col-sm-2 control-label"> 说明 </label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.description" type="text" class="form-control" id="description" name="description" placeholder="说明">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 说明 </span>
-                        </div>
-                    </div>
+					<form-text-input v-bind:label="'角色名称'" v-bind:tip="'* 角色名称不可为空'" 
+                    	v-model="formData.name" v-bind:name="'name'"  >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'说明'" v-bind:tip="'* 说明不可为空'" 
+                    	v-model="formData.description" v-bind:name="'description'"  >
+                    </form-text-input>
 
                     <div class="form-group">
                         <label for="description" class="col-sm-2 control-label"> 权限 </label>

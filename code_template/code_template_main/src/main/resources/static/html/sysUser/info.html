@@ -7,93 +7,48 @@
             </div>
             <div class="modal-body">
                 <form id="formValidate" class="form-horizontal" novalidate>
-                    <div class="form-group">
-                        <label for="username" class="col-sm-2 control-label"> 账号 </label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.username" type="text" class="form-control" name="username" id="username" placeholder="账号">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 账号不可为空 </span>
-                        </div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="password" class="col-sm-2 control-label"> 密码 </label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.password" type="password" class="form-control" id="password" name="password" placeholder="passwd">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 密码 </span>
-                        </div>
+                    <form-text-input v-bind:label="'账号'" v-bind:tip="'* 账号不可为空'" 
+                    	v-model="formData.username" v-bind:name="'username'"  >
+                    </form-text-input>
 
-                    </div>
+					<form-text-input v-bind:label="'密码'" v-bind:tip="'* 密码不可为空'" 
+						v-model="formData.password" v-bind:inputType="'password'" v-bind:name="'password'"   >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'确认密码'" v-bind:tip="'* 确认密码不可为空'" 
+                    	v-model="formData.confirm_password" v-bind:inputType="'password'" v-bind:name="'confirm_password'"   >
+                    </form-text-input>
 
-                    <div class="form-group">
-                        <label for="confirm_password" class="col-sm-2 control-label"> 确认密码 </label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.confirm_password" type="password" class="form-control" id="confirm_password" name="confirm_password" placeholder="确认密码">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 确认密码不可为空 </span>
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-                        <label for="nickname" class="col-sm-2 control-label"> 昵称 </label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.nickname" type="test" class="form-control" id="nickname" name="nickname" placeholder="昵称">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 昵称不可为空 </span>
-                        </div>
-
-                    </div>
-                    <div class="form-group">
-                        <label for="email" class="col-sm-2 control-label">邮箱</label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.email" type="text" class="form-control" id="email" name="email" placeholder="邮箱">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 邮箱不可为空 </span>
-                        </div>
-
-                    </div>
-                    <div class="form-group">
-                        <label for="mobile" class="col-sm-2 control-label"> 手机号 </label>
-                        <div class="col-sm-6">
-                            <input v-model="formData.mobile" type="text" class="form-control" id="mobile" name="mobile" placeholder="手机号">
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 手机号不可为空 </span>
-                        </div>
-                    </div>
+					<form-text-input v-bind:label="'昵称'" v-bind:tip="'* 昵称不可为空'"  
+						v-model="formData.nickname" v-bind:name="'nickname'"  >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'邮箱'" v-bind:tip="'* 邮箱不可为空'" 
+                    	v-model="formData.email" v-bind:name="'email'"  >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'手机号'" v-bind:tip="'* 手机号不可为空'" 
+                    	v-model="formData.mobile" v-bind:name="'mobile'" >
+                    </form-text-input>
                     
                     <!-- 用户状态 -->
                     <form-group-btns 
-                    v-model="formData.status"
-                    v-bind:colWidth="13" 
-                    v-bind:label="'用户状态'"
-                    v-bind:values="[{key:'enable', label:'启用'}, {key:'disable', label:'禁用'}]"
-                    v-bind:selected="formData.status"
-                    v-on:changeSelected="function(val){formData.status=val;}"
-                    v-bind:name="'status'" 
-                    v-bind:tip="'* 用户状态不可为空'" >
+                    	v-bind:label="'用户状态'" v-bind:tip="'* 用户状态不可为空'"
+	                    v-model="formData.status" v-bind:name="'status'"
+	                    v-bind:selected="formData.status"	                    
+	                    v-bind:values="[{key:'enable', label:'启用'}, {key:'disable', label:'禁用'}]"	                    
+	                    v-on:changeSelected="function(val){formData.status=val;}" >
                     </form-group-btns>
 
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label"> 角色选择 </label>
-                        <div class="col-sm-6">
-
-                            <label class="role-checkbox" v-for="role in sysRoles">
-                                <input type="checkbox" :value="role.id" name="roleIds" v-model="checkRoles"  /> {{role.name}}
-                            </label>
-
-                        </div>
-                        <div class="help-block">
-                            <span class="input-tip"> * 角色不可为空 </span>
-                        </div>
-                    </div>
+					<form-checkbox  
+                    	v-bind:label="'角色选择:'" v-bind:tip="' * 角色不可为空 '"
+	                    v-model="formData.roles" v-bind:name="'roleIds'"  
+	                    v-on:changeSelected="function(vals){ formData.roles=vals; }"
+                    	v-bind:values="sysRoles" >
+                    </form-checkbox>
+                    
+                    <div style="clear: both"></div>
                 </form>
             </div>
             <div class="modal-footer">

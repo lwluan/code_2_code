@@ -5,6 +5,7 @@ Vue.component('form-text-input', createComponent('/js/component/form-text-input.
 Vue.component('form-textarea-input', createComponent('/js/component/form-textarea-input.js'));
 Vue.component('form-datetime-input', createComponent('/js/component/form-datetime-input.js'));
 Vue.component('form-group-btns', createComponent('/js/component/form-group-btns.js'));
+Vue.component('form-checkbox', createComponent('/js/component/form-checkbox.js'));
 Vue.component('group-button', createComponent('/js/component/group-button.js'));
 Vue.component('list-query-filter', createComponent('/js/component/list-query-filter.js'));
 Vue.component('list-column-option', createComponent('/js/component/list-column-option.js'));

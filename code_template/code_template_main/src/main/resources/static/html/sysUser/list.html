@@ -53,7 +53,8 @@
             v-bind:reload-notification="tablePage.reloadNotification"
             v-bind:total-count="tablePage.totalCount"
             v-bind:curr-page="tablePage.currPage"
-            v-on:change-page="queryPageData"></table-page>
+            v-on:change-page="queryPageData">
+     </table-page>
 
     <!-- 添加用户 -->
     <sys-user-info ref="entityDataInfo" v-on:completed="reloadPage" ></sys-user-info>

@@ -7,11 +7,12 @@ define([ 'text!' + ctx + '/html/component/form-text-input.html' ], function(
 	 * 
 	 */
 	var component = {
-		props : [ 'value', 'name', 'label', 'tip', 'colWidth' ],
+		props : [ 'value', 'name', 'label', 'tip', 'colWidth', 'inputType' ],
 		template : template,
 		data : function() {
 			return { 
-				colWidthClass: 'col-sm-12'
+				colWidthClass: '', // col-sm-12
+				inputType: 'text'
 			};
 		},
 		methods : {
@@ -24,6 +25,12 @@ define([ 'text!' + ctx + '/html/component/form-text-input.html' ], function(
 		}, mounted: function() {
 			if(this.colWidth) {
 				this.colWidthClass = 'col-sm-' + this.colWidth;
+			}
+			
+			console.info('this.inputType=' + this.inputType);
+			
+			if( ! this.inputType) {
+				this.inputType = 'text';
 			}
 		}
 	}
