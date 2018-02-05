@@ -29,10 +29,15 @@ define([ 'text!' + ctx + '/html/proDatabase/db-table.html'], function(template) 
 		},
 		methods : {
 			showDetail: function(params) {
-				this.formValidate.resetForm();
-				this.entityForm = params;
 				var that = this;
+				setTimeout(function(){
+					that.formValidate.resetForm();
+				});
+				
+				this.entityForm = params;
+				
 				var id = params.id;
+				this.tabColumns = [];
 				if( id ) {
 					var _url = '/database/tableDetail?id=' + id;
 	                accessHttp({

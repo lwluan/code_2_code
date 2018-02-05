@@ -33,14 +33,6 @@ define(['text!'+ctx+'/html/proProject/info.html'], function( template ) {
     var data = {
         formData: {},
         formValidate: {},
-        groupButton:{ 
-        	values: [{label: '标准', key: 'standard'}, {label: '模块', key: 'module'}],
-        	selected: 'standard',
-        	changeSelected: function(val) {
-        		this.selected = val;
-        		data.formData.packageType = val;
-        	}
-        }
     };
 
     var component = {
@@ -63,11 +55,9 @@ define(['text!'+ctx+'/html/proProject/info.html'], function( template ) {
                         url: buildUrl('/proProject/detail/' + id),
                         success: function (res) {
                             data.formData = res.data;
-                            data.groupButton.selected = data.formData.packageType;
                         }
                     });
                 }
-
             },
 
             // 提交

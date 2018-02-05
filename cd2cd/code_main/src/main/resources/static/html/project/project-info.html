@@ -26,14 +26,14 @@
                     
                     <!-- 项目结构 -->
                     <form-group-btns 
-                    v-model="formData.packageType"
-                    v-bind:colWidth="6" 
-                    v-bind:label="'结构'"
-                    v-bind:values="[{key:'enable', label:'启用'}, {key:'disable', label:'禁用'}]"
-                    v-bind:selected="formData.packageType"
-                    v-on:changeSelected="function(val){formData.packageType=val;}"
-                    v-bind:name="'packageType'" 
-                    v-bind:tip="'* 用户状态不可为空'" >
+	                    v-model="formData.packageType"
+	                    v-bind:colWidth="6" 
+	                    v-bind:label="'结构'"
+	                    v-bind:values="[{key:'standard', label:'标准化'}, {key:'module', label:'模块化'}]"
+	                    v-bind:selected="formData.packageType"
+	                    v-on:changeSelected="function(val){formData.packageType=val;}"
+	                    v-bind:name="'packageType'" 
+	                    v-bind:tip="'* 结构不可为空'" >
                     </form-group-btns>
                     
                     <form-text-input v-bind:colWidth="6" v-model="formData.version" v-bind:label="' 版本 '"
