@@ -3,7 +3,7 @@ package com.cd2cd.domain.gen;
 import java.io.Serializable;
 import java.util.Date;
 
-public class SuperProModule implements Serializable {
+public class SuperProProjectDatabaseRel implements Serializable {
     private Long id;
 
     /**
@@ -12,19 +12,9 @@ public class SuperProModule implements Serializable {
     private Long projectId;
 
     /**
-     * 程序名称
+     * 数据库ID
      */
-    private String name;
-
-    /**
-     * 显示名称
-     */
-    private String showName;
-
-    /**
-     * 描述
-     */
-    private String description;
+    private Long databaseId;
 
     private Date createTime;
 
@@ -55,45 +45,17 @@ public class SuperProModule implements Serializable {
     }
 
     /**
-     * 程序名称
+     * 数据库ID
      */
-    public String getName() {
-        return name;
+    public Long getDatabaseId() {
+        return databaseId;
     }
 
     /**
-     * 程序名称
+     * 数据库ID
      */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * 显示名称
-     */
-    public String getShowName() {
-        return showName;
-    }
-
-    /**
-     * 显示名称
-     */
-    public void setShowName(String showName) {
-        this.showName = showName;
-    }
-
-    /**
-     * 描述
-     */
-    public String getDescription() {
-        return description;
-    }
-
-    /**
-     * 描述
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDatabaseId(Long databaseId) {
+        this.databaseId = databaseId;
     }
 
     public Date getCreateTime() {
@@ -120,9 +82,7 @@ public class SuperProModule implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
-        sb.append(", name=").append(name);
-        sb.append(", showName=").append(showName);
-        sb.append(", description=").append(description);
+        sb.append(", databaseId=").append(databaseId);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -141,12 +101,10 @@ public class SuperProModule implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        SuperProModule other = (SuperProModule) that;
+        SuperProProjectDatabaseRel other = (SuperProProjectDatabaseRel) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
-            && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getShowName() == null ? other.getShowName() == null : this.getShowName().equals(other.getShowName()))
-            && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+            && (this.getDatabaseId() == null ? other.getDatabaseId() == null : this.getDatabaseId().equals(other.getDatabaseId()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -157,9 +115,7 @@ public class SuperProModule implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
-        result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getShowName() == null) ? 0 : getShowName().hashCode());
-        result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
+        result = prime * result + ((getDatabaseId() == null) ? 0 : getDatabaseId().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

@@ -220,16 +220,54 @@ define(['text!' + ctx + '/html/project/left-slider.html',
         data: function(){ return data; },
         methods: {
         	
-        	fetchProjectFileTree: function(packageType, modulId) {
+        	fetchProjectFileTree: function(packageType, moduleId) {
         		
-        		console.info('fetchProjectFileTree packageType=' + packageType + ',modulId=' + modulId);
-        		
+        		var url = '/project/fetchProjectFileTree?projectId='+projectId+'&packageType=' + packageType;
+        		if(moduleId ) {
+        			url += "&moduleId=" + moduleId 
+        		}
+        		console.info('fetchProjectFileTree packageType=' + packageType + ',moduleId=' + moduleId);
+        		accessHttp({
+                    url: buildUrl(url),
+                    success: function (res) {
+                    	var zNodes = eval('(' + res.data + ')');
+                    	
+                    	/*
+                    	icon : ctx + "/images/package_obj.gif"
+                		icon : ctx + "/images/source-folder.gif"
+                		icon : ctx + "/images/jcu_obj.gif"
+                		icon : ctx + "/images/xmldoc.gif"
+                		icon : ctx + "/images/sourceEditor.gif"
+                		icon : ctx + "/images/fldr_obj.gif"
+                		controller|service:vo|dao|domain|package
+                		*/
+                    	console.info(zNodes.length);
+                    	
+                    	for( var i=0; i<zNodes.length; i++ ) {
+                    		
+                    		var node = zNodes[i];
+                    		var type = node.fileType;
+                    		if( type == 'package' ) {
+                    			node['icon'] = ctx + "/images/package_obj.gif";
+                    		} else if( type == 'folder' ) {
+                    			node['icon'] = ctx + "/images/source-folder.gif";
+                    		} else {
+                    			node['icon'] = ctx + "/images/jcu_obj.gif";
+                    		}
+                    		zNodes[i] = node;
+                    	}
+                    	
+                    	console.info(JSON.stringify(zNodes));
+                    	
+                    	zTree = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+                    }
+                });
         	}
         	
         }, created: function() {
         	
         }, mounted: function() {
-        	zTree = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
+        	
         }
     }
 

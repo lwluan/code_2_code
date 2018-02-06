@@ -1,9 +1,9 @@
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade project-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="gridSystemModalLabel"> 提示确认 </h4>
+                <h4 class="modal-title" id="gridSystemModalLabel"> 添加/修改-项目 </h4>
             </div>
             <div class="modal-body">
 				<form id="formValidate" class="form-horizontal" novalidate>
@@ -53,8 +53,8 @@
                     	v-bind:colWidth="12" 
                     	v-bind:label="'数据库:'"
 	                    v-bind:name="'db'" v-bind:tip="' 选择数据库 '"
-	                    v-model="formData.dbList" 
-	                    v-on:changeSelected="function(vals){ formData.dbList=vals; console.info(JSON.stringify(vals)); }"
+	                    v-model="formData.dbIds" 
+	                    v-on:changeSelected="function(vals){ formData.dbIds=vals; console.info(JSON.stringify(vals)); }"
                     	v-bind:values="allProjectDbList"
                     	>
                     </form-checkbox>

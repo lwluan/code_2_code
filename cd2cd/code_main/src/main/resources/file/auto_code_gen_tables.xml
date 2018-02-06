@@ -74,5 +74,9 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
+		<table domainObjectName="ProProjectDatabaseRel" tableName="pro_project_database_rel" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
 	</context>
 </generatorConfiguration>

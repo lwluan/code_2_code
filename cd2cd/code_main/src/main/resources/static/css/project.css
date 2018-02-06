@@ -40,6 +40,13 @@
 }
 
 
+/** 模态 */
+.project-modal {
+	background-color: rgba(0,0,0, 0.6)
+}
+.modal-backdrop { display: none; }
+
+
 /** tabs */
 
 

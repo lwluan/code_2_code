@@ -10,13 +10,13 @@ public class ProProjectVo extends ProProject {
 
 	private static final long serialVersionUID = 1L;
 
-	private List<String> dbIds;
+	private List<Long> dbIds;
 
-	public List<String> getDbIds() {
+	public List<Long> getDbIds() {
 		return dbIds;
 	}
 
-	public void setDbIds(List<String> dbIds) {
+	public void setDbIds(List<Long> dbIds) {
 		this.dbIds = dbIds;
 	}
 

@@ -7,6 +7,11 @@ public class SuperProFile implements Serializable {
     private Long id;
 
     /**
+     * 项目ID
+     */
+    private Long projectId;
+
+    /**
      * 模块ID
      */
     private Long moduleId;
@@ -38,6 +43,20 @@ public class SuperProFile implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    /**
+     * 项目ID
+     */
+    public Long getProjectId() {
+        return projectId;
+    }
+
+    /**
+     * 项目ID
+     */
+    public void setProjectId(Long projectId) {
+        this.projectId = projectId;
     }
 
     /**
@@ -119,6 +138,7 @@ public class SuperProFile implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
+        sb.append(", projectId=").append(projectId);
         sb.append(", moduleId=").append(moduleId);
         sb.append(", name=").append(name);
         sb.append(", type=").append(type);
@@ -143,6 +163,7 @@ public class SuperProFile implements Serializable {
         }
         SuperProFile other = (SuperProFile) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
+            && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
             && (this.getModuleId() == null ? other.getModuleId() == null : this.getModuleId().equals(other.getModuleId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
@@ -156,6 +177,7 @@ public class SuperProFile implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+        result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
         result = prime * result + ((getModuleId() == null) ? 0 : getModuleId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getType() == null) ? 0 : getType().hashCode());

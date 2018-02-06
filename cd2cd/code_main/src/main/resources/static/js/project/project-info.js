@@ -55,7 +55,11 @@ define(['text!'+ctx+'/html/project/project-info.html'], function( template ) {
                     	that.formData = res.data;
                     	that.packageTypes.selected = data.formData.packageType;
                     	
-                    	that.formData.dbList = res.data.dbIds;
+                    	if( res.data.dbIds ) {
+                    		that.formData.dbIds = res.data.dbIds;
+                    	} else {
+                    		that.formData.dbIds = [];
+                    	}
                     	
                     	// 数据库列表
                     	accessHttp({
@@ -79,9 +83,6 @@ define(['text!'+ctx+'/html/project/project-info.html'], function( template ) {
 
                 if( $('#formValidate').valid() ) {
 
-                	console.info(JSON.stringify(this.formData));
-                	
-                	return;
                     var postData = this.formData;
                     let _url = '/proProject/add';
                     _url = postData.id ? '/proProject/modify' : _url;
@@ -93,7 +94,7 @@ define(['text!'+ctx+'/html/project/project-info.html'], function( template ) {
                         data: JSON.stringify(postData),
                         type: 'post',
                         success: function (res) {
-                        	$(this.$el).modal('hide');
+                        	$(that.$el).modal('hide');
                             that.$emit('completed');
                         }
                     });

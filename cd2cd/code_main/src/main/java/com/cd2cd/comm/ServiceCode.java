@@ -12,6 +12,7 @@ public enum ServiceCode {
 	ACCESS_DENIED(10003, "无权限操作"),
 	___GEN_CODE_END___(-10000, "自动生成内容【结束】不要编辑"),
 	
+	NOT_EXISTS_PROJECT(11001, "项目不存在")
 	;
 	
 	

@@ -30,8 +30,8 @@
             <td> {{sysRole.id}} </td>
             <td> {{sysRole.name}} </td>
             <td> {{sysRole.description}} </td>
-            <td> {{sysRole.create_time}} </td>
-            <td> {{sysRole.update_time}} </td>
+            <td> {{sysRole.createTime | date}} </td>
+            <td> {{sysRole.updateTime | date}} </td>
             <td>
                 <button v-on:click="$refs.sysRoleInfo.showInfoPanel({id:sysRole.id})" type="button" class="btn btn-info btn-xs"> 查看/修改 </button>
                 <button v-on:click="delRowData(sysRole.id)" type="button" class="btn btn-danger btn-xs ROLE_204"> 删除 </button>

@@ -1,0 +1,55 @@
+<div class="modal fade project-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="gridSystemModalLabel"> 模块列表 </h4>
+            </div>
+            <div class="modal-body">
+			
+				<table class="table table-striped">
+			        <thead>
+			        <tr>
+			            <td> ID </td>
+			            <td> 程序名称 </td>
+			            <td> 显示名称 </td>
+			            <td> 模块描述 </td>
+			            <td> 添加时间 </td>
+			            <td> 更新时间 </td>
+			            <td> 操作 </td>
+			        </tr>
+			        </thead>
+			
+			        <tbody>
+			
+			        <tr v-for="module in moduleList" >
+			            <td> {{module.id}} </td>
+			            <td> {{module.name}} </td>
+			            <td> {{module.showName}} </td>
+			            <td> {{module.description}} </td>
+			            <td> {{module.createTime}} </td>
+			            <td> {{module.updateTime}} </td>
+			            <td>
+			                <button v-on:click="showModuleInfo(module.id)" type="button" class="btn btn-info btn-xs"> 查看/修改 </button>
+			                <button v-on:click="delRowData(module.id)" type="button" class="btn btn-danger btn-xs ROLE_204"> 删除 </button>
+			            </td>
+			        </tr>
+			
+			        </tbody>
+			    </table>
+				
+				<!-- 分页 -->
+			    <table-page
+			            v-bind:notification-change="tablePage.notificationChange"
+			            v-bind:reload-notification="tablePage.reloadNotification"
+			            v-bind:total-count="tablePage.totalCount"
+			            v-bind:curr-page="tablePage.currPage"
+			            v-on:change-page="queryPageData"></table-page>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default close-btn" data-dismiss="modal"> 关闭 </button>
+                <button v-on:click="$emit('show_module_info')" type="button" class="btn btn-primary confirm-btn"> 添加模块 </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div>
+</div>

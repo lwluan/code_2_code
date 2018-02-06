@@ -1,18 +1,43 @@
-<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel">
+<div class="modal fade project-modal" tabindex="-1" role="dialog" data-backdrop="static" aria-labelledby="myLargeModalLabel">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="gridSystemModalLabel"> 提示确认 </h4>
+                <h4 class="modal-title" id="gridSystemModalLabel"> 添加/修改-模块 </h4>
             </div>
             <div class="modal-body">
 
-                无权限访问！
+                <form id=formModuleValidate class="form-horizontal" novalidate>
+                	
+                	<!-- 项项ID 
+                	<form-down-menu
+                		v-bind:label="'项目'" v-bind:tip="'项目不可为空'"
+                		v-bind:values="projectDropdown.values"
+                		v-bind:selected="projectDropdown.selected"
+                		v-on:changeSelected="function(val){entityForm.projectId=val.key;}"
+                		v-model="entityForm.projectId" v-bind:name="'projectId'">
+                	</form-down-menu>
+                	-->
+                	
+                    <form-text-input v-bind:label="'程序名称'" v-bind:tip="'* 程序名称不可为空'" 
+		            	v-model="entityForm.name" v-bind:name="'name'"  >
+		            </form-text-input>
+					
+					<form-text-input v-bind:label="'显示名称'" v-bind:tip="'* 显示名称不可为空'" 
+		            	v-model="entityForm.showName" v-bind:name="'showName'"  >
+		            </form-text-input>
+		            
+		            <form-textarea-input v-bind:label="'模块描述'" v-bind:tip="'* 模块描述不可为空'" 
+		            	 v-model="entityForm.description" v-bind:name="'description'" >
+                    </form-textarea-input>
+		            
+					<div style="clear: both"></div>
+                </form>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default close-btn" data-dismiss="modal"> 关闭 </button>
-                <button type="button" class="btn btn-primary confirm-btn"> 确定 </button>
+                <button data-dismiss="modal" type="button" class="btn btn-default close-btn" > 关闭 </button>
+                <button v-on:click="subFormData" type="button" class="btn btn-primary confirm-btn"> 确定 </button>
             </div>
         </div><!-- /.modal-content -->
     </div>

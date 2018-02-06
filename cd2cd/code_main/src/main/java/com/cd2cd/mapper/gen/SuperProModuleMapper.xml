@@ -3,6 +3,7 @@
 <mapper namespace="com.cd2cd.mapper.gen.SuperProModuleMapper">
   <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProModule">
     <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="project_id" jdbcType="BIGINT" property="projectId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="show_name" jdbcType="VARCHAR" property="showName" />
     <result column="description" jdbcType="VARCHAR" property="description" />
@@ -68,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, show_name, description, create_time, update_time
+    id, project_id, name, show_name, description, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProModuleCriteria" resultMap="BaseResultMap">
     select
@@ -107,10 +108,12 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_module (name, show_name, description, 
-      create_time, update_time)
-    values (#{name,jdbcType=VARCHAR}, #{showName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into pro_module (project_id, name, show_name, 
+      description, create_time, update_time
+      )
+    values (#{projectId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{showName,jdbcType=VARCHAR}, 
+      #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProModule">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -118,6 +121,9 @@
     </selectKey>
     insert into pro_module
     <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        project_id,
+      </if>
       <if test="name != null">
         name,
       </if>
@@ -135,6 +141,9 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="projectId != null">
+        #{projectId,jdbcType=BIGINT},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -164,6 +173,9 @@
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
+      <if test="record.projectId != null">
+        project_id = #{record.projectId,jdbcType=BIGINT},
+      </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
@@ -187,6 +199,7 @@
   <update id="updateByExample" parameterType="map">
     update pro_module
     set id = #{record.id,jdbcType=BIGINT},
+      project_id = #{record.projectId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       show_name = #{record.showName,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
@@ -199,6 +212,9 @@
   <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProModule">
     update pro_module
     <set>
+      <if test="projectId != null">
+        project_id = #{projectId,jdbcType=BIGINT},
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -219,7 +235,8 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProModule">
     update pro_module
-    set name = #{name,jdbcType=VARCHAR},
+    set project_id = #{projectId,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
       show_name = #{showName,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},

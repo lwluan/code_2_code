@@ -5,7 +5,7 @@ define([ 'text!' + ctx + '/html/component/form-textarea-input.html' ], function(
 		props : [ 'value', 'name', 'label', 'tip', 'rows', 'cols', 'colWidth' ],
 		template : template,
 		data : function() {
-			return { rowsNum: 2, colsNum: 40, colWidth: 12, colWidthClass: 'col-sm-12' };
+			return { rowsNum: 2, colsNum: 40, colWidth: 12, colWidthClass: '' };
 		},
 		methods : {
 			updateValue : function(value) {
