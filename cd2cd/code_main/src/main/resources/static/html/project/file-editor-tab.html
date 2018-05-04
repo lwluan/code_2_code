@@ -1,0 +1,22 @@
+<div class="file-editor-panel">
+
+	<ul id="myTabs" class="nav nav-tabs" role="tablist">
+		
+		<!-- active -->
+		<li role="presentation" class="tab-menu" v-for="(tabMenu, index) in tabMenus">
+			<a v-bind:href="'#' + tabMenu.id" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="false">
+				{{tabMenu.name}}
+				&nbsp; <span class="tab-close" v-on:click="closeFile(index, tabMenu)">×</span>
+			</a>
+		</li>
+		
+
+	</ul>
+	<div id="myTabContent" class="tab-content">
+		
+		<div v-for="tabMenu in tabMenus" role="tabpanel" class="tab-pane fade" v-bind:id="tabMenu.id" aria-labelledby="home-tab">
+			<file-editor v-bind:file-obj="tabMenu"></file-editor>
+		</div>
+		
+	</div>
+</div>

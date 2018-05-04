@@ -1,0 +1,56 @@
+<!-- 
+文件 controller|service:vo|dao|domain 
+文件组成：
+
+公共部份
+1、class 文件注释
+2、dependency obj[service/mapper/utils]
+3、method
+	return obj
+	params
+	params: validates
+	method-body
+	method-text
+	method-todo
+	
+controller: 
+:root path
+:method path
+	methodType: post/get/del/put
+	
+	
+-->
+
+<div class="edit-page">
+
+	<!-- package -->
+	<div class="edit-row">
+		<b class="e-c1">package </b> com.test.aa;
+	</div>
+
+	<!-- class comments -->
+	<div class="edit-comment">
+		/*
+		<div contenteditable="true" class="edit-comment-content"></div>
+		*/
+	</div>
+
+	<!-- controller requestMapping -->
+	<div class="edit-row">
+		<b class="e-c2">requestMapping("<span contenteditable="true" class="e-c3">/user</span>")
+		</b>;
+	</div>
+
+	<!-- class name -->
+	<div class="edit-row">
+		<b class="e-c1">public class </b> UserController {
+	</div>
+
+
+	<!-- 方法区 -->
+	<file-method></file-method>
+
+
+
+	<div class="edit-row">}</div>
+</div>

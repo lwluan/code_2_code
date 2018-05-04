@@ -31,6 +31,10 @@ define([ 'text!' + ctx + '/html/component/form-down-menu.html' ], function(
 			
 			this.selectedObj = val;
 			this.$emit('changeSelected', val);
+		}, watch : {
+        	selected : function(val) {
+        		this.selectedObj = val;
+			}
 		}
 	}
 

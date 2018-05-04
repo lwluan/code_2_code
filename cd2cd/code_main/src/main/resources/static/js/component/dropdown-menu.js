@@ -25,7 +25,11 @@ define(['text!'+ctx+'/html/component/dropdown-menu.html'], function( template ) 
             this.selectedObj = this.selected;
         }, mounted: function() {
         	this.$emit('changeSelected', this.selected);
-        }
+        }, watch : {
+        	selected : function(val) {
+        		this.selectedObj = val;
+			}
+		}
     }
 
     return component;

@@ -48,6 +48,60 @@
 
 
 /** tabs */
+.file-editor-panel {
+	background-color: #f8f8f8;
+}
+.tab-close {
+	font-size: 18px;
+	font-weight: bold;
+	display: inline-block;
+	padding: 4px;
+	position: absolute;
+	right: 1px; 
+	top: -1px;
+}
+
+.tab-close { display: none; }
+
+.file-editor-panel li.active .tab-close, .file-editor-panel li a:hover .tab-close {
+	display: inline-block;
+}
+
+/** 编辑面板 **/
+.edit-page {
+	padding: 10px;
+}
+.e-c1 {
+	color: #996699;
+}
+.e-c2 {
+	color: #999;
+}
+.e-c3 {
+	color: #6699CC;
+}
+.e-c4 {
+	color: #006699;
+}
+.edit-row {
+	
+}
+.edit-comment {
+	color: #6699CC;
+}
+.edit-comment-content {
+	
+}
+
+/** 方法 **/
+.file-method {
+	padding: 20px;
+	border: 1px dotted #ccc;
+	margin: 5px;
+}
+.ml-10 {
+	margin-left: 10px;
+}
 
 
 
