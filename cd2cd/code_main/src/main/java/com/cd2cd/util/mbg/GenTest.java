@@ -35,8 +35,6 @@ public class GenTest {
 			ConfigurationParser cp = new ConfigurationParser(warnings);
 			
 			InputStream is = GenTest.class.getClassLoader().getResourceAsStream(fileName);
-			URL u = GenTest.class.getClassLoader().getResource(fileName);
-			System.out.println(u);
 
 			Configuration config = cp.parseConfiguration(is);
 			DefaultShellCallback shellCallback = new DefaultShellCallback(true); // true

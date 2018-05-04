@@ -9,16 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.domain.ProDatabase;
 import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
+import com.cd2cd.domain.ProTable;
+import com.cd2cd.domain.gen.ProDatabaseCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria.Criteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
+import com.cd2cd.domain.gen.ProTableCriteria;
+import com.cd2cd.mapper.ProDatabaseMapper;
 import com.cd2cd.mapper.ProModuleMapper;
 import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
 import com.cd2cd.mapper.ProProjectMapper;
+import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProProjectService;
 import com.cd2cd.util.BeanUtil;
 import com.cd2cd.util.ProjectUtils;
@@ -34,11 +40,17 @@ public class ProProjectServiceImpl implements ProProjectService {
 	private ProProjectMapper proProjectMapper;
 
 	@Autowired
+	private ProDatabaseMapper proDatabaseMapper;
+	
+	@Autowired
 	private ProProjectDatabaseRelMapper proProjectDatabaseRelMapper;
 
 	@Autowired
 	private ProModuleMapper proModuleMapper;
 
+	@Autowired
+	private ProTableMapper proTableMapper;
+	
 	@Override
 	public BaseRes<DataPageWrapper<ProProjectVo>> list(Integer currPage, Integer pageSize, ProProjectVo proProjectVo) {
 
@@ -158,7 +170,39 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 		// copy project to folder
 		try {
+			
 			ProjectUtils.genProject(mProProject);
+			
+			
+			// 生成 mapper/entity
+			
+			// db list
+			ProProjectDatabaseRelCriteria ppdrc = new ProProjectDatabaseRelCriteria();
+			ppdrc.createCriteria().andProjectIdEqualTo(id);
+			List<ProProjectDatabaseRel> proDbs = proProjectDatabaseRelMapper.selectByExample(ppdrc);
+			
+			List<Long> dbIds = new ArrayList<Long>();
+			for(ProProjectDatabaseRel pdr: proDbs) {
+				dbIds.add(pdr.getDatabaseId());
+			}
+			
+			ProDatabaseCriteria pdc = new ProDatabaseCriteria();
+			pdc.createCriteria().andIdIn(dbIds);
+			List<ProDatabase> dababases = proDatabaseMapper.selectByExample(pdc);
+			
+			if( dababases.size() > 0 ) {
+				ProDatabase database = dababases.get(0);
+				
+				ProTableCriteria ptCriteria = new ProTableCriteria();
+				ptCriteria.createCriteria().andDatabaseIdEqualTo(database.getId());
+				List<ProTable> tables = proTableMapper.selectByExample(ptCriteria);
+				
+				/**
+				 * 暂时支持一个数据库
+				 */
+				ProjectUtils.genJavaFromDb(tables, mProProject, database);
+				
+			}
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} catch (Exception e) {
 			e.printStackTrace();
