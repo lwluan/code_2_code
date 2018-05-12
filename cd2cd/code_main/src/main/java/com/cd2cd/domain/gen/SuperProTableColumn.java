@@ -33,6 +33,16 @@ public class SuperProTableColumn implements Serializable {
      */
     private String allowNull;
 
+    /**
+     * 主键:PRI，搜索:MUL，唯一:UNI
+     */
+    private String keyType;
+
+    /**
+     * 额外信息:AUTO_INCREMENT
+     */
+    private String extra;
+
     private Date createTime;
 
     private Date updateTime;
@@ -125,6 +135,34 @@ public class SuperProTableColumn implements Serializable {
         this.allowNull = allowNull;
     }
 
+    /**
+     * 主键:PRI，搜索:MUL，唯一:UNI
+     */
+    public String getKeyType() {
+        return keyType;
+    }
+
+    /**
+     * 主键:PRI，搜索:MUL，唯一:UNI
+     */
+    public void setKeyType(String keyType) {
+        this.keyType = keyType;
+    }
+
+    /**
+     * 额外信息:AUTO_INCREMENT
+     */
+    public String getExtra() {
+        return extra;
+    }
+
+    /**
+     * 额外信息:AUTO_INCREMENT
+     */
+    public void setExtra(String extra) {
+        this.extra = extra;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -154,6 +192,8 @@ public class SuperProTableColumn implements Serializable {
         sb.append(", mysqlType=").append(mysqlType);
         sb.append(", defaultValue=").append(defaultValue);
         sb.append(", allowNull=").append(allowNull);
+        sb.append(", keyType=").append(keyType);
+        sb.append(", extra=").append(extra);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -180,6 +220,8 @@ public class SuperProTableColumn implements Serializable {
             && (this.getMysqlType() == null ? other.getMysqlType() == null : this.getMysqlType().equals(other.getMysqlType()))
             && (this.getDefaultValue() == null ? other.getDefaultValue() == null : this.getDefaultValue().equals(other.getDefaultValue()))
             && (this.getAllowNull() == null ? other.getAllowNull() == null : this.getAllowNull().equals(other.getAllowNull()))
+            && (this.getKeyType() == null ? other.getKeyType() == null : this.getKeyType().equals(other.getKeyType()))
+            && (this.getExtra() == null ? other.getExtra() == null : this.getExtra().equals(other.getExtra()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -195,6 +237,8 @@ public class SuperProTableColumn implements Serializable {
         result = prime * result + ((getMysqlType() == null) ? 0 : getMysqlType().hashCode());
         result = prime * result + ((getDefaultValue() == null) ? 0 : getDefaultValue().hashCode());
         result = prime * result + ((getAllowNull() == null) ? 0 : getAllowNull().hashCode());
+        result = prime * result + ((getKeyType() == null) ? 0 : getKeyType().hashCode());
+        result = prime * result + ((getExtra() == null) ? 0 : getExtra().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

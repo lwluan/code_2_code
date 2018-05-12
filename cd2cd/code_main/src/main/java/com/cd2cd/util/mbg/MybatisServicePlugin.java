@@ -21,6 +21,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.internal.util.StringUtility;
 
 
+
 /**
  * 生成service 可扩展
  * @author leiwuluan

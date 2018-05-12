@@ -615,6 +615,146 @@ public class ProTableColumnCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andKeyTypeIsNull() {
+            addCriterion("key_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeIsNotNull() {
+            addCriterion("key_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeEqualTo(String value) {
+            addCriterion("key_type =", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeNotEqualTo(String value) {
+            addCriterion("key_type <>", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeGreaterThan(String value) {
+            addCriterion("key_type >", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("key_type >=", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeLessThan(String value) {
+            addCriterion("key_type <", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeLessThanOrEqualTo(String value) {
+            addCriterion("key_type <=", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeLike(String value) {
+            addCriterion("key_type like", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeNotLike(String value) {
+            addCriterion("key_type not like", value, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeIn(List<String> values) {
+            addCriterion("key_type in", values, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeNotIn(List<String> values) {
+            addCriterion("key_type not in", values, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeBetween(String value1, String value2) {
+            addCriterion("key_type between", value1, value2, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andKeyTypeNotBetween(String value1, String value2) {
+            addCriterion("key_type not between", value1, value2, "keyType");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraIsNull() {
+            addCriterion("extra is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraIsNotNull() {
+            addCriterion("extra is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraEqualTo(String value) {
+            addCriterion("extra =", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotEqualTo(String value) {
+            addCriterion("extra <>", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraGreaterThan(String value) {
+            addCriterion("extra >", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraGreaterThanOrEqualTo(String value) {
+            addCriterion("extra >=", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraLessThan(String value) {
+            addCriterion("extra <", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraLessThanOrEqualTo(String value) {
+            addCriterion("extra <=", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraLike(String value) {
+            addCriterion("extra like", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotLike(String value) {
+            addCriterion("extra not like", value, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraIn(List<String> values) {
+            addCriterion("extra in", values, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotIn(List<String> values) {
+            addCriterion("extra not in", values, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraBetween(String value1, String value2) {
+            addCriterion("extra between", value1, value2, "extra");
+            return (Criteria) this;
+        }
+
+        public Criteria andExtraNotBetween(String value1, String value2) {
+            addCriterion("extra not between", value1, value2, "extra");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;

@@ -9,6 +9,8 @@
     <result column="mysql_type" jdbcType="VARCHAR" property="mysqlType" />
     <result column="default_value" jdbcType="VARCHAR" property="defaultValue" />
     <result column="allow_null" jdbcType="VARCHAR" property="allowNull" />
+    <result column="key_type" jdbcType="VARCHAR" property="keyType" />
+    <result column="extra" jdbcType="VARCHAR" property="extra" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -71,8 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, table_id, name, comment, mysql_type, default_value, allow_null, create_time, 
-    update_time
+    id, table_id, name, comment, mysql_type, default_value, allow_null, key_type, extra, 
+    create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProTableColumnCriteria" resultMap="BaseResultMap">
     select
@@ -113,10 +115,12 @@
     </selectKey>
     insert into pro_table_column (table_id, name, comment, 
       mysql_type, default_value, allow_null, 
-      create_time, update_time)
+      key_type, extra, create_time, 
+      update_time)
     values (#{tableId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
       #{mysqlType,jdbcType=VARCHAR}, #{defaultValue,jdbcType=VARCHAR}, #{allowNull,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{keyType,jdbcType=VARCHAR}, #{extra,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProTableColumn">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -141,6 +145,12 @@
       </if>
       <if test="allowNull != null">
         allow_null,
+      </if>
+      <if test="keyType != null">
+        key_type,
+      </if>
+      <if test="extra != null">
+        extra,
       </if>
       <if test="createTime != null">
         create_time,
@@ -167,6 +177,12 @@
       </if>
       <if test="allowNull != null">
         #{allowNull,jdbcType=VARCHAR},
+      </if>
+      <if test="keyType != null">
+        #{keyType,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null">
+        #{extra,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -206,6 +222,12 @@
       <if test="record.allowNull != null">
         allow_null = #{record.allowNull,jdbcType=VARCHAR},
       </if>
+      <if test="record.keyType != null">
+        key_type = #{record.keyType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.extra != null">
+        extra = #{record.extra,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -226,6 +248,8 @@
       mysql_type = #{record.mysqlType,jdbcType=VARCHAR},
       default_value = #{record.defaultValue,jdbcType=VARCHAR},
       allow_null = #{record.allowNull,jdbcType=VARCHAR},
+      key_type = #{record.keyType,jdbcType=VARCHAR},
+      extra = #{record.extra,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -253,6 +277,12 @@
       <if test="allowNull != null">
         allow_null = #{allowNull,jdbcType=VARCHAR},
       </if>
+      <if test="keyType != null">
+        key_type = #{keyType,jdbcType=VARCHAR},
+      </if>
+      <if test="extra != null">
+        extra = #{extra,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -270,6 +300,8 @@
       mysql_type = #{mysqlType,jdbcType=VARCHAR},
       default_value = #{defaultValue,jdbcType=VARCHAR},
       allow_null = #{allowNull,jdbcType=VARCHAR},
+      key_type = #{keyType,jdbcType=VARCHAR},
+      extra = #{extra,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

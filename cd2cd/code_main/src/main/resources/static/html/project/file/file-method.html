@@ -20,42 +20,59 @@ function todo:
  -->
 
 <div class="file-method">
-
-	<!-- function comment -->
-	<div class="edit-comment">
-		/*
-		<div contenteditable="true" class="edit-comment-content"></div>
-		*/
-	</div>
-
-	<!--  requestMapping -->
-	<div class="edit-row">
-		<b class="e-c2">requestMapping("<span contenteditable="true"
-			class="e-c3">/user</span>")
-		</b>;
-	</div>
-
-	<!-- class name -->
-	<div class="edit-row">
-		<b class="e-c1">public</b>
-		<!-- reutrn obj / page -->
-
-
-		<span contenteditable="true">getUser</span>
-		<!-- params  queryString / pathVar  -->
-		( Object aa, UserObj bb ) {
-	</div>
-
 	
+	<table class="setting-tab">
+		
+		<tr>
+			<td>方法名称</td>
+			<td><input class="h18px" placeholder="方法名称" /></td>
+			<td>备注： 方法描述，如： 获取用户信息 </td>
+		</tr>
+		
+		<tr>
+			<td>方法注释</td>
+			<td><div contenteditable="true" class="comment-box"></div></td>
+			<td>备注： 描述此方法的作用，和逻辑 </td>
+		</tr>
+		
+		<tr>
+			<td>path</td>
+			<td><input class="h18px" placeholder="path" /></td>
+			<td>备注： 访问地址如： /getUserInfo </td>
+		</tr>
+		
+		<tr>
+			<td>method</td>
+			<td><select><option>get</option><option>post</option><option>put</option><option>del</option></select></td>
+			<td>备注： 访问方式 </td>
+		</tr>
+		
+		<tr>
+			<td>function Name</td>
+			<td><input class="h18px" placeholder="function Name" /></td>
+			<td>备注： 程序中的名称如  getUserInfo </td>
+		</tr>
+		
+		<tr>
+			<td>return type</td>
+			<td>
+				<input type="button" v-on:click="setFuncReturnType" class="btn btn-info btn-xs" value="void">
+			</td>
+			<td>备注： 返回的类型， 可以是 页面/对象， 范型对象 </td>
+		</tr>
+		
+		<tr>
+			<td>params</td>
+			<td><input class="h18px" placeholder="return type" /></td>
+			<td>备注： 请求的参数据， 基本数据类型 </td>
+		</tr>
+		
+		<tr>
+			<td>TODO</td>
+			<td><textarea rows="2" cols="50"></textarea></td>
+			<td>备注： 标注此方法内的执行原理或 伪代码逻辑 </td>
+		</tr>
+		
+	</table>
 	
-	<div class="ml-10 e-c4">
-		/**
-		TODO
-		<div contenteditable="true">
-			
-		</div>
-		**/	
-	</div>
-
-	<div class="edit-row">}</div>
 </div>

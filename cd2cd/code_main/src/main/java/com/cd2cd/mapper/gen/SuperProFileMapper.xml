@@ -5,9 +5,12 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="project_id" jdbcType="BIGINT" property="projectId" />
     <result column="module_id" jdbcType="BIGINT" property="moduleId" />
+    <result column="super_id" jdbcType="BIGINT" property="superId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="type" jdbcType="VARCHAR" property="type" />
     <result column="dtype" jdbcType="VARCHAR" property="dtype" />
+    <result column="paradigm" jdbcType="VARCHAR" property="paradigm" />
+    <result column="class_type" jdbcType="VARCHAR" property="classType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -70,7 +73,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, project_id, module_id, name, type, dtype, create_time, update_time
+    id, project_id, module_id, super_id, name, type, dtype, paradigm, class_type, create_time, 
+    update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria" resultMap="BaseResultMap">
     select
@@ -109,11 +113,13 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_file (project_id, module_id, name, 
-      type, dtype, create_time, 
+    insert into pro_file (project_id, module_id, super_id, 
+      name, type, dtype, 
+      paradigm, class_type, create_time, 
       update_time)
-    values (#{projectId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
-      #{type,jdbcType=VARCHAR}, #{dtype,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+    values (#{projectId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, #{superId,jdbcType=BIGINT}, 
+      #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{dtype,jdbcType=VARCHAR}, 
+      #{paradigm,jdbcType=VARCHAR}, #{classType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProFile">
@@ -128,6 +134,9 @@
       <if test="moduleId != null">
         module_id,
       </if>
+      <if test="superId != null">
+        super_id,
+      </if>
       <if test="name != null">
         name,
       </if>
@@ -136,6 +145,12 @@
       </if>
       <if test="dtype != null">
         dtype,
+      </if>
+      <if test="paradigm != null">
+        paradigm,
+      </if>
+      <if test="classType != null">
+        class_type,
       </if>
       <if test="createTime != null">
         create_time,
@@ -151,6 +166,9 @@
       <if test="moduleId != null">
         #{moduleId,jdbcType=BIGINT},
       </if>
+      <if test="superId != null">
+        #{superId,jdbcType=BIGINT},
+      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
@@ -159,6 +177,12 @@
       </if>
       <if test="dtype != null">
         #{dtype,jdbcType=VARCHAR},
+      </if>
+      <if test="paradigm != null">
+        #{paradigm,jdbcType=VARCHAR},
+      </if>
+      <if test="classType != null">
+        #{classType,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -186,6 +210,9 @@
       <if test="record.moduleId != null">
         module_id = #{record.moduleId,jdbcType=BIGINT},
       </if>
+      <if test="record.superId != null">
+        super_id = #{record.superId,jdbcType=BIGINT},
+      </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
@@ -194,6 +221,12 @@
       </if>
       <if test="record.dtype != null">
         dtype = #{record.dtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.paradigm != null">
+        paradigm = #{record.paradigm,jdbcType=VARCHAR},
+      </if>
+      <if test="record.classType != null">
+        class_type = #{record.classType,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -211,9 +244,12 @@
     set id = #{record.id,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
       module_id = #{record.moduleId,jdbcType=BIGINT},
+      super_id = #{record.superId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       type = #{record.type,jdbcType=VARCHAR},
       dtype = #{record.dtype,jdbcType=VARCHAR},
+      paradigm = #{record.paradigm,jdbcType=VARCHAR},
+      class_type = #{record.classType,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -229,6 +265,9 @@
       <if test="moduleId != null">
         module_id = #{moduleId,jdbcType=BIGINT},
       </if>
+      <if test="superId != null">
+        super_id = #{superId,jdbcType=BIGINT},
+      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
@@ -237,6 +276,12 @@
       </if>
       <if test="dtype != null">
         dtype = #{dtype,jdbcType=VARCHAR},
+      </if>
+      <if test="paradigm != null">
+        paradigm = #{paradigm,jdbcType=VARCHAR},
+      </if>
+      <if test="classType != null">
+        class_type = #{classType,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -251,9 +296,12 @@
     update pro_file
     set project_id = #{projectId,jdbcType=BIGINT},
       module_id = #{moduleId,jdbcType=BIGINT},
+      super_id = #{superId,jdbcType=BIGINT},
       name = #{name,jdbcType=VARCHAR},
       type = #{type,jdbcType=VARCHAR},
       dtype = #{dtype,jdbcType=VARCHAR},
+      paradigm = #{paradigm,jdbcType=VARCHAR},
+      class_type = #{classType,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

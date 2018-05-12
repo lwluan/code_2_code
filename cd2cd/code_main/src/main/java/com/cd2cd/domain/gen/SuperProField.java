@@ -3,21 +3,37 @@ package com.cd2cd.domain.gen;
 import java.io.Serializable;
 import java.util.Date;
 
-public class SuperProTable implements Serializable {
-    private Long id;
+public class SuperProField implements Serializable {
+    private Integer id;
 
     /**
-     * 项目ID
+     * 属于文件ID
      */
-    private Long databaseId;
+    private Integer fileId;
 
+    /**
+     * 名称：英文显示，如：username
+     */
     private String name;
 
     /**
-     * 数据库引擎类型：InnoDB/MyISAM/
+     * 类类型:基本数据类型：base，自定义对象：vo，范型：T
      */
-    private String emgomeType;
+    private String type;
 
+    /**
+     * 类路径，如:String、com.user.UserVo
+     */
+    private String typePath;
+
+    /**
+     * 集合类型:单值：single，列表：list，集合：set，Map：map
+     */
+    private String collectionType;
+
+    /**
+     * 字段备注
+     */
     private String comment;
 
     private Date createTime;
@@ -26,54 +42,94 @@ public class SuperProTable implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Long getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
     /**
-     * 项目ID
+     * 属于文件ID
      */
-    public Long getDatabaseId() {
-        return databaseId;
+    public Integer getFileId() {
+        return fileId;
     }
 
     /**
-     * 项目ID
+     * 属于文件ID
      */
-    public void setDatabaseId(Long databaseId) {
-        this.databaseId = databaseId;
+    public void setFileId(Integer fileId) {
+        this.fileId = fileId;
     }
 
+    /**
+     * 名称：英文显示，如：username
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * 名称：英文显示，如：username
+     */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 数据库引擎类型：InnoDB/MyISAM/
+     * 类类型:基本数据类型：base，自定义对象：vo，范型：T
      */
-    public String getEmgomeType() {
-        return emgomeType;
+    public String getType() {
+        return type;
     }
 
     /**
-     * 数据库引擎类型：InnoDB/MyISAM/
+     * 类类型:基本数据类型：base，自定义对象：vo，范型：T
      */
-    public void setEmgomeType(String emgomeType) {
-        this.emgomeType = emgomeType;
+    public void setType(String type) {
+        this.type = type;
     }
 
+    /**
+     * 类路径，如:String、com.user.UserVo
+     */
+    public String getTypePath() {
+        return typePath;
+    }
+
+    /**
+     * 类路径，如:String、com.user.UserVo
+     */
+    public void setTypePath(String typePath) {
+        this.typePath = typePath;
+    }
+
+    /**
+     * 集合类型:单值：single，列表：list，集合：set，Map：map
+     */
+    public String getCollectionType() {
+        return collectionType;
+    }
+
+    /**
+     * 集合类型:单值：single，列表：list，集合：set，Map：map
+     */
+    public void setCollectionType(String collectionType) {
+        this.collectionType = collectionType;
+    }
+
+    /**
+     * 字段备注
+     */
     public String getComment() {
         return comment;
     }
 
+    /**
+     * 字段备注
+     */
     public void setComment(String comment) {
         this.comment = comment;
     }
@@ -101,9 +157,11 @@ public class SuperProTable implements Serializable {
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
-        sb.append(", databaseId=").append(databaseId);
+        sb.append(", fileId=").append(fileId);
         sb.append(", name=").append(name);
-        sb.append(", emgomeType=").append(emgomeType);
+        sb.append(", type=").append(type);
+        sb.append(", typePath=").append(typePath);
+        sb.append(", collectionType=").append(collectionType);
         sb.append(", comment=").append(comment);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
@@ -123,11 +181,13 @@ public class SuperProTable implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        SuperProTable other = (SuperProTable) that;
+        SuperProField other = (SuperProField) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
-            && (this.getDatabaseId() == null ? other.getDatabaseId() == null : this.getDatabaseId().equals(other.getDatabaseId()))
+            && (this.getFileId() == null ? other.getFileId() == null : this.getFileId().equals(other.getFileId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getEmgomeType() == null ? other.getEmgomeType() == null : this.getEmgomeType().equals(other.getEmgomeType()))
+            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
+            && (this.getTypePath() == null ? other.getTypePath() == null : this.getTypePath().equals(other.getTypePath()))
+            && (this.getCollectionType() == null ? other.getCollectionType() == null : this.getCollectionType().equals(other.getCollectionType()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
@@ -138,9 +198,11 @@ public class SuperProTable implements Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
-        result = prime * result + ((getDatabaseId() == null) ? 0 : getDatabaseId().hashCode());
+        result = prime * result + ((getFileId() == null) ? 0 : getFileId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getEmgomeType() == null) ? 0 : getEmgomeType().hashCode());
+        result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
+        result = prime * result + ((getTypePath() == null) ? 0 : getTypePath().hashCode());
+        result = prime * result + ((getCollectionType() == null) ? 0 : getCollectionType().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());

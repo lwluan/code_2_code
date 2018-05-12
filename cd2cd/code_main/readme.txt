@@ -56,6 +56,7 @@ memcache
 登录认证
 权限
 
+
 - - - 项目 - db 关联 - - - -
 详情、
 
@@ -70,8 +71,28 @@ memcache
 项目多数据库，数据源
 
 
+show full columns from test;
+show index from test;
+show triggers from test;
 
 
+// 项目中同步到数据操作中 数据库，数据库索引未同步操作。
+# - - - - - 约束 - - - - - 
+#是在表上强制执行地数据校验规则，主要用于保证数据库地完整性
+/*
+not null 
+unique 唯一键tb_depttb_dept
+primary key 
+foreign key 外键
+check 检查
+*/
+
+
+数据库同步过程中， ignore系统表格
+
+生成VO对象改成基去项目设置不基于数据
+
+### 自定义组件使用文档
 
 
 

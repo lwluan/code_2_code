@@ -30,7 +30,9 @@ define([ 'text!' + ctx + '/html/proDatabase/database.html' ], function(template)
 	var component = {
 		template : template,
 		data : function() {
-			return data;
+			var _data = {}
+        	$.extend(true, _data, data);
+            return _data;
 		}, methods : {
 			showDetail: function(id) {
 				this.formValidate.resetForm();
@@ -81,7 +83,31 @@ define([ 'text!' + ctx + '/html/proDatabase/database.html' ], function(template)
                     });
                 });
 
+            },
+            
+            /** 数据库中的数据同步到项目中 **/
+            asyncDbToProFromDbBase: function(id) {
+            	var that = this;
+            	accessHttp({
+                    url: buildUrl('/database/asyncDbToProFromDbBase?id=' + id),
+                    success: function (res) {
+                    	that.$emit('completed');
+                    	console.info('同步成功！');
+                    }
+                });
+            },
+            asyncDbToDbBaseFromPro: function(id) {
+            	var that = this;
+            	accessHttp({
+                    url: buildUrl('/database/asyncDbToDbBaseFromPro?id=' + id),
+                    success: function (res) {
+                    	that.$emit('completed');
+                    	console.info('同步成功！');
+                    }
+                });
             }
+            
+            
 		}, mounted: function() {
             this.formValidate = initFormValidate();
         }

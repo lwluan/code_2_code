@@ -23,6 +23,7 @@ import org.mybatis.generator.api.dom.xml.Element;
 import org.mybatis.generator.api.dom.xml.TextElement;
 import org.mybatis.generator.api.dom.xml.XmlElement;
 
+
 /**
  * mapper xml可扩展<br />
  * 自动生成domain, xml, mapper子类

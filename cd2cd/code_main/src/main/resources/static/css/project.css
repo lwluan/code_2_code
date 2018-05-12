@@ -70,27 +70,17 @@
 /** 编辑面板 **/
 .edit-page {
 	padding: 10px;
+	font-size: 12px;
 }
-.e-c1 {
-	color: #996699;
+.h18px {
+	height: 18px;
+	border: 1px dotted #ccc;
 }
-.e-c2 {
-	color: #999;
+.comment-box {
+	border: 1px dotted #ccc;
 }
-.e-c3 {
-	color: #6699CC;
-}
-.e-c4 {
-	color: #006699;
-}
-.edit-row {
-	
-}
-.edit-comment {
-	color: #6699CC;
-}
-.edit-comment-content {
-	
+.body-filed {
+	border: 3px dotted #ccc;
 }
 
 /** 方法 **/
@@ -102,6 +92,9 @@
 .ml-10 {
 	margin-left: 10px;
 }
-
+.setting-tab tr td {
+	border-bottom: 1px solid #CCC;
+	padding: 1px;
+}
 
 

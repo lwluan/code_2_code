@@ -94,6 +94,39 @@ public class DatabaseController {
 		return res;
 	}
 	
+	/**
+	 * 数据库表同步到项目
+	 * @param proDatabaseVo
+	 * @return
+	 */
+	@RequestMapping(value = "asyncDbToProFromDbBase", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<String> asyncDbToProFromDbBase(ProDatabaseVo proDatabaseVo) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		
+		proDatabaseService.asyncDbToProFromDbBase(proDatabaseVo.getId());
+		
+		res.setServiceCode(ServiceCode.SUCCESS);
+		
+		return res;
+	}
+	
+	/**
+	 * 项目中的表同步到数据库
+	 * @param proDatabaseVo
+	 * @return
+	 */
+	@RequestMapping(value = "asyncDbToDbBaseFromPro", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<String> asyncDbToDbBaseFromPro(ProDatabaseVo proDatabaseVo) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		res.setServiceCode(ServiceCode.SUCCESS);
+		proDatabaseService.asyncDbToDbBaseFromPro(proDatabaseVo.getId());
+		return res;
+	}
+	
+	// ----- table -----
+	
 	@RequestMapping(value = "tableDetail", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<ProTableVo> tableDetail(ProTableVo proTableVo) {
 		BaseRes<ProTableVo> res = new BaseRes<ProTableVo>();

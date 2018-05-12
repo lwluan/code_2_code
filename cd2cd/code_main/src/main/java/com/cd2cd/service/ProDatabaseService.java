@@ -22,6 +22,10 @@ public interface ProDatabaseService {
 
 	boolean delDb(Long id);
 
+	boolean asyncDbToProFromDbBase(Long id);
+	
+	boolean asyncDbToDbBaseFromPro(Long id);
+	
 	ProTableVo tableDetail(Long id);
 
 	ProTableVo addTable(ProTableVo proTableVo);

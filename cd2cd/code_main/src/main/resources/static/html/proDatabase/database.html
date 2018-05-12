@@ -33,8 +33,8 @@
 					type="button" value="添加表" class="btn btn-info"  />
 					<input type="button" v-on:click="subFormData" class="btn btn-default" value="保存" />
 					<input v-show="entityForm.id > 0" v-on:click="delRowData(entityForm.id)" type="button" class="btn btn-default btn-danger" value="删除" />
-					<input v-show="entityForm.id > 0" type="button" class="btn btn-default btn-info" value="同步数据到系统中" />
-					<input v-show="entityForm.id > 0" type="button" class="btn btn-default btn-success" value="同步数据到数据库" />
+					<input v-show="entityForm.id > 0" v-on:click="asyncDbToProFromDbBase(entityForm.id)" type="button" class="btn btn-default btn-info" value="同步数据库表到项目中" />
+					<input v-show="entityForm.id > 0" v-on:click="asyncDbToDbBaseFromPro(entityForm.id)" type="button" class="btn btn-default btn-success" value="同步项目数据表到数据库" />
 					<br />
 				</div>
 			</div>

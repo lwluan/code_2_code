@@ -19,13 +19,19 @@ define([ 'text!' + ctx + '/html/proDatabase/db-table.html'], function(template) 
 	var data = {
 		entityForm: {},
 		formValidate: {},
-		tabColumns: []
+		tabColumns: [], 
+		emgomeTypeDropdown: {
+			values: [{label: '表引擎:MyISAM', key: 'MyISAM'}, {label: '表引擎:InnoDB', key: 'InnoDB'}],
+        	selected: {label: '表引擎:MyISAM', key: 'MyISAM'},
+		}
 	};
 
 	var component = {
 		template : template,
 		data : function() {
-			return data;
+			var _data = {}
+        	$.extend(true, _data, data);
+            return _data;
 		},
 		methods : {
 			showDetail: function(params) {

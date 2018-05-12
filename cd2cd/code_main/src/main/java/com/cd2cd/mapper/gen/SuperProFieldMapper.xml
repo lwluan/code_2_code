@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cd2cd.mapper.gen.SuperProTableMapper">
-  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProTable">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="database_id" jdbcType="BIGINT" property="databaseId" />
+<mapper namespace="com.cd2cd.mapper.gen.SuperProFieldMapper">
+  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProField">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="file_id" jdbcType="INTEGER" property="fileId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="emgome_type" jdbcType="VARCHAR" property="emgomeType" />
+    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="type_path" jdbcType="VARCHAR" property="typePath" />
+    <result column="collection_type" jdbcType="VARCHAR" property="collectionType" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -69,15 +71,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, database_id, name, emgome_type, comment, create_time, update_time
+    id, file_id, name, type, type_path, collection_type, comment, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProTableCriteria" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFieldCriteria" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from pro_table
+    from pro_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -88,47 +90,53 @@
       <![CDATA[ limit #{mysqlOffset} , #{mysqlLength} ]]>
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from pro_table
-    where id = #{id,jdbcType=BIGINT}
+    from pro_field
+    where id = #{id,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from pro_table
-    where id = #{id,jdbcType=BIGINT}
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from pro_field
+    where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProTableCriteria">
-    delete from pro_table
+  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProFieldCriteria">
+    delete from pro_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cd2cd.domain.ProTable">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+  <insert id="insert" parameterType="com.cd2cd.domain.ProField">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_table (database_id, name, emgome_type, 
-      comment, create_time, update_time
-      )
-    values (#{databaseId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{emgomeType,jdbcType=VARCHAR}, 
-      #{comment,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+    insert into pro_field (file_id, name, type, 
+      type_path, collection_type, comment, 
+      create_time, update_time)
+    values (#{fileId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+      #{typePath,jdbcType=VARCHAR}, #{collectionType,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProTable">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProField">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_table
+    insert into pro_field
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="databaseId != null">
-        database_id,
+      <if test="fileId != null">
+        file_id,
       </if>
       <if test="name != null">
         name,
       </if>
-      <if test="emgomeType != null">
-        emgome_type,
+      <if test="type != null">
+        type,
+      </if>
+      <if test="typePath != null">
+        type_path,
+      </if>
+      <if test="collectionType != null">
+        collection_type,
       </if>
       <if test="comment != null">
         comment,
@@ -141,14 +149,20 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="databaseId != null">
-        #{databaseId,jdbcType=BIGINT},
+      <if test="fileId != null">
+        #{fileId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="emgomeType != null">
-        #{emgomeType,jdbcType=VARCHAR},
+      <if test="type != null">
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="typePath != null">
+        #{typePath,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionType != null">
+        #{collectionType,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
@@ -161,26 +175,32 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProTableCriteria" resultType="java.lang.Long">
-    select count(*) from pro_table
+  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProFieldCriteria" resultType="java.lang.Long">
+    select count(*) from pro_field
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update pro_table
+    update pro_field
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=BIGINT},
+        id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.databaseId != null">
-        database_id = #{record.databaseId,jdbcType=BIGINT},
+      <if test="record.fileId != null">
+        file_id = #{record.fileId,jdbcType=INTEGER},
       </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.emgomeType != null">
-        emgome_type = #{record.emgomeType,jdbcType=VARCHAR},
+      <if test="record.type != null">
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.typePath != null">
+        type_path = #{record.typePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.collectionType != null">
+        collection_type = #{record.collectionType,jdbcType=VARCHAR},
       </if>
       <if test="record.comment != null">
         comment = #{record.comment,jdbcType=VARCHAR},
@@ -197,11 +217,13 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update pro_table
-    set id = #{record.id,jdbcType=BIGINT},
-      database_id = #{record.databaseId,jdbcType=BIGINT},
+    update pro_field
+    set id = #{record.id,jdbcType=INTEGER},
+      file_id = #{record.fileId,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
-      emgome_type = #{record.emgomeType,jdbcType=VARCHAR},
+      type = #{record.type,jdbcType=VARCHAR},
+      type_path = #{record.typePath,jdbcType=VARCHAR},
+      collection_type = #{record.collectionType,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
@@ -209,17 +231,23 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProTable">
-    update pro_table
+  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProField">
+    update pro_field
     <set>
-      <if test="databaseId != null">
-        database_id = #{databaseId,jdbcType=BIGINT},
+      <if test="fileId != null">
+        file_id = #{fileId,jdbcType=INTEGER},
       </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="emgomeType != null">
-        emgome_type = #{emgomeType,jdbcType=VARCHAR},
+      <if test="type != null">
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="typePath != null">
+        type_path = #{typePath,jdbcType=VARCHAR},
+      </if>
+      <if test="collectionType != null">
+        collection_type = #{collectionType,jdbcType=VARCHAR},
       </if>
       <if test="comment != null">
         comment = #{comment,jdbcType=VARCHAR},
@@ -231,16 +259,18 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProTable">
-    update pro_table
-    set database_id = #{databaseId,jdbcType=BIGINT},
+  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProField">
+    update pro_field
+    set file_id = #{fileId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
-      emgome_type = #{emgomeType,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      type_path = #{typePath,jdbcType=VARCHAR},
+      collection_type = #{collectionType,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

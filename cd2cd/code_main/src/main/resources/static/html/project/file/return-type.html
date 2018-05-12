@@ -1,0 +1,46 @@
+<!-- pop obj -->
+<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> return type </h4>
+            </div>
+            <div class="modal-body">
+                <form id="formValidate" class="form-horizontal" novalidate>
+					
+					<!-- 返回类型 void / page / base / vo / file / img -->
+					<form-down-menu
+                		v-bind:label="'返回对象类型'" v-bind:tip="'* 返回对象类型不可为空'"
+                		v-bind:values="returnTypeDrodown.values"
+                		v-bind:selected="returnTypeDrodown.selected"
+                		v-on:changeSelected="function(val){ formData.returnType = val.key; changeReturnTypeFunc(val.key); console.info('val.key='+val.key); }"
+                		v-model="formData.returnType" v-bind:name="'returnType'">
+                	</form-down-menu>
+					
+					<!-- base type -->
+					<form-down-menu
+                		v-bind:label="'请选择返回类型'" v-bind:tip="'* 返回类型不可为空'"
+                		v-bind:values="returnTypeValDrodown.values"
+                		v-bind:selected="returnTypeValDrodown.selected"
+                		v-on:changeSelected="function(val){ formData.returnTypeVal = val.key; console.info('val.key='+val.key); }"
+                		v-model="formData.returnTypeVal" v-bind:name="'returnTypeVal'">
+                	</form-down-menu>
+					
+					<!-- page -->
+					
+					<!-- vo list operation -->
+					
+                    
+                    <div style="clear: both"></div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
+                <button type="button" class="btn btn-primary"> 确定 </button>
+            </div>
+        </div>
+    </div>
+
+</div>

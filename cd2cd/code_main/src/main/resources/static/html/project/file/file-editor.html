@@ -23,34 +23,41 @@ controller:
 
 <div class="edit-page">
 
-	<!-- package -->
-	<div class="edit-row">
-		<b class="e-c1">package </b> com.test.aa;
+	<table>
+		<tr>
+			<td>package </td>
+			<td>com.test.aa;</td>
+		</tr>
+		
+		<tr>
+			<td>类注释</td>
+			<td><div contenteditable="true" class="comment-box"></div></td>
+			<td>备注： 描述此类的作用 </td>
+		</tr>
+		
+		<tr>
+			<td>root path</td>
+			<td><input class="h18px" placeholder="path" /></td>
+			<td>备注： /user </td>
+		</tr>
+		
+		<tr>
+			<td>Class Name</td>
+			<td><input class="h18px" placeholder="Class Name" /></td>
+			<td>备注： UserController </td>
+		</tr>
+	</table>
+	
+	<div class="body-filed">
+		
+		<!-- 方法区 -->
+		<file-method v-on:set-func-return-type="function(mid){console.info('----------');$refs.returnTypePanel.popShowPanel(mid);}"></file-method>
+	
+	
 	</div>
 
-	<!-- class comments -->
-	<div class="edit-comment">
-		/*
-		<div contenteditable="true" class="edit-comment-content"></div>
-		*/
-	</div>
-
-	<!-- controller requestMapping -->
-	<div class="edit-row">
-		<b class="e-c2">requestMapping("<span contenteditable="true" class="e-c3">/user</span>")
-		</b>;
-	</div>
-
-	<!-- class name -->
-	<div class="edit-row">
-		<b class="e-c1">public class </b> UserController {
-	</div>
-
-
-	<!-- 方法区 -->
-	<file-method></file-method>
+	<return-type ref="returnTypePanel"></return-type>
 
 
 
-	<div class="edit-row">}</div>
 </div>

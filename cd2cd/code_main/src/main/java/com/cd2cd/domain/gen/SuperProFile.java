@@ -17,12 +17,17 @@ public class SuperProFile implements Serializable {
     private Long moduleId;
 
     /**
+     * 父类ID
+     */
+    private Long superId;
+
+    /**
      * 文件名称
      */
     private String name;
 
     /**
-     * 文件类型：vo|dao|service|controller|domain
+     * 文件类型：controller|service|vo|dao|domain|
      */
     private String type;
 
@@ -30,6 +35,16 @@ public class SuperProFile implements Serializable {
      * 类类型：class|generics|enum|interface|abstruct
      */
     private String dtype;
+
+    /**
+     * 是否为范型:no\yes
+     */
+    private String paradigm;
+
+    /**
+     * 类类型:class、enum、interface、abstruct
+     */
+    private String classType;
 
     private Date createTime;
 
@@ -74,6 +89,20 @@ public class SuperProFile implements Serializable {
     }
 
     /**
+     * 父类ID
+     */
+    public Long getSuperId() {
+        return superId;
+    }
+
+    /**
+     * 父类ID
+     */
+    public void setSuperId(Long superId) {
+        this.superId = superId;
+    }
+
+    /**
      * 文件名称
      */
     public String getName() {
@@ -88,14 +117,14 @@ public class SuperProFile implements Serializable {
     }
 
     /**
-     * 文件类型：vo|dao|service|controller|domain
+     * 文件类型：controller|service|vo|dao|domain|
      */
     public String getType() {
         return type;
     }
 
     /**
-     * 文件类型：vo|dao|service|controller|domain
+     * 文件类型：controller|service|vo|dao|domain|
      */
     public void setType(String type) {
         this.type = type;
@@ -113,6 +142,34 @@ public class SuperProFile implements Serializable {
      */
     public void setDtype(String dtype) {
         this.dtype = dtype;
+    }
+
+    /**
+     * 是否为范型:no\yes
+     */
+    public String getParadigm() {
+        return paradigm;
+    }
+
+    /**
+     * 是否为范型:no\yes
+     */
+    public void setParadigm(String paradigm) {
+        this.paradigm = paradigm;
+    }
+
+    /**
+     * 类类型:class、enum、interface、abstruct
+     */
+    public String getClassType() {
+        return classType;
+    }
+
+    /**
+     * 类类型:class、enum、interface、abstruct
+     */
+    public void setClassType(String classType) {
+        this.classType = classType;
     }
 
     public Date getCreateTime() {
@@ -140,9 +197,12 @@ public class SuperProFile implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
         sb.append(", moduleId=").append(moduleId);
+        sb.append(", superId=").append(superId);
         sb.append(", name=").append(name);
         sb.append(", type=").append(type);
         sb.append(", dtype=").append(dtype);
+        sb.append(", paradigm=").append(paradigm);
+        sb.append(", classType=").append(classType);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -165,9 +225,12 @@ public class SuperProFile implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
             && (this.getModuleId() == null ? other.getModuleId() == null : this.getModuleId().equals(other.getModuleId()))
+            && (this.getSuperId() == null ? other.getSuperId() == null : this.getSuperId().equals(other.getSuperId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
             && (this.getDtype() == null ? other.getDtype() == null : this.getDtype().equals(other.getDtype()))
+            && (this.getParadigm() == null ? other.getParadigm() == null : this.getParadigm().equals(other.getParadigm()))
+            && (this.getClassType() == null ? other.getClassType() == null : this.getClassType().equals(other.getClassType()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -179,9 +242,12 @@ public class SuperProFile implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
         result = prime * result + ((getModuleId() == null) ? 0 : getModuleId().hashCode());
+        result = prime * result + ((getSuperId() == null) ? 0 : getSuperId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
         result = prime * result + ((getDtype() == null) ? 0 : getDtype().hashCode());
+        result = prime * result + ((getParadigm() == null) ? 0 : getParadigm().hashCode());
+        result = prime * result + ((getClassType() == null) ? 0 : getClassType().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

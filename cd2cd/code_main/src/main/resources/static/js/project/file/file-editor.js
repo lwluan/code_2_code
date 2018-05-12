@@ -9,6 +9,7 @@ define(['text!'+ctx+'/html/project/file/file-editor.html'], function( template )
         template: template,
         components: {
             'file-method': createComponent('/js/project/file/file-method.js'),
+            'return-type': createComponent('/js/project/file/return-type.js'),
         },
         props : [ 'fileObj' ],
         data: function(){ 
