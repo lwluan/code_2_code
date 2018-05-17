@@ -7,7 +7,8 @@ define(['text!'+ctx+'/html/project/top-toolbar.html'], function( template ) {
         	selected: {label: 'Hierarchical', key: 'Hierarchical'},
         },
         moduleTypeDropdown: { 
-        	values: [{label: '全部模块', key: '0'}],
+        	values: [{label: '全部模块', key: '0'},
+        	         {label: '-公共模块-', key: '-1'},],
         	selected: {label: '全部模块', key: '0'},
         },
         actionTime: 0
@@ -26,7 +27,7 @@ define(['text!'+ctx+'/html/project/top-toolbar.html'], function( template ) {
         		accessHttp({
                     url: buildUrl('/proProject/projectModuleList?projectId=' +projectId),
                     success: function (res) {
-                    	var values = [{label: '全部模块', key: '0'}];
+                    	var values = [{label: '全部模块', key: '0'}, {label: '-公共模块-', key: '-1'}];
                     	var moduleeList = res.data;
                     	for(var i=0; i<moduleeList.length; i++ ) {
                     		var modulee = moduleeList[i];

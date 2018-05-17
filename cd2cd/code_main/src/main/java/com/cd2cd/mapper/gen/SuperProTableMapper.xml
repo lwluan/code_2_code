@@ -5,8 +5,8 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="database_id" jdbcType="BIGINT" property="databaseId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="emgome_type" jdbcType="VARCHAR" property="emgomeType" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="emgome_type" jdbcType="VARCHAR" property="emgomeType" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -69,7 +69,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, database_id, name, emgome_type, comment, create_time, update_time
+    id, database_id, name, comment, emgome_type, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProTableCriteria" resultMap="BaseResultMap">
     select
@@ -108,11 +108,11 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_table (database_id, name, emgome_type, 
-      comment, create_time, update_time
+    insert into pro_table (database_id, name, comment, 
+      emgome_type, create_time, update_time
       )
-    values (#{databaseId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{emgomeType,jdbcType=VARCHAR}, 
-      #{comment,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+    values (#{databaseId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
+      #{emgomeType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProTable">
@@ -127,11 +127,11 @@
       <if test="name != null">
         name,
       </if>
-      <if test="emgomeType != null">
-        emgome_type,
-      </if>
       <if test="comment != null">
         comment,
+      </if>
+      <if test="emgomeType != null">
+        emgome_type,
       </if>
       <if test="createTime != null">
         create_time,
@@ -147,11 +147,11 @@
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="emgomeType != null">
-        #{emgomeType,jdbcType=VARCHAR},
-      </if>
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="emgomeType != null">
+        #{emgomeType,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -179,11 +179,11 @@
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.emgomeType != null">
-        emgome_type = #{record.emgomeType,jdbcType=VARCHAR},
-      </if>
       <if test="record.comment != null">
         comment = #{record.comment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.emgomeType != null">
+        emgome_type = #{record.emgomeType,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -201,8 +201,8 @@
     set id = #{record.id,jdbcType=BIGINT},
       database_id = #{record.databaseId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
-      emgome_type = #{record.emgomeType,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=VARCHAR},
+      emgome_type = #{record.emgomeType,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -218,11 +218,11 @@
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="emgomeType != null">
-        emgome_type = #{emgomeType,jdbcType=VARCHAR},
-      </if>
       <if test="comment != null">
         comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="emgomeType != null">
+        emgome_type = #{emgomeType,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -237,8 +237,8 @@
     update pro_table
     set database_id = #{databaseId,jdbcType=BIGINT},
       name = #{name,jdbcType=VARCHAR},
-      emgome_type = #{emgomeType,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR},
+      emgome_type = #{emgomeType,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

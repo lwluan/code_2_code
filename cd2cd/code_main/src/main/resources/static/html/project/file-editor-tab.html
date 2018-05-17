@@ -15,7 +15,14 @@
 	<div id="myTabContent" class="tab-content">
 		
 		<div v-for="tabMenu in tabMenus" role="tabpanel" class="tab-pane fade" v-bind:id="tabMenu.id" aria-labelledby="home-tab">
-			<file-editor v-bind:file-obj="tabMenu"></file-editor>
+			
+			<!-- controller -->
+			<file-editor v-if="tabMenu.fileType == 'controller'" v-bind:file-obj="tabMenu"></file-editor>
+			
+			<!-- vo manager -->
+			<file-vo v-if="tabMenu.fileType == 'vo'" v-bind:file-obj="tabMenu"></file-vo>
+			
+			
 		</div>
 		
 	</div>

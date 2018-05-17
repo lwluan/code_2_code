@@ -29,12 +29,7 @@ public class SuperProFile implements Serializable {
     /**
      * 文件类型：controller|service|vo|dao|domain|
      */
-    private String type;
-
-    /**
-     * 类类型：class|generics|enum|interface|abstruct
-     */
-    private String dtype;
+    private String fileType;
 
     /**
      * 是否为范型:no\yes
@@ -42,7 +37,7 @@ public class SuperProFile implements Serializable {
     private String paradigm;
 
     /**
-     * 类类型:class、enum、interface、abstruct
+     * 类类型：class|generics|enum|interface|abstruct
      */
     private String classType;
 
@@ -119,29 +114,15 @@ public class SuperProFile implements Serializable {
     /**
      * 文件类型：controller|service|vo|dao|domain|
      */
-    public String getType() {
-        return type;
+    public String getFileType() {
+        return fileType;
     }
 
     /**
      * 文件类型：controller|service|vo|dao|domain|
      */
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /**
-     * 类类型：class|generics|enum|interface|abstruct
-     */
-    public String getDtype() {
-        return dtype;
-    }
-
-    /**
-     * 类类型：class|generics|enum|interface|abstruct
-     */
-    public void setDtype(String dtype) {
-        this.dtype = dtype;
+    public void setFileType(String fileType) {
+        this.fileType = fileType;
     }
 
     /**
@@ -159,14 +140,14 @@ public class SuperProFile implements Serializable {
     }
 
     /**
-     * 类类型:class、enum、interface、abstruct
+     * 类类型：class|generics|enum|interface|abstruct
      */
     public String getClassType() {
         return classType;
     }
 
     /**
-     * 类类型:class、enum、interface、abstruct
+     * 类类型：class|generics|enum|interface|abstruct
      */
     public void setClassType(String classType) {
         this.classType = classType;
@@ -199,8 +180,7 @@ public class SuperProFile implements Serializable {
         sb.append(", moduleId=").append(moduleId);
         sb.append(", superId=").append(superId);
         sb.append(", name=").append(name);
-        sb.append(", type=").append(type);
-        sb.append(", dtype=").append(dtype);
+        sb.append(", fileType=").append(fileType);
         sb.append(", paradigm=").append(paradigm);
         sb.append(", classType=").append(classType);
         sb.append(", createTime=").append(createTime);
@@ -227,8 +207,7 @@ public class SuperProFile implements Serializable {
             && (this.getModuleId() == null ? other.getModuleId() == null : this.getModuleId().equals(other.getModuleId()))
             && (this.getSuperId() == null ? other.getSuperId() == null : this.getSuperId().equals(other.getSuperId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
-            && (this.getDtype() == null ? other.getDtype() == null : this.getDtype().equals(other.getDtype()))
+            && (this.getFileType() == null ? other.getFileType() == null : this.getFileType().equals(other.getFileType()))
             && (this.getParadigm() == null ? other.getParadigm() == null : this.getParadigm().equals(other.getParadigm()))
             && (this.getClassType() == null ? other.getClassType() == null : this.getClassType().equals(other.getClassType()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
@@ -244,8 +223,7 @@ public class SuperProFile implements Serializable {
         result = prime * result + ((getModuleId() == null) ? 0 : getModuleId().hashCode());
         result = prime * result + ((getSuperId() == null) ? 0 : getSuperId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
-        result = prime * result + ((getDtype() == null) ? 0 : getDtype().hashCode());
+        result = prime * result + ((getFileType() == null) ? 0 : getFileType().hashCode());
         result = prime * result + ((getParadigm() == null) ? 0 : getParadigm().hashCode());
         result = prime * result + ((getClassType() == null) ? 0 : getClassType().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());

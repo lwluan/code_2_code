@@ -1,16 +1,25 @@
 package com.cd2cd.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.cd2cd.comm.DValid;
+import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProTableVo;
 
 /**
  * 项目管理
@@ -37,12 +46,30 @@ public class ProjectController {
 		return projectService.fetchProjectFileTree(projectId, packageType, moduleId);
 	}
 	
+	@RequestMapping("fetchTableListByProjectHasDb")
+	public @ResponseBody BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId) {
+		LOG.info("projectId={}", projectId);
+		return projectService.fetchTableListByProjectHasDb(projectId);
+	}	
+	
 	/**
 	 * 添加文件
 	 * @return
 	 */
-	public BaseRes<String> addFile(ProFileVo proFileVo) {
-		return null;
+	@RequestMapping(value = "addFile", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> addFile(
+			@Validated(value = {DValid.AddEntity.class}) 
+			@RequestBody ProFileVo proFileVo,
+			BindingResult bindingResult) {
+		
+		BaseRes<String> res = new BaseRes<String>();
+		if( bindingResult.hasErrors() ) {
+			res.setServiceCode(ServiceCode.INVALID_PARAMS);
+			return res;
+		} 
+		
+		return projectService.addFile(proFileVo);
+		
 	}
 	
 	/**

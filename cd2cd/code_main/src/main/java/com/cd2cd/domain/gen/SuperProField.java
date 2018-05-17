@@ -19,7 +19,7 @@ public class SuperProField implements Serializable {
     /**
      * 类类型:基本数据类型：base，自定义对象：vo，范型：T
      */
-    private String type;
+    private String dataType;
 
     /**
      * 类路径，如:String、com.user.UserVo
@@ -81,15 +81,15 @@ public class SuperProField implements Serializable {
     /**
      * 类类型:基本数据类型：base，自定义对象：vo，范型：T
      */
-    public String getType() {
-        return type;
+    public String getDataType() {
+        return dataType;
     }
 
     /**
      * 类类型:基本数据类型：base，自定义对象：vo，范型：T
      */
-    public void setType(String type) {
-        this.type = type;
+    public void setDataType(String dataType) {
+        this.dataType = dataType;
     }
 
     /**
@@ -159,7 +159,7 @@ public class SuperProField implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", fileId=").append(fileId);
         sb.append(", name=").append(name);
-        sb.append(", type=").append(type);
+        sb.append(", dataType=").append(dataType);
         sb.append(", typePath=").append(typePath);
         sb.append(", collectionType=").append(collectionType);
         sb.append(", comment=").append(comment);
@@ -185,7 +185,7 @@ public class SuperProField implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getFileId() == null ? other.getFileId() == null : this.getFileId().equals(other.getFileId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getType() == null ? other.getType() == null : this.getType().equals(other.getType()))
+            && (this.getDataType() == null ? other.getDataType() == null : this.getDataType().equals(other.getDataType()))
             && (this.getTypePath() == null ? other.getTypePath() == null : this.getTypePath().equals(other.getTypePath()))
             && (this.getCollectionType() == null ? other.getCollectionType() == null : this.getCollectionType().equals(other.getCollectionType()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
@@ -200,7 +200,7 @@ public class SuperProField implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getFileId() == null) ? 0 : getFileId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getType() == null) ? 0 : getType().hashCode());
+        result = prime * result + ((getDataType() == null) ? 0 : getDataType().hashCode());
         result = prime * result + ((getTypePath() == null) ? 0 : getTypePath().hashCode());
         result = prime * result + ((getCollectionType() == null) ? 0 : getCollectionType().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());

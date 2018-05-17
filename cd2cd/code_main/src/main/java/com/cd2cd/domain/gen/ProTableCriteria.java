@@ -335,76 +335,6 @@ public class ProTableCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andEmgomeTypeIsNull() {
-            addCriterion("emgome_type is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeIsNotNull() {
-            addCriterion("emgome_type is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeEqualTo(String value) {
-            addCriterion("emgome_type =", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeNotEqualTo(String value) {
-            addCriterion("emgome_type <>", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeGreaterThan(String value) {
-            addCriterion("emgome_type >", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeGreaterThanOrEqualTo(String value) {
-            addCriterion("emgome_type >=", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeLessThan(String value) {
-            addCriterion("emgome_type <", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeLessThanOrEqualTo(String value) {
-            addCriterion("emgome_type <=", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeLike(String value) {
-            addCriterion("emgome_type like", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeNotLike(String value) {
-            addCriterion("emgome_type not like", value, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeIn(List<String> values) {
-            addCriterion("emgome_type in", values, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeNotIn(List<String> values) {
-            addCriterion("emgome_type not in", values, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeBetween(String value1, String value2) {
-            addCriterion("emgome_type between", value1, value2, "emgomeType");
-            return (Criteria) this;
-        }
-
-        public Criteria andEmgomeTypeNotBetween(String value1, String value2) {
-            addCriterion("emgome_type not between", value1, value2, "emgomeType");
-            return (Criteria) this;
-        }
-
         public Criteria andCommentIsNull() {
             addCriterion("comment is null");
             return (Criteria) this;
@@ -472,6 +402,76 @@ public class ProTableCriteria {
 
         public Criteria andCommentNotBetween(String value1, String value2) {
             addCriterion("comment not between", value1, value2, "comment");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeIsNull() {
+            addCriterion("emgome_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeIsNotNull() {
+            addCriterion("emgome_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeEqualTo(String value) {
+            addCriterion("emgome_type =", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeNotEqualTo(String value) {
+            addCriterion("emgome_type <>", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeGreaterThan(String value) {
+            addCriterion("emgome_type >", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("emgome_type >=", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeLessThan(String value) {
+            addCriterion("emgome_type <", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeLessThanOrEqualTo(String value) {
+            addCriterion("emgome_type <=", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeLike(String value) {
+            addCriterion("emgome_type like", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeNotLike(String value) {
+            addCriterion("emgome_type not like", value, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeIn(List<String> values) {
+            addCriterion("emgome_type in", values, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeNotIn(List<String> values) {
+            addCriterion("emgome_type not in", values, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeBetween(String value1, String value2) {
+            addCriterion("emgome_type between", value1, value2, "emgomeType");
+            return (Criteria) this;
+        }
+
+        public Criteria andEmgomeTypeNotBetween(String value1, String value2) {
+            addCriterion("emgome_type not between", value1, value2, "emgomeType");
             return (Criteria) this;
         }
 

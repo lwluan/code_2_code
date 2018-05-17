@@ -21,6 +21,7 @@ define(['text!' + ctx + '/html/project/left-slider.html',
 	}
 
 	function zTreeOnRightClick(event, treeId, treeNode) {  
+		leftSliderVm.selectTreeNode = treeNode;
 		
 		console.info('treeId=' + treeId + ',treeNode=' + JSON.stringify(treeNode));
 		

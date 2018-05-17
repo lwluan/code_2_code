@@ -335,73 +335,73 @@ public class ProFieldCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andTypeIsNull() {
-            addCriterion("type is null");
+        public Criteria andDataTypeIsNull() {
+            addCriterion("data_type is null");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIsNotNull() {
-            addCriterion("type is not null");
+        public Criteria andDataTypeIsNotNull() {
+            addCriterion("data_type is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTypeEqualTo(String value) {
-            addCriterion("type =", value, "type");
+        public Criteria andDataTypeEqualTo(String value) {
+            addCriterion("data_type =", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotEqualTo(String value) {
-            addCriterion("type <>", value, "type");
+        public Criteria andDataTypeNotEqualTo(String value) {
+            addCriterion("data_type <>", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeGreaterThan(String value) {
-            addCriterion("type >", value, "type");
+        public Criteria andDataTypeGreaterThan(String value) {
+            addCriterion("data_type >", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeGreaterThanOrEqualTo(String value) {
-            addCriterion("type >=", value, "type");
+        public Criteria andDataTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("data_type >=", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLessThan(String value) {
-            addCriterion("type <", value, "type");
+        public Criteria andDataTypeLessThan(String value) {
+            addCriterion("data_type <", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLessThanOrEqualTo(String value) {
-            addCriterion("type <=", value, "type");
+        public Criteria andDataTypeLessThanOrEqualTo(String value) {
+            addCriterion("data_type <=", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLike(String value) {
-            addCriterion("type like", value, "type");
+        public Criteria andDataTypeLike(String value) {
+            addCriterion("data_type like", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotLike(String value) {
-            addCriterion("type not like", value, "type");
+        public Criteria andDataTypeNotLike(String value) {
+            addCriterion("data_type not like", value, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIn(List<String> values) {
-            addCriterion("type in", values, "type");
+        public Criteria andDataTypeIn(List<String> values) {
+            addCriterion("data_type in", values, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotIn(List<String> values) {
-            addCriterion("type not in", values, "type");
+        public Criteria andDataTypeNotIn(List<String> values) {
+            addCriterion("data_type not in", values, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeBetween(String value1, String value2) {
-            addCriterion("type between", value1, value2, "type");
+        public Criteria andDataTypeBetween(String value1, String value2) {
+            addCriterion("data_type between", value1, value2, "dataType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotBetween(String value1, String value2) {
-            addCriterion("type not between", value1, value2, "type");
+        public Criteria andDataTypeNotBetween(String value1, String value2) {
+            addCriterion("data_type not between", value1, value2, "dataType");
             return (Criteria) this;
         }
 

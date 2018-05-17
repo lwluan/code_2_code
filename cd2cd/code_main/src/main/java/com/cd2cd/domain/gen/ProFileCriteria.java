@@ -455,143 +455,73 @@ public class ProFileCriteria {
             return (Criteria) this;
         }
 
-        public Criteria andTypeIsNull() {
-            addCriterion("type is null");
+        public Criteria andFileTypeIsNull() {
+            addCriterion("file_type is null");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIsNotNull() {
-            addCriterion("type is not null");
+        public Criteria andFileTypeIsNotNull() {
+            addCriterion("file_type is not null");
             return (Criteria) this;
         }
 
-        public Criteria andTypeEqualTo(String value) {
-            addCriterion("type =", value, "type");
+        public Criteria andFileTypeEqualTo(String value) {
+            addCriterion("file_type =", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotEqualTo(String value) {
-            addCriterion("type <>", value, "type");
+        public Criteria andFileTypeNotEqualTo(String value) {
+            addCriterion("file_type <>", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeGreaterThan(String value) {
-            addCriterion("type >", value, "type");
+        public Criteria andFileTypeGreaterThan(String value) {
+            addCriterion("file_type >", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeGreaterThanOrEqualTo(String value) {
-            addCriterion("type >=", value, "type");
+        public Criteria andFileTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("file_type >=", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLessThan(String value) {
-            addCriterion("type <", value, "type");
+        public Criteria andFileTypeLessThan(String value) {
+            addCriterion("file_type <", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLessThanOrEqualTo(String value) {
-            addCriterion("type <=", value, "type");
+        public Criteria andFileTypeLessThanOrEqualTo(String value) {
+            addCriterion("file_type <=", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeLike(String value) {
-            addCriterion("type like", value, "type");
+        public Criteria andFileTypeLike(String value) {
+            addCriterion("file_type like", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotLike(String value) {
-            addCriterion("type not like", value, "type");
+        public Criteria andFileTypeNotLike(String value) {
+            addCriterion("file_type not like", value, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeIn(List<String> values) {
-            addCriterion("type in", values, "type");
+        public Criteria andFileTypeIn(List<String> values) {
+            addCriterion("file_type in", values, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotIn(List<String> values) {
-            addCriterion("type not in", values, "type");
+        public Criteria andFileTypeNotIn(List<String> values) {
+            addCriterion("file_type not in", values, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeBetween(String value1, String value2) {
-            addCriterion("type between", value1, value2, "type");
+        public Criteria andFileTypeBetween(String value1, String value2) {
+            addCriterion("file_type between", value1, value2, "fileType");
             return (Criteria) this;
         }
 
-        public Criteria andTypeNotBetween(String value1, String value2) {
-            addCriterion("type not between", value1, value2, "type");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeIsNull() {
-            addCriterion("dtype is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeIsNotNull() {
-            addCriterion("dtype is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeEqualTo(String value) {
-            addCriterion("dtype =", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeNotEqualTo(String value) {
-            addCriterion("dtype <>", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeGreaterThan(String value) {
-            addCriterion("dtype >", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeGreaterThanOrEqualTo(String value) {
-            addCriterion("dtype >=", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeLessThan(String value) {
-            addCriterion("dtype <", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeLessThanOrEqualTo(String value) {
-            addCriterion("dtype <=", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeLike(String value) {
-            addCriterion("dtype like", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeNotLike(String value) {
-            addCriterion("dtype not like", value, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeIn(List<String> values) {
-            addCriterion("dtype in", values, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeNotIn(List<String> values) {
-            addCriterion("dtype not in", values, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeBetween(String value1, String value2) {
-            addCriterion("dtype between", value1, value2, "dtype");
-            return (Criteria) this;
-        }
-
-        public Criteria andDtypeNotBetween(String value1, String value2) {
-            addCriterion("dtype not between", value1, value2, "dtype");
+        public Criteria andFileTypeNotBetween(String value1, String value2) {
+            addCriterion("file_type not between", value1, value2, "fileType");
             return (Criteria) this;
         }
 

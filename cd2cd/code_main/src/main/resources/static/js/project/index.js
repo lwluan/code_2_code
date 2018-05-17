@@ -20,6 +20,8 @@ const mainVm = new Vue({
         'project-module': createComponent('/js/project/project-module.js'),
         'project-module-list': createComponent('/js/project/project-module-list.js'),
         'file-editor-tab': createComponent('/js/project/file-editor-tab.js'),
+        'add-file': createComponent('/js/project/add-file.js'),
+        
     },
     methods: {
     	test: function(a, b) {

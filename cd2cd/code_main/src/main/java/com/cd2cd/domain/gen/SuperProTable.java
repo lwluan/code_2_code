@@ -13,12 +13,12 @@ public class SuperProTable implements Serializable {
 
     private String name;
 
+    private String comment;
+
     /**
      * 数据库引擎类型：InnoDB/MyISAM/
      */
     private String emgomeType;
-
-    private String comment;
 
     private Date createTime;
 
@@ -56,6 +56,14 @@ public class SuperProTable implements Serializable {
         this.name = name;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     /**
      * 数据库引擎类型：InnoDB/MyISAM/
      */
@@ -68,14 +76,6 @@ public class SuperProTable implements Serializable {
      */
     public void setEmgomeType(String emgomeType) {
         this.emgomeType = emgomeType;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
     }
 
     public Date getCreateTime() {
@@ -103,8 +103,8 @@ public class SuperProTable implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", databaseId=").append(databaseId);
         sb.append(", name=").append(name);
-        sb.append(", emgomeType=").append(emgomeType);
         sb.append(", comment=").append(comment);
+        sb.append(", emgomeType=").append(emgomeType);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -127,8 +127,8 @@ public class SuperProTable implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getDatabaseId() == null ? other.getDatabaseId() == null : this.getDatabaseId().equals(other.getDatabaseId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getEmgomeType() == null ? other.getEmgomeType() == null : this.getEmgomeType().equals(other.getEmgomeType()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
+            && (this.getEmgomeType() == null ? other.getEmgomeType() == null : this.getEmgomeType().equals(other.getEmgomeType()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -140,8 +140,8 @@ public class SuperProTable implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getDatabaseId() == null) ? 0 : getDatabaseId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getEmgomeType() == null) ? 0 : getEmgomeType().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
+        result = prime * result + ((getEmgomeType() == null) ? 0 : getEmgomeType().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

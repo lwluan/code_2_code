@@ -5,7 +5,7 @@
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="file_id" jdbcType="INTEGER" property="fileId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
+    <result column="data_type" jdbcType="VARCHAR" property="dataType" />
     <result column="type_path" jdbcType="VARCHAR" property="typePath" />
     <result column="collection_type" jdbcType="VARCHAR" property="collectionType" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
@@ -71,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, file_id, name, type, type_path, collection_type, comment, create_time, update_time
+    id, file_id, name, data_type, type_path, collection_type, comment, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFieldCriteria" resultMap="BaseResultMap">
     select
@@ -110,10 +110,10 @@
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_field (file_id, name, type, 
+    insert into pro_field (file_id, name, data_type, 
       type_path, collection_type, comment, 
       create_time, update_time)
-    values (#{fileId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, 
+    values (#{fileId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, 
       #{typePath,jdbcType=VARCHAR}, #{collectionType,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -129,8 +129,8 @@
       <if test="name != null">
         name,
       </if>
-      <if test="type != null">
-        type,
+      <if test="dataType != null">
+        data_type,
       </if>
       <if test="typePath != null">
         type_path,
@@ -155,8 +155,8 @@
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        #{type,jdbcType=VARCHAR},
+      <if test="dataType != null">
+        #{dataType,jdbcType=VARCHAR},
       </if>
       <if test="typePath != null">
         #{typePath,jdbcType=VARCHAR},
@@ -193,8 +193,8 @@
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.type != null">
-        type = #{record.type,jdbcType=VARCHAR},
+      <if test="record.dataType != null">
+        data_type = #{record.dataType,jdbcType=VARCHAR},
       </if>
       <if test="record.typePath != null">
         type_path = #{record.typePath,jdbcType=VARCHAR},
@@ -221,7 +221,7 @@
     set id = #{record.id,jdbcType=INTEGER},
       file_id = #{record.fileId,jdbcType=INTEGER},
       name = #{record.name,jdbcType=VARCHAR},
-      type = #{record.type,jdbcType=VARCHAR},
+      data_type = #{record.dataType,jdbcType=VARCHAR},
       type_path = #{record.typePath,jdbcType=VARCHAR},
       collection_type = #{record.collectionType,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=VARCHAR},
@@ -240,8 +240,8 @@
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="type != null">
-        type = #{type,jdbcType=VARCHAR},
+      <if test="dataType != null">
+        data_type = #{dataType,jdbcType=VARCHAR},
       </if>
       <if test="typePath != null">
         type_path = #{typePath,jdbcType=VARCHAR},
@@ -265,7 +265,7 @@
     update pro_field
     set file_id = #{fileId,jdbcType=INTEGER},
       name = #{name,jdbcType=VARCHAR},
-      type = #{type,jdbcType=VARCHAR},
+      data_type = #{dataType,jdbcType=VARCHAR},
       type_path = #{typePath,jdbcType=VARCHAR},
       collection_type = #{collectionType,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR},

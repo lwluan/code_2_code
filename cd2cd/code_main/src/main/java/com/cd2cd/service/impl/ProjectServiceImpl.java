@@ -1,8 +1,10 @@
 package com.cd2cd.service.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -13,29 +15,35 @@ import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
+import com.cd2cd.domain.ProProjectDatabaseRel;
+import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.gen.ProFileCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
+import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
+import com.cd2cd.domain.gen.ProTableCriteria;
 import com.cd2cd.mapper.ProFileMapper;
 import com.cd2cd.mapper.ProModuleMapper;
+import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
 import com.cd2cd.mapper.ProProjectMapper;
+import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProjectService;
+import com.cd2cd.util.BeanUtil;
 import com.cd2cd.util.FileTypeEnum;
 import com.cd2cd.util.PackageTypeEnum;
 import com.cd2cd.util.ProjectModuleTypeEnum;
 import com.cd2cd.vo.BaseRes;
+import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProTableVo;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
-	@Autowired
-	ProProjectMapper proProjectMapper;
-
-	@Autowired
-	ProModuleMapper proModuleMapper;
+	@Autowired ProProjectMapper proProjectMapper;
+	@Autowired ProModuleMapper proModuleMapper;
+	@Autowired ProFileMapper proFileMapper;
+	@Autowired ProProjectDatabaseRelMapper	proProjectDatabaseRelMapper;
+	@Autowired ProTableMapper proTableMapper;
 	
-	@Autowired
-	ProFileMapper proFileMapper;
-
 	@Override
 	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
 
@@ -48,12 +56,24 @@ public class ProjectServiceImpl implements ProjectService {
 			return res;
 		}
 		
-		List<ProModule> modules = null;
-		if (moduleId == null || moduleId < 1 ) {
+		ProModule commProModule = new ProModule();
+		
+		/**
+		 * moduleId: -1:为公共模块, 0:他部
+		 * example: com.test.controller
+		 */
+		List<ProModule> modules = new ArrayList<ProModule>();
+		if (moduleId == null || moduleId == 0 ) {
 			// fetch All module
 			ProModuleCriteria mProModuleCriteria = new ProModuleCriteria();
 			mProModuleCriteria.createCriteria().andProjectIdEqualTo(projectId);
 			modules = proModuleMapper.selectByExample(mProModuleCriteria);
+			modules.add(commProModule);
+			
+		} else if(moduleId == -1) { 
+			
+			modules.add(commProModule);
+			
 		} else {
 			// fetch one module
 			modules = new ArrayList<ProModule>();
@@ -117,9 +137,13 @@ public class ProjectServiceImpl implements ProjectService {
 			
 			// query file list, the same controller\service\vo\dmain\mapper\page
 			ProFileCriteria mProFileCriteria = new ProFileCriteria();
-			mProFileCriteria.createCriteria()
-			.andProjectIdEqualTo(projectId)
-			.andModuleIdEqualTo(moduleId);
+			ProFileCriteria.Criteria mCriteria = mProFileCriteria.createCriteria();
+			mCriteria.andProjectIdEqualTo(projectId);
+			if( moduleId != null && moduleId > 0 ) { 
+				mCriteria.andModuleIdEqualTo(moduleId);
+			} else {
+				mCriteria.andModuleIdIsNull();
+			}
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);
 			
 			Integer modulePid = pId;
@@ -141,9 +165,11 @@ public class ProjectServiceImpl implements ProjectService {
 				}
 			} else {
 				String _module = module.getName();
-				JSONObject moduleNode = newJson(treeId, pId, _module, "package");
-				modulePid = moduleNode.getInt("id");
-				rootArray.put(moduleNode);
+				if( StringUtils.isNotEmpty(_module) ) {
+					JSONObject moduleNode = newJson(treeId, pId, _module, "package");
+					modulePid = moduleNode.getInt("id");
+					rootArray.put(moduleNode);
+				}
 				
 				controllerNode = newJson(treeId, modulePid, "controller", "package");
 				serviceNode = newJson(treeId, modulePid, "service", "package");
@@ -168,25 +194,25 @@ public class ProjectServiceImpl implements ProjectService {
 				
 				// module name within in package name
 				
-				String type = file.getType();
-				String dType = file.getDtype();
+				String fileType = file.getFileType();
+				String classType = file.getClassType();
 				JSONObject temp = null;
 				Integer _pId = null;
 				
-				if( FileTypeEnum.controller.eq(type) ) {
+				if( FileTypeEnum.controller.eq(fileType) ) {
 					_pId = controllerNodeId;
-				} else if( FileTypeEnum.service.eq(type) ) {
+				} else if( FileTypeEnum.service.eq(fileType) ) {
 					_pId = serviceNodeId;
-				} else if( FileTypeEnum.mapper.eq(type) ) {
+				} else if( FileTypeEnum.mapper.eq(fileType) ) {
 					_pId = mapperNodeId;
-				} else if( FileTypeEnum.vo.eq(type) ) {
+				} else if( FileTypeEnum.vo.eq(fileType) ) {
 					_pId = voNodeId;
-				} else if( FileTypeEnum.domain.eq(type) ) {
+				} else if( FileTypeEnum.domain.eq(fileType) ) {
 					_pId = domainNodeId;
 				}
 				
-				temp = newJson(treeId, _pId, file.getName() + ".java", type);
-				temp.put("dType", dType);
+				temp = newJson(treeId, _pId, file.getName() + ".java", fileType);
+				temp.put("classType", classType);
 				rootArray.put(temp);
 			}
 		}
@@ -216,9 +242,14 @@ public class ProjectServiceImpl implements ProjectService {
 			
 			// query file list, the same controller\service\vo\dmain\mapper\page
 			ProFileCriteria mProFileCriteria = new ProFileCriteria();
-			mProFileCriteria.createCriteria()
-			.andProjectIdEqualTo(projectId)
-			.andModuleIdEqualTo(moduleId);
+			ProFileCriteria.Criteria mCriteria = mProFileCriteria.createCriteria();
+			mCriteria.andProjectIdEqualTo(projectId);
+			if( moduleId != null && moduleId > 0 ) { 
+				mCriteria.andModuleIdEqualTo(moduleId);
+			} else {
+				mCriteria.andModuleIdIsNull();
+			}
+			
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);
 			
 			// package -_ file
@@ -238,7 +269,11 @@ public class ProjectServiceImpl implements ProjectService {
 					rootArray.put(domainNode);
 				}
 			} else {
-				String _basePkgName = basePkgName + "." + module.getName();
+				String _basePkgName = basePkgName;
+				if( StringUtils.isNotEmpty(module.getName()) ) {
+					_basePkgName = _basePkgName + "." + module.getName();
+				}
+				
 				controllerNode = newJson(treeId, srcId, _basePkgName + ".controller", "package");
 				serviceNode = newJson(treeId, srcId, _basePkgName + ".service", "package");
 				mapperNode = newJson(treeId, srcId, _basePkgName + ".mapper", "package");
@@ -262,25 +297,25 @@ public class ProjectServiceImpl implements ProjectService {
 				
 				// module name within in package name
 				
-				String type = file.getType();
-				String dType = file.getDtype();
+				String fileType = file.getFileType();
+				String classType = file.getClassType();
 				JSONObject temp = null;
 				Integer pId = null;
 				
-				if( FileTypeEnum.controller.eq(type) ) {
+				if( FileTypeEnum.controller.eq(fileType) ) {
 					pId = controllerNodeId;
-				} else if( FileTypeEnum.service.eq(type) ) {
+				} else if( FileTypeEnum.service.eq(fileType) ) {
 					pId = serviceNodeId;
-				} else if( FileTypeEnum.mapper.eq(type) ) {
+				} else if( FileTypeEnum.mapper.eq(fileType) ) {
 					pId = mapperNodeId;
-				} else if( FileTypeEnum.vo.eq(type) ) {
+				} else if( FileTypeEnum.vo.eq(fileType) ) {
 					pId = voNodeId;
-				} else if( FileTypeEnum.domain.eq(type) ) {
+				} else if( FileTypeEnum.domain.eq(fileType) ) {
 					pId = domainNodeId;
 				}
 				
-				temp = newJson(treeId, pId, file.getName() + ".java", type);
-				temp.put("dType", dType);
+				temp = newJson(treeId, pId, file.getName() + ".java", fileType);
+				temp.put("classType", classType);
 				rootArray.put(temp);
 			}
 		}
@@ -300,6 +335,58 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	private class TreeId {
 		public Integer index = 1;
+	}
+
+	@Override
+	public BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId) {
+		
+		BaseRes<List<ProTableVo>> res = new BaseRes<List<ProTableVo>>();
+		// 1、获取所关联数据库
+		ProProjectDatabaseRelCriteria mProProjectDatabaseRelCriteria = new ProProjectDatabaseRelCriteria();
+		mProProjectDatabaseRelCriteria.createCriteria().andProjectIdEqualTo(projectId);
+		List<ProProjectDatabaseRel> dbs = proProjectDatabaseRelMapper.selectByExample(mProProjectDatabaseRelCriteria);
+		
+		// 2、获取数据库关联表
+		if( dbs.size() > 0 ) {
+			List<Long> ids = new ArrayList<Long>();
+			for( ProProjectDatabaseRel db : dbs ) {
+				ids.add(db.getDatabaseId());
+			}
+		
+			ProTableCriteria mProTableCriteria = new ProTableCriteria();
+			mProTableCriteria.createCriteria().andDatabaseIdIn(ids);
+			List<ProTable> tables = proTableMapper.selectByExample(mProTableCriteria);
+			
+			if( tables.size() > 0 ) {
+				List<ProTableVo> tabVos = BeanUtil.voConvertList(tables, ProTableVo.class);
+				res.setData(tabVos);
+			}
+		}
+		
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<String> addFile(ProFileVo proFileVo) {
+		
+		proFileVo.setCreateTime(new Date());
+		proFileVo.setUpdateTime(new Date());
+		
+		// 公共模块
+		if( proFileVo.getModuleId() == null || proFileVo.getModuleId() == 0 ) {
+			proFileVo.setModuleId(null);
+		}
+		
+		BaseRes<String> res = new BaseRes<String>();
+		
+		int effect = proFileMapper.insert(proFileVo);
+		if( effect > 0 ) {
+			res.setServiceCode(ServiceCode.SUCCESS);
+		} else {
+			res.setServiceCode(ServiceCode.FAILED);
+		}
+		return res;
 	}
 	
 

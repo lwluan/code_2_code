@@ -27,7 +27,8 @@
 
         <!-- slider -->
         <left-slider ref="leftSlider"
-        	v-on:open_file="function(node){$refs.fileEditorTab.openFile(node);}">
+        	v-on:open_file="function(node) { $refs.fileEditorTab.openFile(node); }"
+        	v-on:add_file="function(node) { $refs.addFilePanel.popShowPanel(node); } ">
         </left-slider>
 
         <div class="body-content">
@@ -56,6 +57,10 @@
 	<!-- 弹出提示框 -->
     <confirm-box></confirm-box>
     
+    
+    <!-- 添加文件/ controller/service/dao/vo/page -->
+    <add-file ref="addFilePanel"></add-file>
+    
 </div>
 
 
@@ -70,7 +75,7 @@
 <script src="/code_main/js/comm.js"></script>
 <script src="/code_main/js/component.js?t=030"></script>
 <script src="/code_main/js/project/pro_comm.js"></script>
-<script src="/code_main/js/project/index.js?t=ss8"></script>
+<script src="/code_main/js/project/index.js?t=ss38888"></script>
 
 </body>
 </html>
