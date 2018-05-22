@@ -29,9 +29,9 @@
 			connectionURL="jdbc:mysql://127.0.0.1:3306/auto_code" userId="root" password="root" >
 		</jdbcConnection>
 		
-		<javaModelGenerator targetPackage="com.cd2cd.domain" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/code_2_code/cd2cd/code_main/src/main/java/" />
-		<sqlMapGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/code_2_code/cd2cd/code_main/src/main/java/" />
-		<javaClientGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/code_2_code/cd2cd/code_main/src/main/java/" type="XMLMAPPER" />
+		<javaModelGenerator targetPackage="com.cd2cd.domain" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" />
+		<sqlMapGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" />
+		<javaClientGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" type="XMLMAPPER" />
 		
 		<!-- sys table -->
 		<table domainObjectName="SysUser" tableName="sys_user" >

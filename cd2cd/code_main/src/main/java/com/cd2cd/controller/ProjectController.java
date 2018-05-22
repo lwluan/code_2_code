@@ -18,6 +18,7 @@ import com.cd2cd.comm.DValid;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.vo.BaseRes;
+import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
 import com.cd2cd.vo.ProTableVo;
 
@@ -70,6 +71,49 @@ public class ProjectController {
 		
 		return projectService.addFile(proFileVo);
 		
+	}
+	
+	@RequestMapping(value = "fetchFileInfo", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<ProFileVo> fetchFileInfo(Long fileId) {
+		
+		BaseRes<ProFileVo> res = projectService.fetchFileInfo(fileId);
+		
+		return res;
+	}
+	
+	@RequestMapping(value = "saveFieldToFile", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProFieldVo> saveFieldToFile(
+			@Validated(value = {DValid.AddEntity.class}) 
+			@RequestBody ProFieldVo fieldVo,
+			BindingResult bindingResult) {
+		
+		BaseRes<ProFieldVo> res = new BaseRes<ProFieldVo>();
+		if( bindingResult.hasErrors() ) {
+			res.setServiceCode(ServiceCode.INVALID_PARAMS);
+			return res;
+		} 
+	
+		return projectService.saveOrUpdateFieldToFile(fieldVo);
+	}
+	
+	@RequestMapping(value = "updateFieldToFile", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProFieldVo> updateFieldToFile(
+			@Validated(value = {DValid.ModifyEntity.class}) 
+			@RequestBody ProFieldVo fieldVo,
+			BindingResult bindingResult) {
+		
+		BaseRes<ProFieldVo> res = new BaseRes<ProFieldVo>();
+		if( bindingResult.hasErrors() ) {
+			res.setServiceCode(ServiceCode.INVALID_PARAMS);
+			return res;
+		} 
+	
+		return projectService.saveOrUpdateFieldToFile(fieldVo);
+	}
+	
+	@RequestMapping(value = "delFieldFromFile", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<String> delFieldFromFile(Long id) {
+		return projectService.delFieldFromFile(id);
 	}
 	
 	/**

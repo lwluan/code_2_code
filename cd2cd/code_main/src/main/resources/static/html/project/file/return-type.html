@@ -11,7 +11,7 @@
 					
 					<!-- 返回类型 void / page / base / vo / file / img -->
 					<form-down-menu
-                		v-bind:label="'返回对象类型'" v-bind:tip="'* 返回对象类型不可为空'"
+                		v-bind:label="'对象类型'" v-bind:tip="'* 返回对象类型不可为空'"
                 		v-bind:values="returnTypeDrodown.values"
                 		v-bind:selected="returnTypeDrodown.selected"
                 		v-on:changeSelected="function(val){ formData.returnType = val.key; changeReturnTypeFunc(val.key); console.info('val.key='+val.key); }"
@@ -20,7 +20,7 @@
 					
 					<!-- base type -->
 					<form-down-menu
-                		v-bind:label="'请选择返回类型'" v-bind:tip="'* 返回类型不可为空'"
+                		v-bind:label="'返回类型'" v-bind:tip="'* 返回类型不可为空'"
                 		v-bind:values="returnTypeValDrodown.values"
                 		v-bind:selected="returnTypeValDrodown.selected"
                 		v-on:changeSelected="function(val){ formData.returnTypeVal = val.key; console.info('val.key='+val.key); }"

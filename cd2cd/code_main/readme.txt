@@ -98,3 +98,13 @@ check 检查
 建议表添加字段 - 逻辑删除字段
 
 ### 前端请求数据统模块
+
+
+### manager vo and edit data for return obj
+
+working vo edit
+
+
+
+
+

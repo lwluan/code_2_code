@@ -4,12 +4,12 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class SuperProField implements Serializable {
-    private Integer id;
+    private Long id;
 
     /**
      * 属于文件ID
      */
-    private Integer fileId;
+    private Long fileId;
 
     /**
      * 名称：英文显示，如：username
@@ -42,25 +42,25 @@ public class SuperProField implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
     /**
      * 属于文件ID
      */
-    public Integer getFileId() {
+    public Long getFileId() {
         return fileId;
     }
 
     /**
      * 属于文件ID
      */
-    public void setFileId(Integer fileId) {
+    public void setFileId(Long fileId) {
         this.fileId = fileId;
     }
 

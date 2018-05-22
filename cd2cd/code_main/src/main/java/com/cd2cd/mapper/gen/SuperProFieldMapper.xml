@@ -2,8 +2,8 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cd2cd.mapper.gen.SuperProFieldMapper">
   <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProField">
-    <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="file_id" jdbcType="INTEGER" property="fileId" />
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="file_id" jdbcType="BIGINT" property="fileId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="data_type" jdbcType="VARCHAR" property="dataType" />
     <result column="type_path" jdbcType="VARCHAR" property="typePath" />
@@ -90,15 +90,15 @@
       <![CDATA[ limit #{mysqlOffset} , #{mysqlLength} ]]>
     </if>
   </select>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from pro_field
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from pro_field
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProFieldCriteria">
     delete from pro_field
@@ -107,18 +107,18 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.cd2cd.domain.ProField">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into pro_field (file_id, name, data_type, 
       type_path, collection_type, comment, 
       create_time, update_time)
-    values (#{fileId,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, 
+    values (#{fileId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{dataType,jdbcType=VARCHAR}, 
       #{typePath,jdbcType=VARCHAR}, #{collectionType,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProField">
-    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Integer">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into pro_field
@@ -150,7 +150,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="fileId != null">
-        #{fileId,jdbcType=INTEGER},
+        #{fileId,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -185,10 +185,10 @@
     update pro_field
     <set>
       <if test="record.id != null">
-        id = #{record.id,jdbcType=INTEGER},
+        id = #{record.id,jdbcType=BIGINT},
       </if>
       <if test="record.fileId != null">
-        file_id = #{record.fileId,jdbcType=INTEGER},
+        file_id = #{record.fileId,jdbcType=BIGINT},
       </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
@@ -218,8 +218,8 @@
   </update>
   <update id="updateByExample" parameterType="map">
     update pro_field
-    set id = #{record.id,jdbcType=INTEGER},
-      file_id = #{record.fileId,jdbcType=INTEGER},
+    set id = #{record.id,jdbcType=BIGINT},
+      file_id = #{record.fileId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       data_type = #{record.dataType,jdbcType=VARCHAR},
       type_path = #{record.typePath,jdbcType=VARCHAR},
@@ -235,7 +235,7 @@
     update pro_field
     <set>
       <if test="fileId != null">
-        file_id = #{fileId,jdbcType=INTEGER},
+        file_id = #{fileId,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -259,11 +259,11 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProField">
     update pro_field
-    set file_id = #{fileId,jdbcType=INTEGER},
+    set file_id = #{fileId,jdbcType=BIGINT},
       name = #{name,jdbcType=VARCHAR},
       data_type = #{dataType,jdbcType=VARCHAR},
       type_path = #{typePath,jdbcType=VARCHAR},
@@ -271,6 +271,6 @@
       comment = #{comment,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -8,39 +8,52 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
 import com.cd2cd.domain.ProTable;
+import com.cd2cd.domain.ProTableColumn;
+import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
+import com.cd2cd.domain.gen.ProTableColumnCriteria;
 import com.cd2cd.domain.gen.ProTableCriteria;
+import com.cd2cd.mapper.ProFieldMapper;
 import com.cd2cd.mapper.ProFileMapper;
 import com.cd2cd.mapper.ProModuleMapper;
 import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
 import com.cd2cd.mapper.ProProjectMapper;
+import com.cd2cd.mapper.ProTableColumnMapper;
 import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.util.BeanUtil;
 import com.cd2cd.util.FileTypeEnum;
 import com.cd2cd.util.PackageTypeEnum;
 import com.cd2cd.util.ProjectModuleTypeEnum;
+import com.cd2cd.util.mbg.Constants;
 import com.cd2cd.vo.BaseRes;
+import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProTableColumnVo;
 import com.cd2cd.vo.ProTableVo;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
-
+	private static final Logger LOG = LoggerFactory.getLogger(ProjectServiceImpl.class);
 	@Autowired ProProjectMapper proProjectMapper;
 	@Autowired ProModuleMapper proModuleMapper;
 	@Autowired ProFileMapper proFileMapper;
+	@Autowired ProFieldMapper proFieldMapper;
+	@Autowired ProTableColumnMapper proTableColumnMapper; 
 	@Autowired ProProjectDatabaseRelMapper	proProjectDatabaseRelMapper;
 	@Autowired ProTableMapper proTableMapper;
 	
@@ -211,7 +224,7 @@ public class ProjectServiceImpl implements ProjectService {
 					_pId = domainNodeId;
 				}
 				
-				temp = newJson(treeId, _pId, file.getName() + ".java", fileType);
+				temp = newJson(treeId, _pId, file.getName() + ".java", fileType, file.getId());
 				temp.put("classType", classType);
 				rootArray.put(temp);
 			}
@@ -314,7 +327,7 @@ public class ProjectServiceImpl implements ProjectService {
 					pId = domainNodeId;
 				}
 				
-				temp = newJson(treeId, pId, file.getName() + ".java", fileType);
+				temp = newJson(treeId, pId, file.getName() + ".java", fileType, file.getId());
 				temp.put("classType", classType);
 				rootArray.put(temp);
 			}
@@ -322,12 +335,17 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType) throws JSONException {
+		return this.newJson(treeId, pId, name, fileType, 0l);
+	}
+	
+	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType, Long fileId) throws JSONException {
 		
 		treeId.index ++;
 		
 		JSONObject packageNode = new JSONObject();
 		packageNode.put("id", treeId.index);
 		packageNode.put("pId", pId);
+		packageNode.put("fileId", fileId);
 		packageNode.put("name", name);
 		packageNode.put("fileType", fileType);
 		return packageNode;
@@ -386,6 +404,75 @@ public class ProjectServiceImpl implements ProjectService {
 		} else {
 			res.setServiceCode(ServiceCode.FAILED);
 		}
+		return res;
+	}
+
+	@Override
+	public BaseRes<ProFileVo> fetchFileInfo(Long fileId) {
+		
+		BaseRes<ProFileVo> res = new BaseRes<ProFileVo>();
+		ProFile proFile = proFileMapper.selectByPrimaryKey(fileId);
+		
+		ProFileVo mProFileVo = BeanUtil.voConvert(proFile, ProFileVo.class);
+		
+		ProFieldCriteria mProFieldCriteria = new ProFieldCriteria();
+		mProFieldCriteria.createCriteria().andFileIdEqualTo(fileId);
+		List<ProField> proFields = proFieldMapper.selectByExample(mProFieldCriteria);
+		
+		List<ProFieldVo> proFieldVos = BeanUtil.voConvertList(proFields, ProFieldVo.class);
+		mProFileVo.setFields(proFieldVos);
+		if( proFile.getSuperId() != null && proFile.getSuperId() > 0 ) {
+			
+			if( Constants.FileType.VO.equals(proFile.getFileType()) ) {
+				
+				// fetch table 
+				ProTable proTable = proTableMapper.selectByPrimaryKey(proFile.getSuperId());
+				
+				ProTableColumnCriteria mProTableColumnCriteria = new ProTableColumnCriteria();
+				mProTableColumnCriteria.createCriteria().andTableIdEqualTo(proTable.getId());
+				List<ProTableColumn> columns = proTableColumnMapper.selectByExample(mProTableColumnCriteria);
+				
+				List<ProTableColumnVo> columnVos = BeanUtil.voConvertList(columns, ProTableColumnVo.class);
+			
+				ProTableVo table = BeanUtil.voConvert(proTable, ProTableVo.class);
+				table.setColumns(columnVos);
+				mProFileVo.setTable(table);
+			}
+		}
+		
+		res.setData(mProFileVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<ProFieldVo> saveOrUpdateFieldToFile(ProFieldVo fileVo) {
+		
+		fileVo.setUpdateTime(new Date());
+		int effect = 0;
+		// update
+		if( fileVo.getId() != null ) {
+			
+			effect = proFieldMapper.updateByPrimaryKey(fileVo);
+		} else {
+			// to save 
+			fileVo.setCreateTime(new Date());
+			effect = proFieldMapper.insert(fileVo);
+		}
+		
+		LOG.debug("effect={}", effect);
+		
+		BaseRes<ProFieldVo> res = new BaseRes<ProFieldVo>();
+		res.setData(fileVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<String> delFieldFromFile(Long id) {
+		proFieldMapper.deleteByPrimaryKey(id);
+		BaseRes<String> res = new BaseRes<String>();
+		res.setServiceCode(ServiceCode.SUCCESS);
 		return res;
 	}
 	

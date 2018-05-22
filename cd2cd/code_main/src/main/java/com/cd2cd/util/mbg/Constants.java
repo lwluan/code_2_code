@@ -6,12 +6,22 @@ import java.util.Set;
 
 public class Constants {
 
+	public static class FileType {
+		public static final String VO = "vo";
+		public static final String Controller = "controller";
+		public static final String Service = "service";
+		public static final String Dao = "dao";
+		public static final String Domain = "domain";
+	}
 	/**
 	 * 忽略以下表和VO自动生成和，创建
 	 */
 	public static final String[] IGNORE_TABLES = new String[] { "sys_authority", "sys_authority_role_rel", "sys_role",
 			"sys_user", "sys_user_role_rel" };
 
+	/**
+	 * 默认值为以下list中时，不添加单引号
+	 */
 	public static final Set<String> DEFAULT_NO_STRING = new HashSet<String>() {
 		private static final long serialVersionUID = 1L;
 		{

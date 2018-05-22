@@ -1,8 +1,22 @@
 package com.cd2cd.domain;
 
-import com.cd2cd.domain.gen.SuperProFile;
 import java.io.Serializable;
+import java.util.List;
 
+import com.cd2cd.domain.gen.SuperProFile;
+
+@SuppressWarnings("serial")
 public class ProFile extends SuperProFile implements Serializable {
-    private static final long serialVersionUID = 1L;
+    
+    private List<ProTableColumn> columns;
+
+	public List<ProTableColumn> getColumns() {
+		return columns;
+	}
+
+	public void setColumns(List<ProTableColumn> columns) {
+		this.columns = columns;
+	}
+    
+    
 }

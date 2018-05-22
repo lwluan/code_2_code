@@ -12,7 +12,7 @@ public interface SuperProFieldMapper {
 
     int deleteByExample(ProFieldCriteria example);
 
-    int deleteByPrimaryKey(Integer id);
+    int deleteByPrimaryKey(Long id);
 
     int insert(ProField record);
 
@@ -20,7 +20,7 @@ public interface SuperProFieldMapper {
 
     List<ProField> selectByExample(ProFieldCriteria example);
 
-    ProField selectByPrimaryKey(Integer id);
+    ProField selectByPrimaryKey(Long id);
 
     int updateByExampleSelective(@Param("record") ProField record, @Param("example") ProFieldCriteria example);
 

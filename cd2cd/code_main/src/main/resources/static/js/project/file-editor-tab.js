@@ -2,9 +2,12 @@
 define(['text!'+ctx+'/html/project/file-editor-tab.html'], function( template ) {
 
     var data = { 
-    	tabMenus: [ {"dType":"class","name":"CustomController.java","pId":4,"id":10,"fileType":"controller"},
+    	tabMenus: [ 
+    	           /* test data
+    	            {"dType":"class","name":"CustomController.java","pId":4,"id":10,"fileType":"controller"},
     	            {"dType":"class","name":"UserController.java","pId":4,"id":11,"fileType":"controller"},
     	            {"dType":"class","name":"SystemController.java","pId":4,"id":12,"fileType":"controller"}
+    	            */
     	]
     };
     
@@ -17,6 +20,7 @@ define(['text!'+ctx+'/html/project/file-editor-tab.html'], function( template ) 
         },
         components: {
             'file-editor': createComponent('/js/project/file/file-editor.js'),
+            'vo-file': createComponent('/js/project/file/vo-file.js'),
         },
         methods: {
         	
