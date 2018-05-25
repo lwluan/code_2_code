@@ -102,7 +102,17 @@ check 检查
 
 ### manager vo and edit data for return obj
 
+
+#####
+componet use demo
+#####
+
+2018-05-24
 working vo edit
+- super id +++
+- toast show +++
+- tab item show  +++
+- vo property val is vo of T
 
 
 

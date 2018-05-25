@@ -4,7 +4,13 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 		formData : {},
 		columns: [],
 		fields: [],
-		table: {}
+		domainClass: [],
+		table: {},
+		typePath: {
+			base: BASE_TYPES,
+			vo:[],
+			T:[{key: 'T', label: 'T' }]
+		}
 	};
 
 	var component = {
@@ -17,6 +23,39 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 		},
 		methods : {
 
+			changeSuperDomain: function() {
+				var that = this;
+				RestData.fetchTableHasColumnsByTableId(this.formData.superId, function(res) {
+					var columns = res.data.columns;
+					var table = res.data;
+					
+					that.columns = columns;
+					that.table = table;
+				});
+					
+			},
+			/**
+			 * base vo T
+			 */
+			changeDataType: function(dataType) {
+				
+				var that = this;
+				if( 'vo' == dataType ) {
+					
+					// fetch all vo
+					RestData.fetchAllVoByProjectId(projectId, 'vo', function(res) {
+						var vos = res.data;
+						if( vos ) {
+							var voList = [];
+							for( var i=0; i<vos.length; i++ ) {
+								voList.push({key: vos[i].id, label: vos[i].name });
+							}
+							that.typePath.vo = voList;
+						}
+					});
+				}
+				
+			},
 			/**
 			 * fetch file info
 			 * vo-field\
@@ -39,15 +78,43 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 
 							var fields = res.data.fields;
 							var table = res.data.table;
-							var columns = table.columns;
+							if( table ) {
+								var columns = table.columns;
+								that.columns = columns;
+							}
+							
+							if( fields && fields.length > 0 ) {
+								for( var i=0; i<fields.length; i++ ) {
+									fields[i].typeOption = {key: fields[i].typeKey, label: fields[i].typePath};
+								}
+							}
 							
 							that.fields = fields;
-							that.columns = columns;
 							that.table = table;
 							
+							var formData = {
+									id: res.data.id,
+									name: res.data.name,
+									comment: res.data.comment,
+							};
+							
+							if( res.data.table ) {
+								formData.extendsName = res.data.table.name;
+								formData.superId = res.data.superId;
+								formData.paradigm = res.data.paradigm;
+							}
+							
+							that.formData = formData;
+							setTimeout(function(){setTextareaStyle($('#fileComment')[0])}, 1000);
 						}
 					});
 
+					// fetch tables from db of project
+					RestData.fetchAllTablesByProject(projectId, function(res) {
+						
+						that.domainClass = res.data;
+						
+					});
 				}
 
 			},
@@ -63,7 +130,7 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 					}
 				}
 				if( hasEmpty ) {
-					this.fields.push( { fileId: fileObj.fileId } );
+					this.fields.push( { fileId: fileObj.fileId, collectionType: 'single', dataType: 'base' } );
 				}
 			},
 
@@ -88,6 +155,9 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 					_url = '/project/updateFieldToFile'
 				}
 				
+				f.typeKey = f.typeOption.key;
+				f.typePath = f.typeOption.label;
+				
 				accessHttp({
                     url: buildUrl(_url),
                     contentType: 'application/json; charset=utf-8',
@@ -95,6 +165,9 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
                     type: 'post',
                     success: function (res) {
                     	var f = res.data;
+
+                    	f.typeOption = {key: f.typeKey, label: f.typePath};
+                    	
                     	Vue.set(that.fields, index, f);
                     	f['__changed'] = false;
                     }
@@ -117,18 +190,43 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
                         }
                     });
                 });
+                
 			}, fieldChangeValue: function(f, index) {
 				f['__changed'] = true;
 				Vue.set(this.fields, index, f);
-			}
+			},
 			
+			/**
+			 * update data of file info
+			 */
+			saveFileInfo: function() {
+				
+				var _url = '/project/modifyFileInfo';
+				accessHttp({
+                    url: buildUrl(_url),
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(this.formData),
+                    type: 'post',
+                    success: function (res) {
+                    	
+                    	bootoast({ 
+                            message: '修改成功！', 
+                            type: 'success', 
+                            position:'right-bottom', 
+                            timeout:2 
+                          }); 
+                    }
+                });
+			}
 			
 		},
 		created : function() {
 
 		},
 		mounted : function() {
+			makeExpandingArea($('#fileComment')[0]);
 			this.loadVoFileInfo();
+			this.changeDataType('vo');			
 		}
 	}
 

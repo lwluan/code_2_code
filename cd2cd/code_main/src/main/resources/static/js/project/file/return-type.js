@@ -39,12 +39,7 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 				
 				// void / page / baseType / vo 
 				if( type == 'baseType' ) {
-					this.returnTypeValDrodown.values = [{key:'String', label:'String'},
-					                               {key:'Integer', label:'Integer'},
-					                               {key:'Double', label:'Double'},
-					                               {key:'Float', label:'Float'},
-					                               {key:'Long', label:'Long'},
-					                               ];
+					this.returnTypeValDrodown.values = BASE_TYPES;
 					
 					this.returnTypeValDrodown.selected = {key:'String', label:'String'};
 				} else if( type ==  'page' ) {

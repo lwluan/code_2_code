@@ -15,3 +15,45 @@ function dateFmt(input) {
 		return "";
 	}
 }
+
+/**
+ * make textarea expanding
+ * @param el
+ */
+var setTextareaStyle = function(el) {  
+    el.style.height = 'auto';  
+    var h = el.scrollHeight;
+    if( h < 20 ) {
+    	h = 20;
+    }
+    el.style.height = h + 'px';  
+}
+function makeExpandingArea(el) {  
+      
+    var delayedResize = function(el) {  
+        window.setTimeout(function() {  
+                setTextareaStyle(el)  
+        }, 0);  
+    }  
+    if (el.addEventListener) {  
+        el.addEventListener('input', function() {  
+            setTextareaStyle(el)  
+        }, false);  
+        setTextareaStyle(el)  
+    } else if (el.attachEvent) {  
+        el.attachEvent('onpropertychange', function() {  
+            setTextareaStyle(el)  
+        });  
+        setTextareaStyle(el)  
+    }  
+    if (window.VBArray && window.addEventListener) { //IE9  
+        el.attachEvent("onkeydown", function() {  
+            var key = window.event.keyCode;  
+            if (key == 8 || key == 46) delayedResize(el);  
+
+        });  
+        el.attachEvent("oncut", function() {  
+            delayedResize(el);  
+        }); //处理粘贴  
+    }  
+}  

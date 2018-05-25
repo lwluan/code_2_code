@@ -5,20 +5,24 @@ import java.util.List;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProTableColumnVo;
 import com.cd2cd.vo.ProTableVo;
 
 public interface ProjectService {
-	
+
 	/**
 	 * 获取项目树结构
+	 * 
 	 * @param packageType
 	 * @param moduleId
 	 * @return
 	 */
-	BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId);
+	BaseRes<String> fetchProjectFileTree(Long projectId, String packageType,
+			Long moduleId);
 
 	/**
 	 * 获取项目关联的所有数据库表
+	 * 
 	 * @param projectId
 	 * @return
 	 */
@@ -26,6 +30,7 @@ public interface ProjectService {
 
 	/**
 	 * 添加文件
+	 * 
 	 * @param proFileVo
 	 * @return
 	 */
@@ -33,13 +38,15 @@ public interface ProjectService {
 
 	/**
 	 * fetch file info that has fields and column if it had
+	 * 
 	 * @param fileId
 	 * @return
 	 */
 	BaseRes<ProFileVo> fetchFileInfo(Long fileId);
 
 	/**
-	 * update or save 
+	 * update or save
+	 * 
 	 * @param fileVo
 	 * @return
 	 */
@@ -47,9 +54,40 @@ public interface ProjectService {
 
 	/**
 	 * delete field from file
+	 * 
 	 * @param id
 	 * @return
 	 */
 	BaseRes<String> delFieldFromFile(Long id);
+
+	/**
+	 * fetch file of project by class type
+	 * @param projectId
+	 * @param classType
+	 * @return
+	 */
+	BaseRes<List<ProFileVo>> fetchFileByClassType(Long projectId,
+			String fileType);
+
+	/**
+	 * modify file info for update
+	 * @param proFileVo
+	 * @return
+	 */
+	BaseRes<ProFileVo> modifyFileInfo(ProFileVo proFileVo);
+
+	/**
+	 * fetch table of db from db
+	 * @param projectId
+	 * @return
+	 */
+	BaseRes<List<ProTableVo>> fetchAllTablesByProject(Long projectId);
+
+	/**
+	 * fetch columns by table id
+	 * @param projectId
+	 * @return
+	 */
+	BaseRes<ProTableVo> fetchColumnsByTableId(Long tableId);
 
 }

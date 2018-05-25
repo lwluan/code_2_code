@@ -11,7 +11,7 @@
  -->
 <div class="edit-page">
 
-<table width="100%">
+<table width="100%" class="table-td-padding-2px">
 	<tr>
 		<td>
 			<table>
@@ -22,25 +22,46 @@
 		
 				<tr>
 					<td>类注释</td>
-					<td><div contenteditable="true" class="comment-box"></div></td>
+					<td>
+						<textarea v-model="formData.comment" id="fileComment" class="comment-box"></textarea>
+					</td>
 					<td>备注： 描述此类的作用</td>
 				</tr>
 		
 				<tr>
 					<td>Extends Class</td>
-					<td><input class="h18px" placeholder="Extends Class" /></td>
+					<td>
+					
+						<select v-model="formData.superId" v-on:change="changeSuperDomain" >
+							<option v-for="(item,index) in domainClass" :value="item.id">{{ item.name }} - {{ item.comment }}</option>
+						</select>
+						
+					</td>
 					<td>备注： UserPojo, extends to domain of table pojo</td>
 				</tr>
 		
 				<tr>
 					<td>Class Name</td>
-					<td><input class="h18px" placeholder="Class Name" /></td>
+					<td><input v-model="formData.name" class="h18px" placeholder="Class Name" /></td>
 					<td>备注： UserVo</td>
+				</tr>
+				
+				<tr>
+					<td> 是否范型 </td>
+					<td>
+						<group-button
+		                    v-bind:name="'dataType'"
+		                    v-bind:selected="formData.paradigm"	                    
+		                    v-bind:values="[{key:'no', label:'no'}, {key:'yes', label:'yes'}]"	                    
+		                    v-on:changeSelected="function(val){formData.paradigm=val; }" >
+	                    </group-button>
+					</td>
+					<td>当为范型类时，成员变量引用将可为范型 T</td>
 				</tr>
 			</table>
 		</td>
 		<td width="100">
-			<input type="button" class="btn btn-info" value="保存" />
+			<input v-on:click="saveFileInfo" type="button" class="btn btn-info" value="保存" />
 		</td>
 	</tr>
 </table>
@@ -74,26 +95,56 @@
 	</table>
 	
 	<!-- property -->
-	<table class="table table-td-padding-2px">
+	<table class="table table-striped table-bordered table-td-padding-2px">
 		<caption> property list </caption>
 		<thead>
 			<tr>
-				<th>#</th>
+				<th> <input type="button" v-on:click="addFieldToFile" class="btn btn-success btn-xs" value="addField" /> </th>
 				<th>Field Name</th>
-				<th> Type </th>
 				<th> marks </th>
-				<th> 
-				operation 
-				<input type="button" v-on:click="addFieldToFile" class="btn btn-success btn-xs" value="addField" /> 
-				</th>
+				<th> 类类型 </th>
+				<th> 类型 </th>
+				<th> 集合类型 </th>
+				<th> operation </th>
 			</tr>
 		</thead>
 		<tbody>
-			<!-- custom defined property to vo class -->
+			<!-- custom defined property to vo class 
+			/**
+			 * comment 字段备注
+			 * fileId 属于文件ID
+			 * name 名称：英文显示，如：username
+			 * dataType 类类型:基本数据类型：base，自定义对象：vo，范型：T
+			 * typePath 如:String、com.user.UserVo
+			 * collectionType 集合类型:单值：single，列表：list，集合：set，Map：map
+			 */
+			-->
 			<tr v-for="(f, index) in fields">
+				<td> # </td>
 				<td> <input v-on:change="fieldChangeValue(f, index)" v-model="f.name" /> </td>
-				<td> <select v-on:change="fieldChangeValue(f, index)"><option></option></select> </td>
-				<td> marks </td>
+				<td> <input v-on:change="fieldChangeValue(f, index)" v-model="f.comment" /> </td>
+				<td> 
+                     <group-button
+	                    v-bind:name="'dataType'"
+	                    v-bind:selected="f.dataType"	                    
+	                    v-bind:values="[{key:'base', label:'基本类型'}, {key:'vo', label:'vo对象'}, { key:'T', label:'范型'}]"	                    
+	                    v-on:changeSelected="function(val){f.dataType=val;fieldChangeValue(f, index);changeDataType(val) }" >
+                    </group-button>
+				</td>
+				<td>
+					<select v-model="f.typeOption" >
+						<option v-for="(item,index) in typePath[f.dataType]" :value="item">{{ item.label }}</option>
+					</select>
+				</td>
+				<td>
+					<group-button
+	                    v-bind:name="'collectionType'"
+	                    v-bind:selected="f.collectionType"	                    
+	                    v-bind:values="[{key:'single', label:'单值'}, {key:'list', label:'列表'}]"	                    
+	                    v-on:changeSelected="function(val){f.collectionType=val;fieldChangeValue(f, index); }" >
+                    </group-button>
+					
+				</td>
 				<td>
 					<input v-show=" ! f.id || f.__changed " v-on:click="saveFieldToFile(f, index)" type="button" class="btn btn-primary btn-xs" value="save" />
 					<input v-on:click="delFieldFromFile(f, index)" type="button" class="btn btn-danger btn-xs" value="del" />

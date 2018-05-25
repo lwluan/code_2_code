@@ -54,7 +54,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired ProFileMapper proFileMapper;
 	@Autowired ProFieldMapper proFieldMapper;
 	@Autowired ProTableColumnMapper proTableColumnMapper; 
-	@Autowired ProProjectDatabaseRelMapper	proProjectDatabaseRelMapper;
+	@Autowired ProProjectDatabaseRelMapper proProjectDatabaseRelMapper;
 	@Autowired ProTableMapper proTableMapper;
 	
 	@Override
@@ -472,6 +472,86 @@ public class ProjectServiceImpl implements ProjectService {
 	public BaseRes<String> delFieldFromFile(Long id) {
 		proFieldMapper.deleteByPrimaryKey(id);
 		BaseRes<String> res = new BaseRes<String>();
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<List<ProFileVo>> fetchFileByClassType(Long projectId,
+			String fileType) {
+		
+		ProFileCriteria mProFileCriteria = new ProFileCriteria();
+		mProFileCriteria.createCriteria()
+		.andProjectIdEqualTo(projectId)
+		.andFileTypeEqualTo(fileType);
+		
+		LOG.info("projectId={}, fileType={}", projectId, fileType);
+		
+		List<ProFile> files = proFileMapper.selectByExample(mProFileCriteria);
+		
+		BaseRes<List<ProFileVo>> res = new BaseRes<List<ProFileVo>>();
+		List<ProFileVo> data = BeanUtil.voConvertList(files, ProFileVo.class);
+		res.setData(data);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<ProFileVo> modifyFileInfo(ProFileVo proFileVo) {
+		
+		int effected = proFileMapper.updateByPrimaryKeySelective(proFileVo);
+		LOG.info("effected={}", effected);
+		
+		BaseRes<ProFileVo> res = new BaseRes<ProFileVo>();
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<List<ProTableVo>> fetchAllTablesByProject(Long projectId) {
+		/**
+		 * fetch talbes from db of project
+		 */
+		
+		List<Long> dbIds = new ArrayList<Long>();
+		
+		ProProjectDatabaseRelCriteria mProProjectDatabaseRelCriteria = new ProProjectDatabaseRelCriteria();
+		mProProjectDatabaseRelCriteria.createCriteria()
+		.andProjectIdEqualTo(projectId);
+		List<ProProjectDatabaseRel> pdrs = proProjectDatabaseRelMapper.selectByExample(mProProjectDatabaseRelCriteria);
+		for( ProProjectDatabaseRel pdr : pdrs ) {
+			dbIds.add(pdr.getDatabaseId());
+		}
+		
+		ProTableCriteria mProTableCriteria = new ProTableCriteria();
+		mProTableCriteria.createCriteria()
+		.andDatabaseIdIn(dbIds);
+		List<ProTable> tables = proTableMapper.selectByExample(mProTableCriteria);
+		List<ProTableVo> tablesVo = BeanUtil.voConvertList(tables, ProTableVo.class);
+		
+		BaseRes<List<ProTableVo>> res = new BaseRes<List<ProTableVo>>();
+		res.setData(tablesVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<ProTableVo> fetchColumnsByTableId(Long tableId) {
+		
+		ProTable mProTable = proTableMapper.selectByPrimaryKey(tableId);
+		
+		
+		ProTableColumnCriteria mProTableColumnCriteria = new ProTableColumnCriteria();
+		mProTableColumnCriteria.createCriteria()
+		.andTableIdEqualTo(tableId);
+		List<ProTableColumn> columns = proTableColumnMapper.selectByExample(mProTableColumnCriteria);
+		List<ProTableColumnVo> columnVos = BeanUtil.voConvertList(columns, ProTableColumnVo.class);
+		
+		ProTableVo mProTableVo = BeanUtil.voConvert(mProTable, ProTableVo.class);
+		mProTableVo.setColumns(columnVos);
+		
+		BaseRes<ProTableVo> res = new BaseRes<ProTableVo>();
+		res.setData(mProTableVo);
 		res.setServiceCode(ServiceCode.SUCCESS);
 		return res;
 	}

@@ -54,6 +54,17 @@ public class ProjectController {
 	}	
 	
 	/**
+	 * fetch column from table by id
+	 * @param projectId
+	 * @return
+	 */
+	@RequestMapping("fetchTableHasColumnsByTableId")
+	public @ResponseBody BaseRes<ProTableVo> fetchTableHasColumnsByTableId(Long tableId) {
+		LOG.info("projectId={}", tableId);
+		return projectService.fetchColumnsByTableId(tableId);
+	}
+	
+	/**
 	 * 添加文件
 	 * @return
 	 */
@@ -73,11 +84,42 @@ public class ProjectController {
 		
 	}
 	
+	/**
+	 * modify file info / name comment 
+	 * @param proFileVo
+	 * @param bindingResult
+	 * @return
+	 */
+	@RequestMapping(value = "modifyFileInfo", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProFileVo> modifyFileInfo(
+			@Validated(value = {DValid.ModifyEntity.class}) 
+			@RequestBody ProFileVo proFileVo,
+			BindingResult bindingResult) {
+		
+		BaseRes<ProFileVo> res = new BaseRes<ProFileVo>();
+		if( bindingResult.hasErrors() ) {
+			res.setServiceCode(ServiceCode.INVALID_PARAMS);
+			return res;
+		} 
+		
+		return projectService.modifyFileInfo(proFileVo);
+	}
+	
+	
+	@RequestMapping(value = "fetchFileByClassType", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<List<ProFileVo>> fetchFileByClassType(Long projectId, String fileType) {
+		return projectService.fetchFileByClassType(projectId, fileType);
+	}
+	
+	@RequestMapping(value = "fetchAllTablesByProject", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<List<ProTableVo>> fetchAllTablesByProject(Long projectId) {
+		return projectService.fetchAllTablesByProject(projectId);
+	}
+	
+	
 	@RequestMapping(value = "fetchFileInfo", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<ProFileVo> fetchFileInfo(Long fileId) {
-		
 		BaseRes<ProFileVo> res = projectService.fetchFileInfo(fileId);
-		
 		return res;
 	}
 	
@@ -115,6 +157,7 @@ public class ProjectController {
 	public @ResponseBody BaseRes<String> delFieldFromFile(Long id) {
 		return projectService.delFieldFromFile(id);
 	}
+
 	
 	/**
 	 * 删除文件

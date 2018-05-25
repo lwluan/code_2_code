@@ -20,15 +20,19 @@ define([ 'text!' + ctx + '/html/component/group-button.html' ], function(
 			}
 		},
 		created : function() {
-			this.selectedKey = this.selected;
+			if( this.selected ) {
+				this.selectedKey = this.selected;
+			}
 		},
 		mounted : function() {
 
 		},
 		watch : {
 			selected : function(val) {
-				this.selectedKey = this.selected;
-				this.$emit('changeSelected', this.selected);
+				if( this.selected ) {
+					this.selectedKey = this.selected;
+				}
+				this.$emit('changeSelected', this.selectedKey);
 			}
 		}
 	}

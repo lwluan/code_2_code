@@ -27,6 +27,11 @@ public class SuperProField implements Serializable {
     private String typePath;
 
     /**
+     * 当data_type为vo时值为vo_id,
+     */
+    private String typeKey;
+
+    /**
      * 集合类型:单值：single，列表：list，集合：set，Map：map
      */
     private String collectionType;
@@ -107,6 +112,20 @@ public class SuperProField implements Serializable {
     }
 
     /**
+     * 当data_type为vo时值为vo_id,
+     */
+    public String getTypeKey() {
+        return typeKey;
+    }
+
+    /**
+     * 当data_type为vo时值为vo_id,
+     */
+    public void setTypeKey(String typeKey) {
+        this.typeKey = typeKey;
+    }
+
+    /**
      * 集合类型:单值：single，列表：list，集合：set，Map：map
      */
     public String getCollectionType() {
@@ -161,6 +180,7 @@ public class SuperProField implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", dataType=").append(dataType);
         sb.append(", typePath=").append(typePath);
+        sb.append(", typeKey=").append(typeKey);
         sb.append(", collectionType=").append(collectionType);
         sb.append(", comment=").append(comment);
         sb.append(", createTime=").append(createTime);
@@ -187,6 +207,7 @@ public class SuperProField implements Serializable {
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getDataType() == null ? other.getDataType() == null : this.getDataType().equals(other.getDataType()))
             && (this.getTypePath() == null ? other.getTypePath() == null : this.getTypePath().equals(other.getTypePath()))
+            && (this.getTypeKey() == null ? other.getTypeKey() == null : this.getTypeKey().equals(other.getTypeKey()))
             && (this.getCollectionType() == null ? other.getCollectionType() == null : this.getCollectionType().equals(other.getCollectionType()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
@@ -202,6 +223,7 @@ public class SuperProField implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getDataType() == null) ? 0 : getDataType().hashCode());
         result = prime * result + ((getTypePath() == null) ? 0 : getTypePath().hashCode());
+        result = prime * result + ((getTypeKey() == null) ? 0 : getTypeKey().hashCode());
         result = prime * result + ((getCollectionType() == null) ? 0 : getCollectionType().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());

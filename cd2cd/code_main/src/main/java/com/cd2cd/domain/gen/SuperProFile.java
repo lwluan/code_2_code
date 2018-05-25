@@ -26,6 +26,8 @@ public class SuperProFile implements Serializable {
      */
     private String name;
 
+    private String comment;
+
     /**
      * 文件类型：controller|service|vo|dao|domain|
      */
@@ -111,6 +113,14 @@ public class SuperProFile implements Serializable {
         this.name = name;
     }
 
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
     /**
      * 文件类型：controller|service|vo|dao|domain|
      */
@@ -180,6 +190,7 @@ public class SuperProFile implements Serializable {
         sb.append(", moduleId=").append(moduleId);
         sb.append(", superId=").append(superId);
         sb.append(", name=").append(name);
+        sb.append(", comment=").append(comment);
         sb.append(", fileType=").append(fileType);
         sb.append(", paradigm=").append(paradigm);
         sb.append(", classType=").append(classType);
@@ -207,6 +218,7 @@ public class SuperProFile implements Serializable {
             && (this.getModuleId() == null ? other.getModuleId() == null : this.getModuleId().equals(other.getModuleId()))
             && (this.getSuperId() == null ? other.getSuperId() == null : this.getSuperId().equals(other.getSuperId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
             && (this.getFileType() == null ? other.getFileType() == null : this.getFileType().equals(other.getFileType()))
             && (this.getParadigm() == null ? other.getParadigm() == null : this.getParadigm().equals(other.getParadigm()))
             && (this.getClassType() == null ? other.getClassType() == null : this.getClassType().equals(other.getClassType()))
@@ -223,6 +235,7 @@ public class SuperProFile implements Serializable {
         result = prime * result + ((getModuleId() == null) ? 0 : getModuleId().hashCode());
         result = prime * result + ((getSuperId() == null) ? 0 : getSuperId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
         result = prime * result + ((getFileType() == null) ? 0 : getFileType().hashCode());
         result = prime * result + ((getParadigm() == null) ? 0 : getParadigm().hashCode());
         result = prime * result + ((getClassType() == null) ? 0 : getClassType().hashCode());

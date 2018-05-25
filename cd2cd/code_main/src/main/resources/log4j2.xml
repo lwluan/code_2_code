@@ -23,9 +23,8 @@
             <AppenderRef ref="Console" />
             <AppenderRef ref="running-log" />
         </Root>
-        <Logger name="com.lwl.simaple" level="info" additivity="true" />
+        <Logger name="com.cd2cd.mapper" level="debug" additivity="true" />
         <Logger name="org.springframework.web" level="info" additivity="true" />
-        <Logger name="org.apache.ibatis" level="info" additivity="true" />
         <Logger name="org.springframework.boot" level="info" additivity="true"/>
     </Loggers>
 </Configuration>

@@ -97,3 +97,11 @@
 .modal-footer {
 	text-align: center;
 }
+
+/** toast */
+.my-alert {
+	position: absolute;
+	width: 60%;
+	right: 60px;
+	bottom: 60px;
+}

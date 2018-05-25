@@ -29,16 +29,23 @@ define(['text!'+ctx+'/html/project/file-editor-tab.html'], function( template ) 
         	},
         	openFile: function(file) {
         		
+        		var openIndex = 0;
         		var noHasNode = true;
         		for(var i=0; i<this.tabMenus.length; i++) {
         			if(file.id == this.tabMenus[i].id) {
         				noHasNode = false;
+        				openIndex = i;
             			break;
         			}	
         		}
         		if(noHasNode) {
         			this.tabMenus.push(file);
+        			openIndex = this.tabMenus.length - 1; 
+        			
         		}
+        		setTimeout(function(){
+        			$('#myTabs li:eq('+openIndex+') a').tab('show')
+        		}, 300);
         	}
            
         

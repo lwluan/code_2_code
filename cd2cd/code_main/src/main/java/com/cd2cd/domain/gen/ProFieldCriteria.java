@@ -475,6 +475,76 @@ public class ProFieldCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andTypeKeyIsNull() {
+            addCriterion("type_key is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyIsNotNull() {
+            addCriterion("type_key is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyEqualTo(String value) {
+            addCriterion("type_key =", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyNotEqualTo(String value) {
+            addCriterion("type_key <>", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyGreaterThan(String value) {
+            addCriterion("type_key >", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyGreaterThanOrEqualTo(String value) {
+            addCriterion("type_key >=", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyLessThan(String value) {
+            addCriterion("type_key <", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyLessThanOrEqualTo(String value) {
+            addCriterion("type_key <=", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyLike(String value) {
+            addCriterion("type_key like", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyNotLike(String value) {
+            addCriterion("type_key not like", value, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyIn(List<String> values) {
+            addCriterion("type_key in", values, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyNotIn(List<String> values) {
+            addCriterion("type_key not in", values, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyBetween(String value1, String value2) {
+            addCriterion("type_key between", value1, value2, "typeKey");
+            return (Criteria) this;
+        }
+
+        public Criteria andTypeKeyNotBetween(String value1, String value2) {
+            addCriterion("type_key not between", value1, value2, "typeKey");
+            return (Criteria) this;
+        }
+
         public Criteria andCollectionTypeIsNull() {
             addCriterion("collection_type is null");
             return (Criteria) this;

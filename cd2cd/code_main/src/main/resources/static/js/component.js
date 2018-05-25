@@ -13,7 +13,6 @@ Vue.component('dropdown-menu', createComponent('/js/component/dropdown-menu.js')
 Vue.component('form-down-menu', createComponent('/js/component/form-down-menu.js'));
 
 
-
 //filter
 Vue.filter("date", function(input) {
 	return dateFmt(input);
