@@ -70,7 +70,7 @@ define(['text!'+ctx+'/html/project/add-file.html'], function( template ) {
                             if( tabs ) {
                             	for( var i=0; i<tabs.length; i++ ) {
                             		var tb = tabs[i];
-                            		tabList.push({ label: tb.name, key: tb.name });
+                            		tabList.push({ label: tb.name, key: tb.id });
                             	}
                             }
                             that.tableListDrodown.values = tabList;
@@ -136,6 +136,7 @@ define(['text!'+ctx+'/html/project/add-file.html'], function( template ) {
                         type: 'post',
                         success: function (res) {
                             $(that.$el).modal('hide');
+                            that.$emit('completed');
                         }
                     });
 				}

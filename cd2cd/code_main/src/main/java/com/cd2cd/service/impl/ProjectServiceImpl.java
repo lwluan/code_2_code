@@ -182,13 +182,15 @@ public class ProjectServiceImpl implements ProjectService {
 					JSONObject moduleNode = newJson(treeId, pId, _module, "package");
 					modulePid = moduleNode.getInt("id");
 					rootArray.put(moduleNode);
+				} else {
+					_module = "";
 				}
 				
-				controllerNode = newJson(treeId, modulePid, "controller", "package");
-				serviceNode = newJson(treeId, modulePid, "service", "package");
-				mapperNode = newJson(treeId, modulePid, "mapper", "package");
-				voNode = newJson(treeId, modulePid, "vo", "package");
-				domainNode = newJson(treeId, modulePid, "domain", "package");
+				controllerNode = newJson(treeId, modulePid, _module, "controller", "package");
+				serviceNode = newJson(treeId, modulePid, _module, "service", "package");
+				mapperNode = newJson(treeId, modulePid, _module, "mapper", "package");
+				voNode = newJson(treeId, modulePid, _module, "vo", "package");
+				domainNode = newJson(treeId, modulePid, _module, "domain", "package");
 				
 				rootArray.put(controllerNode);
 				rootArray.put(serviceNode);
@@ -335,20 +337,28 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 	
 	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType) throws JSONException {
-		return this.newJson(treeId, pId, name, fileType, 0l);
+		return this.newJson(treeId, pId, "", name, fileType, 0l);
 	}
 	
-	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType, Long fileId) throws JSONException {
-		
+	private JSONObject newJson(TreeId treeId, Integer pId, String moduleName, String name, String fileType) throws JSONException {
+		return this.newJson(treeId, pId, moduleName, name, fileType, 0L);
+	}
+	
+	private JSONObject newJson(TreeId treeId, Integer pId, String moduleName, String name, String fileType, Long fileId) throws JSONException {
 		treeId.index ++;
 		
 		JSONObject packageNode = new JSONObject();
 		packageNode.put("id", treeId.index);
+		packageNode.put("indentify", moduleName + "_" + name);
 		packageNode.put("pId", pId);
 		packageNode.put("fileId", fileId);
 		packageNode.put("name", name);
 		packageNode.put("fileType", fileType);
 		return packageNode;
+		
+	}
+	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType, Long fileId) throws JSONException {
+		return this.newJson(treeId, pId, "", name, fileType, fileId);
 	}
 	
 	private class TreeId {

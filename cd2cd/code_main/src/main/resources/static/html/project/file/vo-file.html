@@ -23,7 +23,7 @@
 				<tr>
 					<td>类注释</td>
 					<td>
-						<textarea v-model="formData.comment" id="fileComment" class="comment-box"></textarea>
+						<textarea v-model="formData.comment" class="comment-box fileComment"></textarea>
 					</td>
 					<td>备注： 描述此类的作用</td>
 				</tr>
@@ -68,7 +68,7 @@
 	
 
 	<!-- table list -->
-	<table class="table table-td-padding-2px">
+	<table v-if="formData.superId" class="table table-td-padding-2px">
 		<caption> {{table.name}} - {{table.comment}} </caption>
 		<thead>
 			<tr>

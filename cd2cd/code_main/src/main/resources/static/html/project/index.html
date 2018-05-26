@@ -60,7 +60,7 @@
     
     
     <!-- 添加文件/ controller/service/dao/vo/page -->
-    <add-file ref="addFilePanel"></add-file>
+    <add-file ref="addFilePanel" v-on:completed="$refs.leftSlider.reloadProjectFileTree()"></add-file>
     
 </div>
 

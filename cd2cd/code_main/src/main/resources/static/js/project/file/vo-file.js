@@ -5,7 +5,7 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 		columns: [],
 		fields: [],
 		domainClass: [],
-		table: {},
+		table: { name: '-', comment: '-' },
 		typePath: {
 			base: BASE_TYPES,
 			vo:[],
@@ -24,6 +24,10 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 		methods : {
 
 			changeSuperDomain: function() {
+				
+				if( this.formData.superId < 1 ) {
+					return;
+				}
 				var that = this;
 				RestData.fetchTableHasColumnsByTableId(this.formData.superId, function(res) {
 					var columns = res.data.columns;
@@ -81,6 +85,7 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 							if( table ) {
 								var columns = table.columns;
 								that.columns = columns;
+								that.table = table;
 							}
 							
 							if( fields && fields.length > 0 ) {
@@ -90,12 +95,13 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 							}
 							
 							that.fields = fields;
-							that.table = table;
+							
 							
 							var formData = {
 									id: res.data.id,
 									name: res.data.name,
 									comment: res.data.comment,
+									paradigm: res.data.paradigm,
 							};
 							
 							if( res.data.table ) {
@@ -105,14 +111,18 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 							}
 							
 							that.formData = formData;
-							setTimeout(function(){setTextareaStyle($('#fileComment')[0])}, 1000);
+							
+							var fileComment = $(that.$el).find('.fileComment')[0];
+							setTimeout(function(){ setTextareaStyle(fileComment) }, 800);
 						}
 					});
 
 					// fetch tables from db of project
 					RestData.fetchAllTablesByProject(projectId, function(res) {
 						
-						that.domainClass = res.data;
+						var arr = res.data;
+						arr.splice(0, 0, {id: 0, name: '无', comment: '-'});
+						that.domainClass = arr;						
 						
 					});
 				}
@@ -224,7 +234,8 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 
 		},
 		mounted : function() {
-			makeExpandingArea($('#fileComment')[0]);
+			var fileComment = $(this.$el).find('.fileComment')[0];
+			makeExpandingArea(fileComment);
 			this.loadVoFileInfo();
 			this.changeDataType('vo');			
 		}

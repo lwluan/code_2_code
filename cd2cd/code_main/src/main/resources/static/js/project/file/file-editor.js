@@ -19,10 +19,13 @@ define(['text!'+ctx+'/html/project/file/file-editor.html'], function( template )
         },
         methods: {
         
+        	
+        	
         }, created: function() {
         	
         }, mounted: function() {
-        	
+        	var fileComment = $(this.$el).find('.fileComment')[0];
+			makeExpandingArea(fileComment);
         }
     }
 

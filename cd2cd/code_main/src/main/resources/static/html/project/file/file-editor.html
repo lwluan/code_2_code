@@ -31,7 +31,9 @@ controller:
 		
 		<tr>
 			<td>类注释</td>
-			<td><div contenteditable="true" class="comment-box"></div></td>
+			<td>
+				<textarea class="comment-box fileComment"></textarea>
+			</td>
 			<td>备注： 描述此类的作用 </td>
 		</tr>
 		
@@ -53,9 +55,9 @@ controller:
 		<!-- 方法区 -->
 		<file-method v-on:set-func-return-type="function(mid){console.info('----------');$refs.returnTypePanel.popShowPanel(mid);}"></file-method>
 		
-	
 	</div>
-
+	
+	<input type="button" value=" + add function" class="btn btn-info center-block btn-xs" />
 	<return-type ref="returnTypePanel"></return-type>
 
 

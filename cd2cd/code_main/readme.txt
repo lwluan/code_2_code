@@ -112,8 +112,18 @@ working vo edit
 - super id +++
 - toast show +++
 - tab item show  +++
-- vo property val is vo of T
+- vo property val is vo of T ***
 
+
+- - - - - - 
+no complete
+- vo property select: when T type for property do
+
+1、添加文件不刷新树  +
+2、刷新树，不保存打开状态 +
+3、extends select null+
+
+4、controller return type of vo
 
 
 

@@ -23,8 +23,6 @@ define(['text!' + ctx + '/html/project/left-slider.html',
 	function zTreeOnRightClick(event, treeId, treeNode) {  
 		leftSliderVm.selectTreeNode = treeNode;
 		
-		console.info('treeId=' + treeId + ',treeNode=' + JSON.stringify(treeNode));
-		
 		/**
 		 * package 	右击时: 显示【添加】，隐藏【删除】
 		 * file 	右击时: 显示【添加】，隐藏【添加】
@@ -68,12 +66,16 @@ define(['text!' + ctx + '/html/project/left-slider.html',
 	
 	var leftSliderVm;
 	
-    var data = { };
+    var data = { packageType:'', moduleId: '' };
     var component = {
         template: left_resource,
         data: function(){ return data; },
         methods: {
-        	
+        	reloadProjectFileTree: function() {
+        		
+        		this.fetchProjectFileTree(this.packageType, this.moduleId);
+        		
+        	},
         	fetchProjectFileTree: function(packageType, moduleId) {
         		
         		var url = '/project/fetchProjectFileTree?projectId='+projectId+'&packageType=' + packageType;
@@ -95,7 +97,22 @@ define(['text!' + ctx + '/html/project/left-slider.html',
                 		icon : ctx + "/images/fldr_obj.gif"
                 		controller|service:vo|dao|domain|package
                 		*/
-                    	console.info(zNodes.length);
+                    	// fetch all nodes 
+                    	var treeObj = zTree;
+                		var openStats = {};
+                    	if( treeObj ) {
+                        	var node = treeObj.getNodes();
+                        	var nodes = treeObj.transformToArray(node);
+                        	
+                        	for( var i in nodes ) {
+                        		var nn = nodes[i];
+                        		if( nn['open'] ) {
+                        			var indentify = nn['indentify'];
+                        			openStats[indentify] = true;
+                        		}
+                        	}
+                    	}
+                    	
                     	
                     	for( var i=0; i<zNodes.length; i++ ) {
                     		
@@ -108,6 +125,12 @@ define(['text!' + ctx + '/html/project/left-slider.html',
                     		} else {
                     			node['icon'] = ctx + "/images/jcu_obj.gif";
                     		}
+                    		
+                    		// open status
+                    		if( openStats[node.indentify] ) {
+                    			node['open'] = true;
+                    		}
+                    		
                     		zNodes[i] = node;
                     	}
                     	

@@ -13,7 +13,7 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 		},
 		returnTypeValDrodown: {
 			values: [],
-        	selected: {},
+        	selected: {key: '', label: '请选择'},
 		}
 	};
 
@@ -34,8 +34,12 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 			
 			changeReturnTypeFunc: function(type) {
 				console.info('returnType=' + type);
-				
+				var that = this;
 				// 获取对应类型的数据
+				
+				// clear all 
+				this.returnTypeValDrodown.values = [];
+				this.returnTypeValDrodown.selected = {};
 				
 				// void / page / baseType / vo 
 				if( type == 'baseType' ) {
@@ -45,7 +49,17 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 				} else if( type ==  'page' ) {
 					
 				} else if( type ==  'vo' ) {
-					
+					RestData.fetchAllVoByProjectId(projectId, 'vo', function(res){
+						
+						var list = res.data;
+						var vos = [];
+						for( var i in list ) {
+							var v = list[i];
+							vos.push({key: v.id, label: v.name });
+						}
+						that.returnTypeValDrodown.values = vos;
+						
+					});
 				}
 				// returnTypeValDrodown.values = [{key:'', label:''}]
 				
@@ -55,7 +69,7 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 
 		},
 		mounted : function() {
-			
+			this.changeReturnTypeFunc(this.returnTypeDrodown.selected.key);
 		}
 	}
 
