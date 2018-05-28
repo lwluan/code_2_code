@@ -6,7 +6,8 @@
 		<a href="javascript:;" v-on:click="$emit('add_file', selectTreeNode);"> 
 			<span class="glyphicon glyphicon-remove"></span>添加 
 		</a></li>
-		<li id="r-menu-remove-btn" class="list-group-item ui-menu-item"><a href="#"> 
+		<li id="r-menu-remove-btn" class="list-group-item ui-menu-item">
+		<a href="javascript:;" v-on:click="del_file(selectTreeNode);"> 
 			<span class="glyphicon glyphicon-remove"></span> 删除 
 		</a></li>
 	</ul>	

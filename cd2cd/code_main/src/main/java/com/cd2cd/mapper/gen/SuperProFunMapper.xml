@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cd2cd.mapper.gen.SuperProFileMapper">
-  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProFile">
+<mapper namespace="com.cd2cd.mapper.gen.SuperProFunMapper">
+  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProFun">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="project_id" jdbcType="BIGINT" property="projectId" />
-    <result column="module_id" jdbcType="BIGINT" property="moduleId" />
-    <result column="super_id" jdbcType="BIGINT" property="superId" />
+    <result column="cid" jdbcType="BIGINT" property="cid" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="req_method" jdbcType="VARCHAR" property="reqMethod" />
     <result column="req_path" jdbcType="VARCHAR" property="reqPath" />
-    <result column="file_type" jdbcType="VARCHAR" property="fileType" />
-    <result column="paradigm" jdbcType="VARCHAR" property="paradigm" />
-    <result column="class_type" jdbcType="VARCHAR" property="classType" />
+    <result column="res_type" jdbcType="VARCHAR" property="resType" />
+    <result column="vo_id" jdbcType="BIGINT" property="voId" />
+    <result column="page_id" jdbcType="BIGINT" property="pageId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -74,16 +73,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, project_id, module_id, super_id, name, comment, req_path, file_type, paradigm, 
-    class_type, create_time, update_time
+    id, cid, name, comment, req_method, req_path, res_type, vo_id, page_id, create_time, 
+    update_time
   </sql>
-  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFunCriteria" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from pro_file
+    from pro_fun
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -97,46 +96,40 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from pro_file
+    from pro_fun
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from pro_file
+    delete from pro_fun
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria">
-    delete from pro_file
+  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProFunCriteria">
+    delete from pro_fun
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cd2cd.domain.ProFile">
+  <insert id="insert" parameterType="com.cd2cd.domain.ProFun">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_file (project_id, module_id, super_id, 
-      name, comment, req_path, 
-      file_type, paradigm, class_type, 
-      create_time, update_time)
-    values (#{projectId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, #{superId,jdbcType=BIGINT}, 
-      #{name,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, #{reqPath,jdbcType=VARCHAR}, 
-      #{fileType,jdbcType=VARCHAR}, #{paradigm,jdbcType=VARCHAR}, #{classType,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+    insert into pro_fun (cid, name, comment, 
+      req_method, req_path, res_type, 
+      vo_id, page_id, create_time, 
+      update_time)
+    values (#{cid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
+      #{reqMethod,jdbcType=VARCHAR}, #{reqPath,jdbcType=VARCHAR}, #{resType,jdbcType=VARCHAR}, 
+      #{voId,jdbcType=BIGINT}, #{pageId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProFile">
+  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProFun">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_file
+    insert into pro_fun
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="projectId != null">
-        project_id,
-      </if>
-      <if test="moduleId != null">
-        module_id,
-      </if>
-      <if test="superId != null">
-        super_id,
+      <if test="cid != null">
+        cid,
       </if>
       <if test="name != null">
         name,
@@ -144,17 +137,20 @@
       <if test="comment != null">
         comment,
       </if>
+      <if test="reqMethod != null">
+        req_method,
+      </if>
       <if test="reqPath != null">
         req_path,
       </if>
-      <if test="fileType != null">
-        file_type,
+      <if test="resType != null">
+        res_type,
       </if>
-      <if test="paradigm != null">
-        paradigm,
+      <if test="voId != null">
+        vo_id,
       </if>
-      <if test="classType != null">
-        class_type,
+      <if test="pageId != null">
+        page_id,
       </if>
       <if test="createTime != null">
         create_time,
@@ -164,14 +160,8 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="projectId != null">
-        #{projectId,jdbcType=BIGINT},
-      </if>
-      <if test="moduleId != null">
-        #{moduleId,jdbcType=BIGINT},
-      </if>
-      <if test="superId != null">
-        #{superId,jdbcType=BIGINT},
+      <if test="cid != null">
+        #{cid,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
@@ -179,17 +169,20 @@
       <if test="comment != null">
         #{comment,jdbcType=VARCHAR},
       </if>
+      <if test="reqMethod != null">
+        #{reqMethod,jdbcType=VARCHAR},
+      </if>
       <if test="reqPath != null">
         #{reqPath,jdbcType=VARCHAR},
       </if>
-      <if test="fileType != null">
-        #{fileType,jdbcType=VARCHAR},
+      <if test="resType != null">
+        #{resType,jdbcType=VARCHAR},
       </if>
-      <if test="paradigm != null">
-        #{paradigm,jdbcType=VARCHAR},
+      <if test="voId != null">
+        #{voId,jdbcType=BIGINT},
       </if>
-      <if test="classType != null">
-        #{classType,jdbcType=VARCHAR},
+      <if test="pageId != null">
+        #{pageId,jdbcType=BIGINT},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -199,26 +192,20 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria" resultType="java.lang.Long">
-    select count(*) from pro_file
+  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProFunCriteria" resultType="java.lang.Long">
+    select count(*) from pro_fun
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update pro_file
+    update pro_fun
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
       </if>
-      <if test="record.projectId != null">
-        project_id = #{record.projectId,jdbcType=BIGINT},
-      </if>
-      <if test="record.moduleId != null">
-        module_id = #{record.moduleId,jdbcType=BIGINT},
-      </if>
-      <if test="record.superId != null">
-        super_id = #{record.superId,jdbcType=BIGINT},
+      <if test="record.cid != null">
+        cid = #{record.cid,jdbcType=BIGINT},
       </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
@@ -226,17 +213,20 @@
       <if test="record.comment != null">
         comment = #{record.comment,jdbcType=VARCHAR},
       </if>
+      <if test="record.reqMethod != null">
+        req_method = #{record.reqMethod,jdbcType=VARCHAR},
+      </if>
       <if test="record.reqPath != null">
         req_path = #{record.reqPath,jdbcType=VARCHAR},
       </if>
-      <if test="record.fileType != null">
-        file_type = #{record.fileType,jdbcType=VARCHAR},
+      <if test="record.resType != null">
+        res_type = #{record.resType,jdbcType=VARCHAR},
       </if>
-      <if test="record.paradigm != null">
-        paradigm = #{record.paradigm,jdbcType=VARCHAR},
+      <if test="record.voId != null">
+        vo_id = #{record.voId,jdbcType=BIGINT},
       </if>
-      <if test="record.classType != null">
-        class_type = #{record.classType,jdbcType=VARCHAR},
+      <if test="record.pageId != null">
+        page_id = #{record.pageId,jdbcType=BIGINT},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -250,34 +240,27 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update pro_file
+    update pro_fun
     set id = #{record.id,jdbcType=BIGINT},
-      project_id = #{record.projectId,jdbcType=BIGINT},
-      module_id = #{record.moduleId,jdbcType=BIGINT},
-      super_id = #{record.superId,jdbcType=BIGINT},
+      cid = #{record.cid,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       comment = #{record.comment,jdbcType=VARCHAR},
+      req_method = #{record.reqMethod,jdbcType=VARCHAR},
       req_path = #{record.reqPath,jdbcType=VARCHAR},
-      file_type = #{record.fileType,jdbcType=VARCHAR},
-      paradigm = #{record.paradigm,jdbcType=VARCHAR},
-      class_type = #{record.classType,jdbcType=VARCHAR},
+      res_type = #{record.resType,jdbcType=VARCHAR},
+      vo_id = #{record.voId,jdbcType=BIGINT},
+      page_id = #{record.pageId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProFile">
-    update pro_file
+  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProFun">
+    update pro_fun
     <set>
-      <if test="projectId != null">
-        project_id = #{projectId,jdbcType=BIGINT},
-      </if>
-      <if test="moduleId != null">
-        module_id = #{moduleId,jdbcType=BIGINT},
-      </if>
-      <if test="superId != null">
-        super_id = #{superId,jdbcType=BIGINT},
+      <if test="cid != null">
+        cid = #{cid,jdbcType=BIGINT},
       </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
@@ -285,17 +268,20 @@
       <if test="comment != null">
         comment = #{comment,jdbcType=VARCHAR},
       </if>
+      <if test="reqMethod != null">
+        req_method = #{reqMethod,jdbcType=VARCHAR},
+      </if>
       <if test="reqPath != null">
         req_path = #{reqPath,jdbcType=VARCHAR},
       </if>
-      <if test="fileType != null">
-        file_type = #{fileType,jdbcType=VARCHAR},
+      <if test="resType != null">
+        res_type = #{resType,jdbcType=VARCHAR},
       </if>
-      <if test="paradigm != null">
-        paradigm = #{paradigm,jdbcType=VARCHAR},
+      <if test="voId != null">
+        vo_id = #{voId,jdbcType=BIGINT},
       </if>
-      <if test="classType != null">
-        class_type = #{classType,jdbcType=VARCHAR},
+      <if test="pageId != null">
+        page_id = #{pageId,jdbcType=BIGINT},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -306,17 +292,16 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProFile">
-    update pro_file
-    set project_id = #{projectId,jdbcType=BIGINT},
-      module_id = #{moduleId,jdbcType=BIGINT},
-      super_id = #{superId,jdbcType=BIGINT},
+  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProFun">
+    update pro_fun
+    set cid = #{cid,jdbcType=BIGINT},
       name = #{name,jdbcType=VARCHAR},
       comment = #{comment,jdbcType=VARCHAR},
+      req_method = #{reqMethod,jdbcType=VARCHAR},
       req_path = #{reqPath,jdbcType=VARCHAR},
-      file_type = #{fileType,jdbcType=VARCHAR},
-      paradigm = #{paradigm,jdbcType=VARCHAR},
-      class_type = #{classType,jdbcType=VARCHAR},
+      res_type = #{resType,jdbcType=VARCHAR},
+      vo_id = #{voId,jdbcType=BIGINT},
+      page_id = #{pageId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

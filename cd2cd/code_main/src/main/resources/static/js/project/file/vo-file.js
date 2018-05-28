@@ -75,46 +75,42 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 				if (fileObj.fileId && fileObj.fileId > 0) {
 
 					var fileId = fileObj.fileId;
-					var url = '/project/fetchFileInfo?fileId=' + fileId;
-					accessHttp({
-						url : buildUrl(url),
-						success : function(res) {
+					RestData.fetchFileInfo(fileId, function(res){ 
 
-							var fields = res.data.fields;
-							var table = res.data.table;
-							if( table ) {
-								var columns = table.columns;
-								that.columns = columns;
-								that.table = table;
-							}
-							
-							if( fields && fields.length > 0 ) {
-								for( var i=0; i<fields.length; i++ ) {
-									fields[i].typeOption = {key: fields[i].typeKey, label: fields[i].typePath};
-								}
-							}
-							
-							that.fields = fields;
-							
-							
-							var formData = {
-									id: res.data.id,
-									name: res.data.name,
-									comment: res.data.comment,
-									paradigm: res.data.paradigm,
-							};
-							
-							if( res.data.table ) {
-								formData.extendsName = res.data.table.name;
-								formData.superId = res.data.superId;
-								formData.paradigm = res.data.paradigm;
-							}
-							
-							that.formData = formData;
-							
-							var fileComment = $(that.$el).find('.fileComment')[0];
-							setTimeout(function(){ setTextareaStyle(fileComment) }, 800);
+						var fields = res.data.fields;
+						var table = res.data.table;
+						if( table ) {
+							var columns = table.columns;
+							that.columns = columns;
+							that.table = table;
 						}
+						
+						if( fields && fields.length > 0 ) {
+							for( var i=0; i<fields.length; i++ ) {
+								fields[i].typeOption = {key: fields[i].typeKey, label: fields[i].typePath};
+							}
+						}
+						
+						that.fields = fields;
+						
+						
+						var formData = {
+								id: res.data.id,
+								name: res.data.name,
+								comment: res.data.comment,
+								paradigm: res.data.paradigm,
+						};
+						
+						if( res.data.table ) {
+							formData.extendsName = res.data.table.name;
+							formData.superId = res.data.superId;
+							formData.paradigm = res.data.paradigm;
+						}
+						
+						that.formData = formData;
+						
+						var fileComment = $(that.$el).find('.fileComment')[0];
+						setTimeout(function(){ setTextareaStyle(fileComment) }, 800);
 					});
 
 					// fetch tables from db of project
@@ -211,22 +207,8 @@ define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template)
 			 */
 			saveFileInfo: function() {
 				
-				var _url = '/project/modifyFileInfo';
-				accessHttp({
-                    url: buildUrl(_url),
-                    contentType: 'application/json; charset=utf-8',
-                    data: JSON.stringify(this.formData),
-                    type: 'post',
-                    success: function (res) {
-                    	
-                    	bootoast({ 
-                            message: '修改成功！', 
-                            type: 'success', 
-                            position:'right-bottom', 
-                            timeout:2 
-                          }); 
-                    }
-                });
+				RestData.saveFileInfo(this.formData);
+				
 			}
 			
 		},

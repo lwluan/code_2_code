@@ -20,13 +20,13 @@ function todo:
  -->
 
 <div class="file-method">
-	<button type="button" class="close" aria-hidden="true">&times;</button>
+	<button v-on:click="removeFun" type="button" class="close" aria-hidden="true">&times;</button>
 
 	<table class="setting-tab">
 		
 		<tr>
 			<td>方法名称</td>
-			<td><input class="h18px" placeholder="方法名称" /></td>
+			<td><input v-model="formData.name" class="h18px" placeholder="方法名称" /></td>
 			<td>备注： 方法描述，如： 获取用户信息 </td>
 		</tr>
 		
@@ -38,7 +38,7 @@ function todo:
 		
 		<tr>
 			<td>path</td>
-			<td><input class="h18px" placeholder="path" /></td>
+			<td><input v-model="formData.reqPath" class="h18px" placeholder="path" /></td>
 			<td>备注： 访问地址如： /getUserInfo </td>
 		</tr>
 		
@@ -76,4 +76,6 @@ function todo:
 		
 	</table>
 	
+	<!--  updateFun  -->
+	<input v-on:click="updateFun" type="button" class="btn btn-success pull-right" value="save" style="position:absolute;right: 10px;bottom: 10px;" />
 </div>

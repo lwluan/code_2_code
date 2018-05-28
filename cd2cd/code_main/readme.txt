@@ -123,7 +123,12 @@ no complete
 2、刷新树，不保存打开状态 +
 3、extends select null+
 
-4、controller return type of vo
+controller of file type
+1 save file and add req path +
+2 delete file confirm : *** common del fun ++-
+3 add fun for file empty ++
+4 del fun for file empty and has data ++
+
 
 
 

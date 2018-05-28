@@ -20,6 +20,7 @@ import com.cd2cd.service.ProjectService;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProTableVo;
 
 /**
@@ -163,14 +164,55 @@ public class ProjectController {
 	 * 删除文件
 	 * @return
 	 */
-	public BaseRes<String> delFile() {
-		/**
-		 * TODO 
-		 */
-		return null;
+	@RequestMapping(value = "delFileById", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<String> delFileById(Long fileId) {
+		return projectService.delFileById(fileId);
 	}
 	
+	@RequestMapping(value = "addFunction", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProFunVo> addFunction(
+			@Validated(value = {DValid.AddEntity.class}) 
+			@RequestBody ProFunVo proFunVo,
+			BindingResult bindingResult ) {
+		
+		BaseRes<ProFunVo> res = new BaseRes<ProFunVo>();
+		if( bindingResult.hasErrors() ) {
+			res.setServiceCode(ServiceCode.INVALID_PARAMS);
+			return res;
+		} 
+		return projectService.addFunction(proFunVo);
+		
+	}
 	
+	@RequestMapping(value = "modifyFunction", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProFunVo> modifyFunction(
+			@Validated(value = {DValid.ModifyEntity.class}) 
+			@RequestBody ProFunVo proFunVo,
+			BindingResult bindingResult ) {
+		
+		BaseRes<ProFunVo> res = new BaseRes<ProFunVo>();
+		if( bindingResult.hasErrors() ) {
+			res.setServiceCode(ServiceCode.INVALID_PARAMS);
+			return res;
+		} 
+		
+		return projectService.modifyFunction(proFunVo);
+		
+	}
+	
+	@RequestMapping(value = "deleteFunctionByFunId", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<String> deleteFunctionByFunId(Long funId) {
+		
+		return projectService.deleteFunctionByFunId(funId);
+		
+	}
+	
+	@RequestMapping(value = "fetchFunsByFileId", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<List<ProFunVo>> fetchFunsByFileId(Long fileId) {
+		return projectService.fetchFunsByFileId(fileId);
+	}
+	
+	// fetch return vo or page
 	
 	
 }

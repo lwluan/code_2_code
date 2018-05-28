@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
+import com.cd2cd.domain.ProFun;
 import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
@@ -23,12 +24,14 @@ import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
+import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
 import com.cd2cd.domain.gen.ProTableColumnCriteria;
 import com.cd2cd.domain.gen.ProTableCriteria;
 import com.cd2cd.mapper.ProFieldMapper;
 import com.cd2cd.mapper.ProFileMapper;
+import com.cd2cd.mapper.ProFunMapper;
 import com.cd2cd.mapper.ProModuleMapper;
 import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
 import com.cd2cd.mapper.ProProjectMapper;
@@ -43,6 +46,7 @@ import com.cd2cd.util.mbg.Constants;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProTableColumnVo;
 import com.cd2cd.vo.ProTableVo;
 
@@ -56,6 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired ProTableColumnMapper proTableColumnMapper; 
 	@Autowired ProProjectDatabaseRelMapper proProjectDatabaseRelMapper;
 	@Autowired ProTableMapper proTableMapper;
+	@Autowired ProFunMapper proFunMapper;
 	
 	@Override
 	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
@@ -562,6 +567,68 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		BaseRes<ProTableVo> res = new BaseRes<ProTableVo>();
 		res.setData(mProTableVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<String> delFileById(Long fileId) {
+		proFileMapper.deleteByPrimaryKey(fileId);
+		
+		BaseRes<String> res = new BaseRes<String>();
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<List<ProFunVo>> fetchFunsByFileId(Long fileId) {
+		ProFunCriteria mProFunCriteria = new ProFunCriteria();
+		mProFunCriteria.createCriteria().andCidEqualTo(fileId);
+		List<ProFun> funs = proFunMapper.selectByExample(mProFunCriteria);
+		
+		List<ProFunVo> funVos = BeanUtil.voConvertList(funs, ProFunVo.class);
+		BaseRes<List<ProFunVo>> res = new BaseRes<List<ProFunVo>>();
+		res.setData(funVos);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<ProFunVo> addFunction(ProFunVo proFunVo) {
+		proFunVo.setCreateTime(new Date());
+		proFunVo.setUpdateTime(new Date());
+		int effect = proFunMapper.insertSelective(proFunVo);
+		
+		LOG.debug("effect={}", effect);
+		
+		BaseRes<ProFunVo> res = new BaseRes<ProFunVo>();
+		res.setData(proFunVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<ProFunVo> modifyFunction(ProFunVo proFunVo) {
+		
+		proFunVo.setUpdateTime(new Date());
+		int effect = proFunMapper.updateByPrimaryKeySelective(proFunVo);
+		
+		LOG.debug("effect={}", effect);
+		
+		BaseRes<ProFunVo> res = new BaseRes<ProFunVo>();
+		res.setData(proFunVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<String> deleteFunctionByFunId(Long funId) {
+		
+		int effect = proFunMapper.deleteByPrimaryKey(funId);
+		
+		LOG.debug("effect={}", effect);
+		
+		BaseRes<String> res = new BaseRes<String>();
 		res.setServiceCode(ServiceCode.SUCCESS);
 		return res;
 	}

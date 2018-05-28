@@ -29,6 +29,11 @@ public class SuperProFile implements Serializable {
     private String comment;
 
     /**
+     * file_type: controller，时什有效
+     */
+    private String reqPath;
+
+    /**
      * 文件类型：controller|service|vo|dao|domain|
      */
     private String fileType;
@@ -122,6 +127,20 @@ public class SuperProFile implements Serializable {
     }
 
     /**
+     * file_type: controller，时什有效
+     */
+    public String getReqPath() {
+        return reqPath;
+    }
+
+    /**
+     * file_type: controller，时什有效
+     */
+    public void setReqPath(String reqPath) {
+        this.reqPath = reqPath;
+    }
+
+    /**
      * 文件类型：controller|service|vo|dao|domain|
      */
     public String getFileType() {
@@ -191,6 +210,7 @@ public class SuperProFile implements Serializable {
         sb.append(", superId=").append(superId);
         sb.append(", name=").append(name);
         sb.append(", comment=").append(comment);
+        sb.append(", reqPath=").append(reqPath);
         sb.append(", fileType=").append(fileType);
         sb.append(", paradigm=").append(paradigm);
         sb.append(", classType=").append(classType);
@@ -219,6 +239,7 @@ public class SuperProFile implements Serializable {
             && (this.getSuperId() == null ? other.getSuperId() == null : this.getSuperId().equals(other.getSuperId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
+            && (this.getReqPath() == null ? other.getReqPath() == null : this.getReqPath().equals(other.getReqPath()))
             && (this.getFileType() == null ? other.getFileType() == null : this.getFileType().equals(other.getFileType()))
             && (this.getParadigm() == null ? other.getParadigm() == null : this.getParadigm().equals(other.getParadigm()))
             && (this.getClassType() == null ? other.getClassType() == null : this.getClassType().equals(other.getClassType()))
@@ -236,6 +257,7 @@ public class SuperProFile implements Serializable {
         result = prime * result + ((getSuperId() == null) ? 0 : getSuperId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
+        result = prime * result + ((getReqPath() == null) ? 0 : getReqPath().hashCode());
         result = prime * result + ((getFileType() == null) ? 0 : getFileType().hashCode());
         result = prime * result + ((getParadigm() == null) ? 0 : getParadigm().hashCode());
         result = prime * result + ((getClassType() == null) ? 0 : getClassType().hashCode());

@@ -137,6 +137,11 @@ define(['text!' + ctx + '/html/project/left-slider.html',
                     	zTree = $.fn.zTree.init($("#treeDemo"), setting, zNodes);
                     }
                 });
+        	},
+        	
+        	del_file: function(node) {
+        		var fileId = node.fileId;
+        		
         	}
         	
         }, created: function() {

@@ -5,7 +5,7 @@ import java.util.List;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
-import com.cd2cd.vo.ProTableColumnVo;
+import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProTableVo;
 
 public interface ProjectService {
@@ -89,5 +89,15 @@ public interface ProjectService {
 	 * @return
 	 */
 	BaseRes<ProTableVo> fetchColumnsByTableId(Long tableId);
+
+	BaseRes<String> delFileById(Long fileId);
+
+	BaseRes<List<ProFunVo>> fetchFunsByFileId(Long fileId);
+
+	BaseRes<ProFunVo> addFunction(ProFunVo proFunVo);
+
+	BaseRes<ProFunVo> modifyFunction(ProFunVo proFunVo);
+
+	BaseRes<String> deleteFunctionByFunId(Long funId);
 
 }
