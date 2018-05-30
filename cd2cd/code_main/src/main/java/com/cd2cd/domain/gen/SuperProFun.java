@@ -13,6 +13,11 @@ public class SuperProFun implements Serializable {
     private String comment;
 
     /**
+     * 方法名称
+     */
+    private String funName;
+
+    /**
      * request method: post/get/del/put
      */
     private String reqMethod;
@@ -23,16 +28,26 @@ public class SuperProFun implements Serializable {
     private String reqPath;
 
     /**
-     * return type: vo / page
+     * return type: string / vo / page
      */
     private String resType;
 
     /**
      * return vo
      */
-    private Long voId;
+    private Long resVoId;
 
-    private Long pageId;
+    private Long resPageId;
+
+    /**
+     * 在方法中显示使用
+     */
+    private String returnShow;
+
+    /**
+     * todo
+     */
+    private String todoContent;
 
     private Date createTime;
 
@@ -73,6 +88,20 @@ public class SuperProFun implements Serializable {
     }
 
     /**
+     * 方法名称
+     */
+    public String getFunName() {
+        return funName;
+    }
+
+    /**
+     * 方法名称
+     */
+    public void setFunName(String funName) {
+        this.funName = funName;
+    }
+
+    /**
      * request method: post/get/del/put
      */
     public String getReqMethod() {
@@ -101,14 +130,14 @@ public class SuperProFun implements Serializable {
     }
 
     /**
-     * return type: vo / page
+     * return type: string / vo / page
      */
     public String getResType() {
         return resType;
     }
 
     /**
-     * return type: vo / page
+     * return type: string / vo / page
      */
     public void setResType(String resType) {
         this.resType = resType;
@@ -117,23 +146,51 @@ public class SuperProFun implements Serializable {
     /**
      * return vo
      */
-    public Long getVoId() {
-        return voId;
+    public Long getResVoId() {
+        return resVoId;
     }
 
     /**
      * return vo
      */
-    public void setVoId(Long voId) {
-        this.voId = voId;
+    public void setResVoId(Long resVoId) {
+        this.resVoId = resVoId;
     }
 
-    public Long getPageId() {
-        return pageId;
+    public Long getResPageId() {
+        return resPageId;
     }
 
-    public void setPageId(Long pageId) {
-        this.pageId = pageId;
+    public void setResPageId(Long resPageId) {
+        this.resPageId = resPageId;
+    }
+
+    /**
+     * 在方法中显示使用
+     */
+    public String getReturnShow() {
+        return returnShow;
+    }
+
+    /**
+     * 在方法中显示使用
+     */
+    public void setReturnShow(String returnShow) {
+        this.returnShow = returnShow;
+    }
+
+    /**
+     * todo
+     */
+    public String getTodoContent() {
+        return todoContent;
+    }
+
+    /**
+     * todo
+     */
+    public void setTodoContent(String todoContent) {
+        this.todoContent = todoContent;
     }
 
     public Date getCreateTime() {
@@ -162,11 +219,14 @@ public class SuperProFun implements Serializable {
         sb.append(", cid=").append(cid);
         sb.append(", name=").append(name);
         sb.append(", comment=").append(comment);
+        sb.append(", funName=").append(funName);
         sb.append(", reqMethod=").append(reqMethod);
         sb.append(", reqPath=").append(reqPath);
         sb.append(", resType=").append(resType);
-        sb.append(", voId=").append(voId);
-        sb.append(", pageId=").append(pageId);
+        sb.append(", resVoId=").append(resVoId);
+        sb.append(", resPageId=").append(resPageId);
+        sb.append(", returnShow=").append(returnShow);
+        sb.append(", todoContent=").append(todoContent);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -190,11 +250,14 @@ public class SuperProFun implements Serializable {
             && (this.getCid() == null ? other.getCid() == null : this.getCid().equals(other.getCid()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
+            && (this.getFunName() == null ? other.getFunName() == null : this.getFunName().equals(other.getFunName()))
             && (this.getReqMethod() == null ? other.getReqMethod() == null : this.getReqMethod().equals(other.getReqMethod()))
             && (this.getReqPath() == null ? other.getReqPath() == null : this.getReqPath().equals(other.getReqPath()))
             && (this.getResType() == null ? other.getResType() == null : this.getResType().equals(other.getResType()))
-            && (this.getVoId() == null ? other.getVoId() == null : this.getVoId().equals(other.getVoId()))
-            && (this.getPageId() == null ? other.getPageId() == null : this.getPageId().equals(other.getPageId()))
+            && (this.getResVoId() == null ? other.getResVoId() == null : this.getResVoId().equals(other.getResVoId()))
+            && (this.getResPageId() == null ? other.getResPageId() == null : this.getResPageId().equals(other.getResPageId()))
+            && (this.getReturnShow() == null ? other.getReturnShow() == null : this.getReturnShow().equals(other.getReturnShow()))
+            && (this.getTodoContent() == null ? other.getTodoContent() == null : this.getTodoContent().equals(other.getTodoContent()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -207,11 +270,14 @@ public class SuperProFun implements Serializable {
         result = prime * result + ((getCid() == null) ? 0 : getCid().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
+        result = prime * result + ((getFunName() == null) ? 0 : getFunName().hashCode());
         result = prime * result + ((getReqMethod() == null) ? 0 : getReqMethod().hashCode());
         result = prime * result + ((getReqPath() == null) ? 0 : getReqPath().hashCode());
         result = prime * result + ((getResType() == null) ? 0 : getResType().hashCode());
-        result = prime * result + ((getVoId() == null) ? 0 : getVoId().hashCode());
-        result = prime * result + ((getPageId() == null) ? 0 : getPageId().hashCode());
+        result = prime * result + ((getResVoId() == null) ? 0 : getResVoId().hashCode());
+        result = prime * result + ((getResPageId() == null) ? 0 : getResPageId().hashCode());
+        result = prime * result + ((getReturnShow() == null) ? 0 : getReturnShow().hashCode());
+        result = prime * result + ((getTodoContent() == null) ? 0 : getTodoContent().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

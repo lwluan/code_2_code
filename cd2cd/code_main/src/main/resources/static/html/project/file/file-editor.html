@@ -66,8 +66,9 @@ controller:
 			v-bind:fun-obj="fun" 
 			v-bind:file-obj="fileObj"
 			v-on:remove-fun="function(f){removeFunFromFile(f, index);}"
-			v-on:set-func-return-type="function(mid){$refs.returnTypePanel.popShowPanel(mid);}"
-			 >
+			v-on:set-func-return-type="function(cb){$refs.returnTypePanel.popShowPanel(fun, index, cb);}"
+			
+		>
 		</file-method>
 
 	</div>
@@ -76,7 +77,10 @@ controller:
 	<input v-on:click="addNewFunToFile" type="button" value=" + add function" class="btn btn-info center-block btn-xs" />
 		
 	<!-- set fun return panel -->
-	<return-type ref="returnTypePanel"></return-type>
+	<return-type ref="returnTypePanel" 
+		v-bind:file-obj="fileObj"
+		v-on:completed="updateFunReturnType">
+	</return-type>
 
 
 

@@ -91,7 +91,14 @@ define(['text!'+ctx+'/html/project/file/file-editor.html'], function( template )
         	saveFileInfo: function() {
         		
         		RestData.saveFileInfo(this.formData);
+        		
+        	},
+        	
+        	updateFunReturnType: function(i, f) {
+        		console.info('i=' + i + ' | ' + JSON.stringify(f));
+        		Vue.set(this.funs, i, f);
         	}
+        	
         	
         }, created: function() {
         	

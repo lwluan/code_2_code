@@ -6,6 +6,7 @@ import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
 import com.cd2cd.vo.ProFunVo;
+import com.cd2cd.vo.ProPageVo;
 import com.cd2cd.vo.ProTableVo;
 
 public interface ProjectService {
@@ -99,5 +100,7 @@ public interface ProjectService {
 	BaseRes<ProFunVo> modifyFunction(ProFunVo proFunVo);
 
 	BaseRes<String> deleteFunctionByFunId(Long funId);
+
+	BaseRes<List<ProPageVo>> fetchAllPageByProjectId(Long projectId);
 
 }

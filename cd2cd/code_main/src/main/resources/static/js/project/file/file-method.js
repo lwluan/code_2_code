@@ -2,7 +2,8 @@
 define(['text!'+ctx+'/html/project/file/file-method.html'], function( template ) {
 
     var data = { 
-    	formData: {}
+    	formData: {},
+    	methods: HTTP_METHODS
     };
     
     var component = {
@@ -24,7 +25,11 @@ define(['text!'+ctx+'/html/project/file/file-method.html'], function( template )
         		// save or update 
         		RestData.updateOrSaveFunction(this.formData, function(res){
         			that.formData = res.data;
+        			
         			that.$emit('update-completed', res.data);
+        			
+        			var fileComment = $(that.$el).find('.fileComment')[0];
+        			setTimeout(function(){ setTextareaStyle(fileComment); }, 800);
         		});
         		
         	},
@@ -36,13 +41,37 @@ define(['text!'+ctx+'/html/project/file/file-method.html'], function( template )
         	
         	setFuncReturnType: function() {
         		console.info('setFuncReturnType');
-        		this.$emit('set-func-return-type');
+        		var that = this;
+        		this.$emit('set-func-return-type', function(f) {
+        			
+        			console.info('set-func-return-type cb=' +JSON.stringify(f));
+        			
+        			
+        			var fd = $.extend(true, {}, that.formData);
+            		
+            		fd.resType = f.resType;
+            		fd.returnShow = f.returnShow;
+            		if( f.resVoId ) {
+            			fd.resVoId = f.resVoId;
+            		}
+            		
+            		if( f.resPageId ) {
+            			fd.resPageId = f.resPageId;
+            		}
+            		
+            		that.formData = fd;
+        		});
         	}
         	
         }, created: function() {
         	
         }, mounted: function() {
+        	var fileComment = $(this.$el).find('.fileComment')[0];
+        	makeExpandingArea(fileComment);
         	this.formData = $.extend(true, {}, this.funObj);
+        	
+        	setTimeout(function(){ setTextareaStyle(fileComment); }, 800);
+        	
         }
     }
 

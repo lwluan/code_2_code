@@ -1,5 +1,15 @@
 var RestData = {
 		
+		fetchAllPageByProjectId: function(projectId, cb) {
+			var url = '/project/fetchAllPageByProjectId?projectId=' + projectId;
+			accessHttp({
+				url : buildUrl(url),
+				success : function(res) {
+					cb.call(this, res);
+				}
+			});
+		},
+		
 		updateOrSaveFunction: function(fun, cb) {
 			var _url = '/project/addFunction';
 			if( fun.id ) {

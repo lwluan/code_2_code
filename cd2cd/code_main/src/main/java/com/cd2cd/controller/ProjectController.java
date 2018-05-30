@@ -21,6 +21,7 @@ import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
 import com.cd2cd.vo.ProFunVo;
+import com.cd2cd.vo.ProPageVo;
 import com.cd2cd.vo.ProTableVo;
 
 /**
@@ -195,22 +196,24 @@ public class ProjectController {
 			res.setServiceCode(ServiceCode.INVALID_PARAMS);
 			return res;
 		} 
-		
 		return projectService.modifyFunction(proFunVo);
-		
 	}
 	
 	@RequestMapping(value = "deleteFunctionByFunId", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<String> deleteFunctionByFunId(Long funId) {
-		
 		return projectService.deleteFunctionByFunId(funId);
-		
 	}
 	
 	@RequestMapping(value = "fetchFunsByFileId", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<List<ProFunVo>> fetchFunsByFileId(Long fileId) {
 		return projectService.fetchFunsByFileId(fileId);
 	}
+	
+	@RequestMapping(value = "fetchAllPageByProjectId", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<List<ProPageVo>> fetchAllPageByProjectId(Long projectId) {
+		return projectService.fetchAllPageByProjectId(projectId);
+	}
+	
 	
 	// fetch return vo or page
 	

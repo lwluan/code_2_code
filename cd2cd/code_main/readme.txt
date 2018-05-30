@@ -130,6 +130,21 @@ controller of file type
 4 del fun for file empty and has data ++
 
 
+1、update fun content +
+
+# table pro_fun_retval 
+id 
+
+# controller fun return type 
+1 select return type: page or vo +++
+2 vo_id or page_id +++
+3 vo_val_id +++
+4 return data module
+
+
+###
+
+
 
 
 

@@ -14,3 +14,5 @@ var BASE_TYPES = [ {
 	key : 'Long',
 	label : 'Long'
 }, ];
+
+var HTTP_METHODS = [ 'GET', 'POST', 'PUT', 'DELETE', 'HEAD' ]

@@ -1,4 +1,14 @@
-<!-- pop obj -->
+<!-- pop obj 
+
+res_type   : string / vo / page
+	it cant download file, media stream, images 
+	
+res_vo_id  : res data of vo id
+res_page_id: page id
+
+could show data style if res_type is vo or page 
+
+-->
 <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -14,31 +24,39 @@
                 		v-bind:label="'对象类型'" v-bind:tip="'* 返回对象类型不可为空'"
                 		v-bind:values="returnTypeDrodown.values"
                 		v-bind:selected="returnTypeDrodown.selected"
-                		v-on:changeSelected="function(val){ formData.returnType = val.key; changeReturnTypeFunc(val.key); console.info('val.key='+val.key); }"
-                		v-model="formData.returnType" v-bind:name="'returnType'">
+                		v-on:changeSelected="function(val){ formData.resType = val.key; }"
+                		v-model="formData.resType" v-bind:name="'resType'">
                 	</form-down-menu>
 					
-					<!-- base type -->
-					<form-down-menu
-                		v-bind:label="'返回类型'" v-bind:tip="'* 返回类型不可为空'"
-                		v-bind:values="returnTypeValDrodown.values"
-                		v-bind:selected="returnTypeValDrodown.selected"
-                		v-on:changeSelected="function(val){ formData.returnTypeVal = val.key; console.info('val.key='+val.key); }"
-                		v-model="formData.returnTypeVal" v-bind:name="'returnTypeVal'">
+					<!-- page list if type is page -->
+					<form-down-menu 
+						v-show="formData.resType == 'page'"
+                		v-bind:label="'Page页面'" v-bind:tip="'* Page页面'"
+                		v-bind:values="pageListDrodown.values"
+                		v-bind:selected="pageListDrodown.selected"
+                		v-on:changeSelected="function(val){ formData.resPageId = val.key; pageListDrodown.selected = val; }"
+                		v-model="formData.resPageId" v-bind:name="'resPageId'">
+                	</form-down-menu>
+                	
+					<!-- vo type list -->
+					<form-down-menu 
+						v-show="formData.resType == 'vo' || formData.resType == 'page'"
+                		v-bind:label="'vo对象'" v-bind:tip="'* vo对象'"
+                		v-bind:values="voListDrodown.values"
+                		v-bind:selected="voListDrodown.selected"
+                		v-on:changeSelected="function(val){ formData.resVoId = val.key; voListDrodown.selected = val; }"
+                		v-model="formData.resVoId" v-bind:name="'resVoId'">
                 	</form-down-menu>
 					
-					<!-- page -->
-					
-					<!-- vo list operation -->
-					
-                    
+					<!-- panel  -->
                     <div style="clear: both"></div>
+                    
                 </form>
                 
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
-                <button type="button" class="btn btn-primary"> 确定 </button>
+                <button v-on:click="doSetValueCompleted" type="button" class="btn btn-primary"> 确定 </button>
             </div>
         </div>
     </div>

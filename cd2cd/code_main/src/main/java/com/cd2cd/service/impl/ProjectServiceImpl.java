@@ -18,6 +18,7 @@ import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
 import com.cd2cd.domain.ProModule;
+import com.cd2cd.domain.ProPage;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
 import com.cd2cd.domain.ProTable;
@@ -26,6 +27,7 @@ import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
 import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
+import com.cd2cd.domain.gen.ProPageCriteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
 import com.cd2cd.domain.gen.ProTableColumnCriteria;
 import com.cd2cd.domain.gen.ProTableCriteria;
@@ -33,6 +35,7 @@ import com.cd2cd.mapper.ProFieldMapper;
 import com.cd2cd.mapper.ProFileMapper;
 import com.cd2cd.mapper.ProFunMapper;
 import com.cd2cd.mapper.ProModuleMapper;
+import com.cd2cd.mapper.ProPageMapper;
 import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
 import com.cd2cd.mapper.ProProjectMapper;
 import com.cd2cd.mapper.ProTableColumnMapper;
@@ -47,6 +50,7 @@ import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
 import com.cd2cd.vo.ProFunVo;
+import com.cd2cd.vo.ProPageVo;
 import com.cd2cd.vo.ProTableColumnVo;
 import com.cd2cd.vo.ProTableVo;
 
@@ -61,6 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired ProProjectDatabaseRelMapper proProjectDatabaseRelMapper;
 	@Autowired ProTableMapper proTableMapper;
 	@Autowired ProFunMapper proFunMapper;
+	@Autowired ProPageMapper proPageMapper;
 	
 	@Override
 	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
@@ -629,6 +634,21 @@ public class ProjectServiceImpl implements ProjectService {
 		LOG.debug("effect={}", effect);
 		
 		BaseRes<String> res = new BaseRes<String>();
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
+
+	@Override
+	public BaseRes<List<ProPageVo>> fetchAllPageByProjectId(Long projectId) {
+		
+		ProPageCriteria mProPageCriteria = new ProPageCriteria();
+		mProPageCriteria.createCriteria()
+		.andProjectIdEqualTo(projectId);
+		List<ProPage> pages = proPageMapper.selectByExample(mProPageCriteria);
+		List<ProPageVo> pageVos = BeanUtil.voConvertList(pages, ProPageVo.class);
+		
+		BaseRes<List<ProPageVo>> res = new BaseRes<List<ProPageVo>>();
+		res.setData(pageVos);
 		res.setServiceCode(ServiceCode.SUCCESS);
 		return res;
 	}
