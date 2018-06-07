@@ -62,14 +62,14 @@ controller:
 	<div class="body-filed">
 
 		<!-- 方法区 -->
-		<file-method v-for="(fun, index) in funs" 
+		<controller-fun v-for="(fun, index) in funs" 
 			v-bind:fun-obj="fun" 
 			v-bind:file-obj="fileObj"
 			v-on:remove-fun="function(f){removeFunFromFile(f, index);}"
 			v-on:set-func-return-type="function(cb){$refs.returnTypePanel.popShowPanel(fun, index, cb);}"
 			
 		>
-		</file-method>
+		</controller-fun>
 
 	</div>
 
@@ -77,10 +77,10 @@ controller:
 	<input v-on:click="addNewFunToFile" type="button" value=" + add function" class="btn btn-info center-block btn-xs" />
 		
 	<!-- set fun return panel -->
-	<return-type ref="returnTypePanel" 
+	<controller-fun-return-type ref="returnTypePanel" 
 		v-bind:file-obj="fileObj"
 		v-on:completed="updateFunReturnType">
-	</return-type>
+	</controller-fun-return-type>
 
 
 

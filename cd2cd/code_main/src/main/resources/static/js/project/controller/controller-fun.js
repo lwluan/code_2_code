@@ -1,5 +1,5 @@
 /** 底部工具栏 */
-define(['text!'+ctx+'/html/project/file/file-method.html'], function( template ) {
+define(['text!'+ctx+'/html/project/controller/controller-fun.html'], function( template ) {
 
     var data = { 
     	formData: {},

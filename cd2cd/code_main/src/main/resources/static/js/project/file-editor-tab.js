@@ -19,8 +19,8 @@ define(['text!'+ctx+'/html/project/file-editor-tab.html'], function( template ) 
             return _data;
         },
         components: {
-            'file-editor': createComponent('/js/project/file/file-editor.js'),
-            'vo-file': createComponent('/js/project/file/vo-file.js'),
+            'controller': createComponent('/js/project/controller/controller.js'),
+            'vo': createComponent('/js/project/vo.js'),
         },
         methods: {
         	

@@ -140,7 +140,19 @@ id
 2 vo_id or page_id +++
 3 vo_val_id +++
 4 return data module
-
+5 return type is T and set 
+	- has one more T of type for property
+	
+	type:	base/vo/T
+	
+	collectionType: single/list/set/map
+	
+	BaseRes<CommRet<List<User>>> 
+	[	{ type: 'vo', voName: 'CommRet', voId: 2, classType: 'T' }, 
+		{ type: 'vo', voName: 'CommRet', voId: 2, classType: 'class' },
+	];
+	
+test select page
 
 ###
 

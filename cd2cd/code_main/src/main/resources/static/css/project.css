@@ -101,3 +101,18 @@
 	padding: 2px !important;
 }
 
+/** choose return vo */
+.pop-choose-vo-panel {
+	background-color: rgba(0, 0, 0, 0.6);
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+}
+.T-vo-name {
+	display: inline-block;
+	min-width: 40px;
+	min-height: 20px;
+	border:1px dotted #999;
+}

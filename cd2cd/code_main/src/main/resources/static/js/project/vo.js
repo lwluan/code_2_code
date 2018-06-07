@@ -1,4 +1,4 @@
-define([ 'text!' + ctx + '/html/project/file/vo-file.html' ], function(template) {
+define([ 'text!' + ctx + '/html/project/vo.html' ], function(template) {
 
 	var data = {
 		formData : {},

@@ -1,5 +1,5 @@
 /** 底部工具栏 */
-define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
+define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.html' ], function(
 		template) {
 
 	var data = {
@@ -24,11 +24,16 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 		},
 		funIndex: 0,
 		funObj: {},
-		callBack: ''
+		callBack: '',
+		
+		allVoListDic: {} // key: id, val: obj
 	};
 
 	var component = {
 		template : template,
+		components: {
+            'T-vo-choose': createComponent('/js/project/T-vo-choose.js'),
+        },
 		props : [ 'fileObj' ],
 		data : function() {
 			var _data = {}
@@ -43,11 +48,7 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 				this.funIndex = index;
 				
 				
-				
 				var that = this;
-				
-				
-				
 				
 				
 				$(this.$el).modal('show');
@@ -59,10 +60,13 @@ define([ 'text!' + ctx + '/html/project/file/return-type.html' ], function(
 					var vos = [{key: '', label: '请选择'}];
 					for( var i in list ) {
 						var v = list[i];
-						vos.push({key: v.id, label: v.name });
+						v.key = v.id;
+						v.label = v.name;
+						vos.push(v);
+						
+						that.allVoListDic[''+v.id] = v; 
 					}
 					that.voListDrodown.values = vos;
-					
 					
 					
 					RestData.fetchAllPageByProjectId(projectId, function(res){

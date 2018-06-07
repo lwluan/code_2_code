@@ -1,0 +1,17 @@
+<!-- 
+T 类型vo选择 T类型
+ -->
+<span style="height:20px;">
+
+	<span v-on:click="toSelectVo" class="T-vo-name">{{seldVoObj.name}}</span>	
+	
+	<span v-if="allVoListDic[seledVoId] && allVoListDic[seledVoId].paradigm == 'yes'" >
+	&lt;	
+	<T-vo-choose 
+	v-bind:seld-vo-obj="allVoListDic[seledVoId]"
+	v-on:to-select-vo="popChooseVoPanel.popSelfPanel"
+	v-bind:all-vo-list-dic="allVoListDic">
+	</T-vo-choose>
+	&gt;
+	</span>
+</span>

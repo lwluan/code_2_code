@@ -16,3 +16,7 @@ var BASE_TYPES = [ {
 }, ];
 
 var HTTP_METHODS = [ 'GET', 'POST', 'PUT', 'DELETE', 'HEAD' ]
+
+/** T 类型vo选择范型对象 */
+Vue.component('T-vo-choose', createComponent('/js/project/T-vo-choose.js'));
+Vue.component('pop-choose-vo', createComponent('/js/project/pop-choose-vo.js'));

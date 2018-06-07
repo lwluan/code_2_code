@@ -17,10 +17,10 @@
 		<div v-for="tabMenu in tabMenus" role="tabpanel" class="tab-pane fade" v-bind:id="tabMenu.id" aria-labelledby="home-tab">
 			
 			<!-- controller -->
-			<file-editor v-if="tabMenu.fileType == 'controller'" v-bind:file-obj="tabMenu"></file-editor>
+			<controller v-if="tabMenu.fileType == 'controller'" v-bind:file-obj="tabMenu"></controller>
 			
 			<!-- vo manager -->
-			<vo-file v-if="tabMenu.fileType == 'vo'" v-bind:file-obj="tabMenu"></vo-file>
+			<vo v-if="tabMenu.fileType == 'vo'" v-bind:file-obj="tabMenu"></vo>
 			
 			
 		</div>
