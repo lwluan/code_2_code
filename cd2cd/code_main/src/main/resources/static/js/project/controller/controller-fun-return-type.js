@@ -3,7 +3,7 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 		template) {
 
 	var data = {
-		formData : { resType: 'vo' },
+		formData : { resType: 'vo', returnVo:{"name":"","id":0,"collectionType":"","paradigm":""} },
 		returnTypeDrodown: {
 			values: [ { key : 'void', label : 'void 无返回' },
 			          { key : 'vo', label : 'Vo 对象类型' },
@@ -25,8 +25,9 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 		funIndex: 0,
 		funObj: {},
 		callBack: '',
-		
-		allVoListDic: {} // key: id, val: obj
+		chooseReturnVo: {},
+		allVoListDic: {}, // key: id, val: obj
+		changeTVoValue: 0
 	};
 
 	var component = {
@@ -81,14 +82,26 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 						
 						// 初始化数据
 						that.formData = $.extend(true, that.formData, fun);
+						
+						// returnVo 显示处理
+						var rVoStr = fun.returnVo;
+						that.formData.returnVo = eval('('+rVoStr+')');
+						
 						if( fun.resType ) {
 							that.formData.resType = fun.resType;
 						}
+						
+						
+						if( that.formData.resVoId ) {
+							
+							console.info(JSON.stringify(that.formData.returnVo));
+							
+							that.t_vo_choose_completed(that.formData.returnVo, that.formData.resType);
+						}
+						
 					});
 					
-					
 				});
-				
 				
 			},
 			
@@ -105,6 +118,34 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 				
 			},
 			
+			t_vo_choose_completed: function(vo, collectionType) {
+				
+				// collectionType
+				var ct = vo.collectionType;
+				ct = ct ? ct : 'single';
+				var retVo = {name: vo.name, id: vo.id, collectionType: ct, paradigm: vo.paradigm };
+				
+				
+				// vo.next
+				var rName = vo.name;
+				var tmp = vo;
+				var endStr = '';
+				while( tmp.next ) {
+					tmp = tmp.next;
+					retVo.next = {name: tmp.name, id: tmp.id, collectionType: tmp.collectionType, paradigm: tmp.paradigm };
+					
+					if( tmp.collectionType != 'single' ) {
+						rName = rName + '<' + tmp.collectionType ;
+						endStr = endStr + '>';
+					}
+					rName = rName + '<' + tmp.name;
+					endStr = endStr + '>';
+				}
+				
+				rName = rName + endStr;
+				this.chooseReturnVo = {rName: rName, retVo: JSON.stringify(retVo) };
+			},
+			
 			doSetValueCompleted: function() {
 				
 				
@@ -119,16 +160,13 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 					
 					// formData.resVoId
 					if( this.formData.resVoId ) {
-						returnShow = returnShow + this.voListDrodown.selected.label;
+						returnShow = returnShow + this.chooseReturnVo.rName;
+						this.formData.returnVo = this.chooseReturnVo.retVo;
 					}
 					/**
 					 * BaseRes<Prodect> show this
 					 */
-					
 				}
-				
-				// TODO set return show content
-				console.info('funIndex=' + this.funIndex + ' - returnShow=' + returnShow);
 				
 				this.formData.resType = rt;
 				this.formData.returnShow = returnShow;
@@ -143,6 +181,10 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 		},
 		mounted : function() {
 			
+		}, computed: {
+			returnVoName: function() {
+				
+			}
 		}
 	}
 

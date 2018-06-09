@@ -19,9 +19,7 @@ define(['text!'+ctx+'/html/project/pop-choose-vo.html'], function( template ) {
         	
         	popSelfPanel: function(cbFun) {
         		$(this.$el).show();
-        		console.info(' - - - ');
         		this.cbFun = cbFun;
-        		
         		var _data = {}
             	$.extend(true, _data, this.seldVoObj);
                 this.selectedObj = _data;
@@ -30,11 +28,11 @@ define(['text!'+ctx+'/html/project/pop-choose-vo.html'], function( template ) {
         	checkOk: function() {
         		$(this.$el).hide();
         		
-        		console.info(JSON.stringify(this.selectedObj));
+        		// single list map set
+        		var collectionType = $('input[name=collectionType]:checked').val();
+        		this.selectedObj.collectionType = collectionType;
+        		this.cbFun.call(this, this.selectedObj);
         		
-        		if( this.cbFun ) {
-        			this.cbFun.call(this, 'name---');
-        		}
         	}
         	
         }, created: function() {

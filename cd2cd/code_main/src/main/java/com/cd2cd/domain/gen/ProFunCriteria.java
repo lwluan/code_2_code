@@ -805,6 +805,76 @@ public class ProFunCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andReturnVoIsNull() {
+            addCriterion("return_vo is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoIsNotNull() {
+            addCriterion("return_vo is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoEqualTo(String value) {
+            addCriterion("return_vo =", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoNotEqualTo(String value) {
+            addCriterion("return_vo <>", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoGreaterThan(String value) {
+            addCriterion("return_vo >", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoGreaterThanOrEqualTo(String value) {
+            addCriterion("return_vo >=", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoLessThan(String value) {
+            addCriterion("return_vo <", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoLessThanOrEqualTo(String value) {
+            addCriterion("return_vo <=", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoLike(String value) {
+            addCriterion("return_vo like", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoNotLike(String value) {
+            addCriterion("return_vo not like", value, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoIn(List<String> values) {
+            addCriterion("return_vo in", values, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoNotIn(List<String> values) {
+            addCriterion("return_vo not in", values, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoBetween(String value1, String value2) {
+            addCriterion("return_vo between", value1, value2, "returnVo");
+            return (Criteria) this;
+        }
+
+        public Criteria andReturnVoNotBetween(String value1, String value2) {
+            addCriterion("return_vo not between", value1, value2, "returnVo");
+            return (Criteria) this;
+        }
+
         public Criteria andReturnShowIsNull() {
             addCriterion("return_show is null");
             return (Criteria) this;

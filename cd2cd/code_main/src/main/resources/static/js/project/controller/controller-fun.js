@@ -53,6 +53,7 @@ define(['text!'+ctx+'/html/project/controller/controller-fun.html'], function( t
             		fd.returnShow = f.returnShow;
             		if( f.resVoId ) {
             			fd.resVoId = f.resVoId;
+            			fd.returnVo = f.returnVo;
             		}
             		
             		if( f.resPageId ) {

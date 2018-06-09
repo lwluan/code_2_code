@@ -57,9 +57,11 @@ could show data style if res_type is vo or page
 						<div class="col-sm-10">
 							<T-vo-choose 
 								v-bind:pop-choose-vo-pane="$refs.popChooseVoPanel"
-								v-bind:seld-vo-obj="allVoListDic[formData.resVoId]"
+								v-bind:seld-vo-obj="formData.returnVo"
+								v-bind:change-value="changeTVoValue"
+								v-on:completed="t_vo_choose_completed"
 								v-on:to-select-vo="$refs.popChooseVoPanel.popSelfPanel"
-								v-bind:all-vo-list-dic="allVoListDic">
+								>
 							</T-vo-choose>
 						</div>
 					</div>

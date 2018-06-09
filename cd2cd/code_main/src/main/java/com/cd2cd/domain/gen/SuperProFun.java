@@ -39,6 +39,8 @@ public class SuperProFun implements Serializable {
 
     private Long resPageId;
 
+    private String returnVo;
+
     /**
      * 在方法中显示使用
      */
@@ -165,6 +167,14 @@ public class SuperProFun implements Serializable {
         this.resPageId = resPageId;
     }
 
+    public String getReturnVo() {
+        return returnVo;
+    }
+
+    public void setReturnVo(String returnVo) {
+        this.returnVo = returnVo;
+    }
+
     /**
      * 在方法中显示使用
      */
@@ -225,6 +235,7 @@ public class SuperProFun implements Serializable {
         sb.append(", resType=").append(resType);
         sb.append(", resVoId=").append(resVoId);
         sb.append(", resPageId=").append(resPageId);
+        sb.append(", returnVo=").append(returnVo);
         sb.append(", returnShow=").append(returnShow);
         sb.append(", todoContent=").append(todoContent);
         sb.append(", createTime=").append(createTime);
@@ -256,6 +267,7 @@ public class SuperProFun implements Serializable {
             && (this.getResType() == null ? other.getResType() == null : this.getResType().equals(other.getResType()))
             && (this.getResVoId() == null ? other.getResVoId() == null : this.getResVoId().equals(other.getResVoId()))
             && (this.getResPageId() == null ? other.getResPageId() == null : this.getResPageId().equals(other.getResPageId()))
+            && (this.getReturnVo() == null ? other.getReturnVo() == null : this.getReturnVo().equals(other.getReturnVo()))
             && (this.getReturnShow() == null ? other.getReturnShow() == null : this.getReturnShow().equals(other.getReturnShow()))
             && (this.getTodoContent() == null ? other.getTodoContent() == null : this.getTodoContent().equals(other.getTodoContent()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
@@ -276,6 +288,7 @@ public class SuperProFun implements Serializable {
         result = prime * result + ((getResType() == null) ? 0 : getResType().hashCode());
         result = prime * result + ((getResVoId() == null) ? 0 : getResVoId().hashCode());
         result = prime * result + ((getResPageId() == null) ? 0 : getResPageId().hashCode());
+        result = prime * result + ((getReturnVo() == null) ? 0 : getReturnVo().hashCode());
         result = prime * result + ((getReturnShow() == null) ? 0 : getReturnShow().hashCode());
         result = prime * result + ((getTodoContent() == null) ? 0 : getTodoContent().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());

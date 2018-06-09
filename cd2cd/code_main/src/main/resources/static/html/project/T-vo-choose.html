@@ -1,17 +1,26 @@
 <!-- 
 T 类型vo选择 T类型
  -->
-<span style="height:20px;">
-
-	<span v-on:click="toSelectVo" class="T-vo-name">{{seldVoObj.name}}</span>	
-	
-	<span v-if="allVoListDic[seledVoId] && allVoListDic[seledVoId].paradigm == 'yes'" >
+<span style="height:20px;" :ccc="checkChangeTVoValue">
+	<span v-on:click="toSelectVo" class="T-vo-name"> 
+		<template v-if="newSeldVoObj.collectionType && newSeldVoObj.collectionType != 'single'">{{newSeldVoObj.collectionType}}&lt;</template>
+		{{newSeldVoObj.name||""}}
+		
+	</span>	
+	<!-- single list set map -->
+	<template v-if="newSeldVoObj && newSeldVoObj.paradigm == 'yes'" >
 	&lt;	
 	<T-vo-choose 
-	v-bind:seld-vo-obj="allVoListDic[seledVoId]"
-	v-on:to-select-vo="popChooseVoPanel.popSelfPanel"
-	v-bind:all-vo-list-dic="allVoListDic">
+		v-bind:pop-choose-vo-pane="newPopChooseVoPanel"
+		v-bind:seld-vo-obj="newSeldVoObj.next"
+		v-bind:change-value="changeTVoValue"
+		v-on:completed="completed"
+		v-on:to-select-vo="newPopChooseVoPanel.popSelfPanel"
+	>
 	</T-vo-choose>
 	&gt;
-	</span>
+	</template>
+	
+	<template v-if="newSeldVoObj.collectionType && newSeldVoObj.collectionType != 'single'"> &gt; </template>
+	
 </span>
