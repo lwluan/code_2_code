@@ -155,6 +155,23 @@ id
 test select page
 
 ###
+params
+# post json 
+# request body
+# get method : set value for vo one deep
+# post json : one more deep set value
+1、set parmas vo
+2、set parmas data valid
+ 
+
+
+
+
+
+
+
+
+
 
 
 

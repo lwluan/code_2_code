@@ -58,6 +58,7 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 				RestData.fetchAllVoByProjectId(projectId, 'vo', function(res){
 					
 					var list = res.data;
+					var allVoListDic = {};
 					var vos = [{key: '', label: '请选择'}];
 					for( var i in list ) {
 						var v = list[i];
@@ -65,8 +66,9 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 						v.label = v.name;
 						vos.push(v);
 						
-						that.allVoListDic[''+v.id] = v; 
+						allVoListDic[''+v.id] = v; 
 					}
+					that.allVoListDic = allVoListDic;
 					that.voListDrodown.values = vos;
 					
 					
@@ -118,7 +120,7 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 				
 			},
 			
-			t_vo_choose_completed: function(vo, collectionType) {
+			t_vo_choose_completed: function(vo) {
 				
 				// collectionType
 				var ct = vo.collectionType;

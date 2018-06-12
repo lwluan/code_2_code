@@ -90,5 +90,9 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
+		<table domainObjectName="ProFunArg" tableName="pro_fun_arg" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
 	</context>
 </generatorConfiguration>

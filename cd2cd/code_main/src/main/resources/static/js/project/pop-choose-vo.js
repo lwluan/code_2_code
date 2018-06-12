@@ -17,12 +17,25 @@ define(['text!'+ctx+'/html/project/pop-choose-vo.html'], function( template ) {
         },
         methods: {
         	
-        	popSelfPanel: function(cbFun) {
+        	popSelfPanel: function(cbFun, seldVo) {
         		$(this.$el).show();
         		this.cbFun = cbFun;
         		var _data = {}
             	$.extend(true, _data, this.seldVoObj);
-                this.selectedObj = _data;
+        		
+        		// collectionType
+        		if( seldVo && seldVo.collectionType ) {
+        			$('input[value='+seldVo.collectionType+']').attr('checked', true);
+        		}
+        		
+        		
+        		for( var key in this.allVoListDic) {
+        			var tmp = this.allVoListDic[key];
+        			if( tmp.id == seldVo.id ) {
+        				this.selectedObj = this.allVoListDic[key];
+        			} 
+        		}
+                
         	},
         	
         	checkOk: function() {
@@ -33,6 +46,10 @@ define(['text!'+ctx+'/html/project/pop-choose-vo.html'], function( template ) {
         		this.selectedObj.collectionType = collectionType;
         		this.cbFun.call(this, this.selectedObj);
         		
+        	},
+        	
+        	closePanel: function() {
+        		$(this.$el).hide();
         	}
         	
         }, created: function() {

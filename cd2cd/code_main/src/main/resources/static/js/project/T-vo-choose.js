@@ -22,10 +22,11 @@ define(['text!'+ctx+'/html/project/T-vo-choose.html'], function( template ) {
         		var that = this;
         		that.$emit('to-select-vo', function(vo){
         			
+        			console.info(JSON.stringify(vo) + '---');
         			that.newSeldVoObj = vo;
         			
         			that.$emit('completed', that.newSeldVoObj);
-        		});
+        		}, that.seldVoObj);
         	},
         	
         	completed: function(newSeldVoObj) {
