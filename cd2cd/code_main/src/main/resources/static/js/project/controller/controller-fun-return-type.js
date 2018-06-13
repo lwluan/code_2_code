@@ -43,8 +43,20 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 		},
 		methods : {
 
+			changeResSelected: function(val) {
+				
+				this.formData.resVoId = val.key; 
+				this.voListDrodown.selected = val;
+				
+				// resType ...
+				if( ! this.formData.returnVo ) {
+					that.formData.returnVo = val;
+				}
+			},
+			
 			// show self panel in page
 			popShowPanel : function(fun, index, cb) {
+				
 				this.callBack = cb;
 				this.funIndex = index;
 				
@@ -87,7 +99,9 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 						
 						// returnVo 显示处理
 						var rVoStr = fun.returnVo;
+						rVoStr = rVoStr ? rVoStr : '{}';
 						that.formData.returnVo = eval('('+rVoStr+')');
+						
 						
 						if( fun.resType ) {
 							that.formData.resType = fun.resType;
@@ -96,7 +110,7 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 						
 						if( that.formData.resVoId ) {
 							
-							console.info(JSON.stringify(that.formData.returnVo));
+							console.info('that.formData.resVoId->' + JSON.stringify(that.formData.returnVo));
 							
 							that.t_vo_choose_completed(that.formData.returnVo, that.formData.resType);
 						}
@@ -121,6 +135,8 @@ define([ 'text!' + ctx + '/html/project/controller/controller-fun-return-type.ht
 			},
 			
 			t_vo_choose_completed: function(vo) {
+				
+				console.info('=====vo=' + JSON.stringify(vo));
 				
 				// collectionType
 				var ct = vo.collectionType;

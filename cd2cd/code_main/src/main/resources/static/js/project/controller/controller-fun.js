@@ -44,9 +44,6 @@ define(['text!'+ctx+'/html/project/controller/controller-fun.html'], function( t
         		var that = this;
         		this.$emit('set-func-return-type', function(f) {
         			
-        			console.info('set-func-return-type cb=' +JSON.stringify(f));
-        			
-        			
         			var fd = $.extend(true, {}, that.formData);
             		
             		fd.resType = f.resType;

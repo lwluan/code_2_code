@@ -44,7 +44,7 @@ could show data style if res_type is vo or page
                 		v-bind:label="'vo对象'" v-bind:tip="'* vo对象'"
                 		v-bind:values="voListDrodown.values"
                 		v-bind:selected="voListDrodown.selected"
-                		v-on:changeSelected="function(val){ formData.resVoId = val.key; voListDrodown.selected = val; }"
+                		v-on:changeSelected="changeResSelected"
                 		v-model="formData.resVoId" v-bind:name="'resVoId'">
                 	</form-down-menu>
 					

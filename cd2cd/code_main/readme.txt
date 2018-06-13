@@ -163,7 +163,9 @@ params
 1、set parmas vo
 2、set parmas data valid
  
-
+down show for fun, 
+column that pop set params
+name / type / comment / valid(optional)  
 
 
 
