@@ -67,9 +67,11 @@ controller:
 			v-bind:file-obj="fileObj"
 			v-on:remove-fun="function(f){removeFunFromFile(f, index);}"
 			v-on:set-func-return-type="function(cb){$refs.returnTypePanel.popShowPanel(fun, index, cb);}"
+			v-on:set-func-params="function(cb){$refs.controllerFunParamsPanel.showControllerFunParamsList(fun, index, cb); }"
 			
 		>
 		</controller-fun>
+
 
 	</div>
 
@@ -82,6 +84,8 @@ controller:
 		v-on:completed="updateFunReturnType">
 	</controller-fun-return-type>
 
-
+	<!-- set params for fun -->
+	<controller-fun-params ref="controllerFunParamsPanel" >
+	</controller-fun-params>
 
 </div>

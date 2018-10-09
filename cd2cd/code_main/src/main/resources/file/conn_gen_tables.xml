@@ -26,12 +26,12 @@
 		</commentGenerator>
 		
 		 <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://127.0.0.1:3306/co_connections" userId="root" password="root" >
+			connectionURL="jdbc:mysql://127.0.0.1:3306/crm" userId="root" password="root" >
 		</jdbcConnection>
 		
-		<javaModelGenerator targetPackage="com.conn.conn_manager.domain" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/conn_manager/conn_manager_main/src/main/java/" />
-		<sqlMapGenerator targetPackage="com.conn.conn_manager.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/conn_manager/conn_manager_main/src/main/java/" />
-		<javaClientGenerator targetPackage="com.conn.conn_manager.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/conn_manager/conn_manager_main/src/main/java/" type="XMLMAPPER" />
+		<javaModelGenerator targetPackage="com.lwl.crm.domain" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/crm/src/main/java/" />
+		<sqlMapGenerator targetPackage="com.lwl.crm.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/crm/src/main/java/" />
+		<javaClientGenerator targetPackage="com.lwl.crm.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/crm/src/main/java/" type="XMLMAPPER" />
 		
 		<!-- sys table
 		<table domainObjectName="SysUser" tableName="sys_user" >
@@ -50,17 +50,7 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		-->
-		<table domainObjectName="ConnContact" tableName="conn_contact" >
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		
-		<table domainObjectName="UsAssociator" tableName="us_associator" >
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		<table domainObjectName="ConnContactProperty" tableName="conn_contact_property" >
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		<table domainObjectName="ConnEvent" tableName="conn_event" >
+		<table domainObjectName="HwClientToken" tableName="hw_client_token" >
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		

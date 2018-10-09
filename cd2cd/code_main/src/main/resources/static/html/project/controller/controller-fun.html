@@ -66,14 +66,14 @@ function todo:
 			<td>return type</td>
 			<td>
 				<input type="button" v-on:click="setFuncReturnType" class="btn btn-info btn-xs" :value=" formData.resType||'void'" />
-				<span>[{{formData.returnShow}}]</span>
+				<span class="text-warning">[{{formData.returnShow}}]</span>
 			</td>
 			<td>备注： 返回的类型， 可以是 页面/对象， 范型对象  [ index.html 首页内容 ] </td>
 		</tr>
 		
 		<tr>
 			<td>params</td>
-			<td><input class="h18px" placeholder="return type" /></td>
+			<td><p v-on:click="setFuncParams" class="func-params-text text-danger" placeholder="return type" >params</p></td>
 			<td>备注： 请求的参数据， 基本数据类型 </td>
 		</tr>
 		

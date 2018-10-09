@@ -53,7 +53,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		http.headers().frameOptions().disable();
 		http.csrf().disable(); // 禁用 CSRF
 		http.authorizeRequests()
-				.antMatchers("/css/**", "/js/**", "/images/**", "/zui/**"// 静态资源
+				.antMatchers("/css/**", "/js/**", "/images/**" // 静态资源
 				).permitAll();
 
 		// 获取全部权限

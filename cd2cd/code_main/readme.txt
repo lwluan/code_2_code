@@ -168,10 +168,12 @@ column that pop set params
 name / type / comment / valid(optional)  
 
 
+### mybatis 单表查询可指定字段查询
 
 
-
-
+# http code 统一
+	https://www.cnblogs.com/DeasonGuan/articles/Hanami.html
+	
 
 
 

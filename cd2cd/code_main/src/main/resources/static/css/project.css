@@ -116,3 +116,20 @@
 	min-height: 20px;
 	border:1px dotted #999;
 }
+.func-params-text {
+	display: inline-block;
+	min-width: 90px;
+	min-height:20px;
+	margin: 0;
+	padding: 0;
+}
+.no-lr-border, .no-lr-border table, .no-lr-border td {
+	border-left: 0 !important;
+	border-right: 0 !important;
+	border-bottom: 0 !important;
+	margin: 0;
+}
+
+.fun-params-cell-td td {
+	width: 20%;
+}

@@ -1,5 +1,15 @@
 var RestData = {
 		
+		fetchFileWithFieldByVoId: function(fileId, cb) {
+			var url = '/project/fetchFileWithFieldByVoId?id=' + fileId;
+				accessHttp({
+					url : buildUrl(url),
+					success : function(res) {
+						cb.call(this, res);
+					}
+				});
+		},
+		
 		fetchAllPageByProjectId: function(projectId, cb) {
 			var url = '/project/fetchAllPageByProjectId?projectId=' + projectId;
 			accessHttp({

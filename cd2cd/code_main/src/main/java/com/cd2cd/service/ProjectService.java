@@ -103,4 +103,12 @@ public interface ProjectService {
 
 	BaseRes<List<ProPageVo>> fetchAllPageByProjectId(Long projectId);
 
+	/**
+	 * 获取vo文件 成员变量列表和文件信息
+	 * 返回字段验证规则之类数据
+	 * @param id
+	 * @return
+	 */
+	BaseRes<ProFileVo> fetchFileWithFieldByVoId(Long id);
+
 }

@@ -11,6 +11,7 @@ define(['text!'+ctx+'/html/project/controller/controller.html'], function( templ
         components: {
             'controller-fun': createComponent('/js/project/controller/controller-fun.js'),
             'controller-fun-return-type': createComponent('/js/project/controller/controller-fun-return-type.js'),
+            'controller-fun-params': createComponent('/js/project/controller/controller-fun-params.js'),
         },
         props : [ 'fileObj' ],
         data: function(){ 

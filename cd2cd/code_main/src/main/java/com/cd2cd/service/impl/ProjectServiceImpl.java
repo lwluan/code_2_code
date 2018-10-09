@@ -652,6 +652,44 @@ public class ProjectServiceImpl implements ProjectService {
 		res.setServiceCode(ServiceCode.SUCCESS);
 		return res;
 	}
+
+	@Override
+	public BaseRes<ProFileVo> fetchFileWithFieldByVoId(Long fileId) {
+		
+		BaseRes<ProFileVo> res = new BaseRes<ProFileVo>();
+		ProFile proFile = proFileMapper.selectByPrimaryKey(fileId);
+		
+		ProFileVo mProFileVo = BeanUtil.voConvert(proFile, ProFileVo.class);
+		
+		ProFieldCriteria mProFieldCriteria = new ProFieldCriteria();
+		mProFieldCriteria.createCriteria().andFileIdEqualTo(fileId);
+		List<ProField> proFields = proFieldMapper.selectByExample(mProFieldCriteria);
+		
+		List<ProFieldVo> proFieldVos = BeanUtil.voConvertList(proFields, ProFieldVo.class);
+		mProFileVo.setFields(proFieldVos);
+		if( proFile.getSuperId() != null && proFile.getSuperId() > 0 ) {
+			
+			if( Constants.FileType.VO.equals(proFile.getFileType()) ) {
+				
+				// fetch table 
+				ProTable proTable = proTableMapper.selectByPrimaryKey(proFile.getSuperId());
+				
+				ProTableColumnCriteria mProTableColumnCriteria = new ProTableColumnCriteria();
+				mProTableColumnCriteria.createCriteria().andTableIdEqualTo(proTable.getId());
+				List<ProTableColumn> columns = proTableColumnMapper.selectByExample(mProTableColumnCriteria);
+				
+				List<ProTableColumnVo> columnVos = BeanUtil.voConvertList(columns, ProTableColumnVo.class);
+			
+				ProTableVo table = BeanUtil.voConvert(proTable, ProTableVo.class);
+				table.setColumns(columnVos);
+				mProFileVo.setTable(table);
+			}
+		}
+		
+		res.setData(mProFileVo);
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	}
 	
 
 }

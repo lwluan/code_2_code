@@ -59,6 +59,12 @@ define(['text!'+ctx+'/html/project/controller/controller-fun.html'], function( t
             		
             		that.formData = fd;
         		});
+        	},
+        	
+        	setFuncParams: function() {
+        		this.$emit('set-func-params', function(f){
+        			
+        		});
         	}
         	
         }, created: function() {

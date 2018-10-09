@@ -26,12 +26,40 @@ public class BeanUtil {
 		}
 		return retList;
 	}
+	
+	public static <E> List<E> voConvertList(List<?> list, Class<E> target, String ...ignoreProperties) {
+		List<E> retList = new ArrayList<E>();
+
+		for (Object o : list) {
+			E targetObj = voConvert(o, target, ignoreProperties); 
+			retList.add(targetObj);
+		}
+		return retList;
+	}
 
 	public static <E> E voConvert(Object o, Class<E> target) {
 		E targetObj = null;
 		try {
 			targetObj = target.newInstance();
 			BeanUtils.copyProperties(o, targetObj);
+		} catch (Exception e) {
+			logger.error("e={}", e.getMessage(), e);
+		}
+		return targetObj;
+	}
+	
+	/**
+	 * 
+	 * @param o
+	 * @param target
+	 * @param ignoreProperty 不拷贝字段
+	 * @return
+	 */
+	public static <E> E voConvert(Object o, Class<E> target, String ...ignoreProperties) {
+		E targetObj = null;
+		try {
+			targetObj = target.newInstance();
+			BeanUtils.copyProperties(o, targetObj, ignoreProperties);
 		} catch (Exception e) {
 			logger.error("e={}", e.getMessage(), e);
 		}

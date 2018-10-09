@@ -25,8 +25,8 @@ public class GenTest {
 		GenTest generator = new GenTest();
 //		generator.process("file/zp_tenant_gen_tables.xml");
 //		generator.process("file/template_gen_tables.xml");
-		generator.process("file/auto_code_gen_tables.xml");
-//		generator.process("file/conn_gen_tables.xml");
+//		generator.process("file/auto_code_gen_tables.xml");
+		generator.process("file/conn_gen_tables.xml");
 	}
 	
 	public void process(String fileName) {

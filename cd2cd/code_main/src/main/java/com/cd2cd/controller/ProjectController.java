@@ -63,6 +63,8 @@ public class ProjectController {
 	@RequestMapping("fetchTableHasColumnsByTableId")
 	public @ResponseBody BaseRes<ProTableVo> fetchTableHasColumnsByTableId(Long tableId) {
 		LOG.info("projectId={}", tableId);
+		
+		// TODO 
 		return projectService.fetchColumnsByTableId(tableId);
 	}
 	
@@ -158,6 +160,11 @@ public class ProjectController {
 	@RequestMapping(value = "delFieldFromFile", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<String> delFieldFromFile(Long id) {
 		return projectService.delFieldFromFile(id);
+	}
+
+	@RequestMapping(value = "fetchFileWithFieldByVoId", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<ProFileVo> fetchFileWithFieldByVoId(Long id) {
+		return projectService.fetchFileWithFieldByVoId(id);
 	}
 
 	
