@@ -10,22 +10,33 @@ import javax.annotation.Resource;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.SysAuthority;
+import com.cd2cd.security.ApplicationSecurity;
+import com.cd2cd.security.LoginUser;
+import com.cd2cd.security.Md5PasswordEncoder;
+import com.cd2cd.security.MyUserDetailsService;
 import com.cd2cd.service.SysAuthorityService;
+import com.cd2cd.util.JWTHelperUtil;
+import com.cd2cd.vo.BaseRes;
 
-@Controller
-@RequestMapping("/admin")
-public class AdminController {
+@RestController
+public class CommController {
 
 	@Resource
 	private SysAuthorityService sysAuthorityService;
 	
+	@Resource
+	private MyUserDetailsService myUserDetailsService;
+	
+	@Resource
+	private JWTHelperUtil jWTHelperUtil;
+	
 	@RequestMapping(value = "/auths", produces="text/css;charset=UTF-8")
-	@ResponseBody
 	protected String template(Map<String, Object> model) {
 		
 		// 当前登录用户所有权限
@@ -48,16 +59,29 @@ public class AdminController {
 	}
 	
 	private List<GrantedAuthority> getNoHasAuthorities(Collection<GrantedAuthority> authorities, List<SysAuthority> allAuthorities) {
-		
 		List<GrantedAuthority> all = new ArrayList<GrantedAuthority>();
 		for(SysAuthority auth: allAuthorities) {
 			String guid = auth.getGuid();
 			all.add(new SimpleGrantedAuthority("ROLE_" + guid));
 		}
-		
 		all.removeAll(authorities);
-		
 		return all;
 	}
 
+	@RequestMapping(value = ApplicationSecurity.LOGIN_PATH, method = RequestMethod.POST)
+	public BaseRes<String> userLogin(String username, String password) {
+		BaseRes<String> res = new BaseRes<String>();
+		
+		LoginUser loginUser = myUserDetailsService.loadUserByUsername(username);
+		password = Md5PasswordEncoder.md5Encode(password);
+		if( loginUser.getPassword().equals(password) ) {
+			String token = jWTHelperUtil.getToken(loginUser);
+			res.setData(token);
+			res.setServiceCode(ServiceCode.SUCCESS);
+		} else {
+			res.setServiceCode(ServiceCode.LOGIN_ERROR);
+		}
+		
+		return res;
+	}
 }

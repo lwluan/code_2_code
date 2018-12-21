@@ -11,9 +11,13 @@ public enum ServiceCode {
 	FAILED(10001, "失败"),
 	INVALID_PARAMS(10002, "请求参数错误"),
 	ACCESS_DENIED(10003, "无权限操作"),
+	TOKEN_INVALID(10004, "令牌无效"),
+	GEN_JWT_TOKEN_FAIL(10005, "令牌生成失败"),
+	LOGIN_ERROR(10006, "用户名或密码不匹配"),
 	___GEN_CODE_END___(-10000, "自动生成内容【结束】不要编辑"),
 	
 	NOT_EXISTS_PROJECT(11001, "项目不存在")
+	
 	;
 	
 	

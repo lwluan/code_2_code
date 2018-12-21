@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
@@ -39,7 +38,7 @@ public class MyUserDetailsService implements UserDetailsService {
 	private SysUserRoleRelMapper sysUserRoleRelMapper;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public LoginUser loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 		

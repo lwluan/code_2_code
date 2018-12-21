@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cd2cd.comm.DValid;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.service.ProDatabaseService;
 import com.cd2cd.vo.BaseRes;
@@ -51,7 +50,7 @@ public class DatabaseController {
 	
 	@RequestMapping(value = "addDb", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> addDb(
-			@Validated(value = {DValid.AddEntity.class}) 
+			@Validated 
 			@RequestBody ProDatabaseVo proDatabaseVo, 
 			BindingResult bindingResult) {
 		
@@ -67,7 +66,7 @@ public class DatabaseController {
 	
 	@RequestMapping(value = "modifyDb", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> modifyDb(
-			@Validated(value = {DValid.ModifyEntity.class}) 
+			@Validated 
 			@RequestBody ProDatabaseVo proDatabaseVo, 
 			BindingResult bindingResult) {
 		
@@ -138,7 +137,7 @@ public class DatabaseController {
 	
 	@RequestMapping(value = "addTable", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<ProTableVo> addTable (
-			@Validated(value = {DValid.AddEntity.class}) 
+			@Validated 
 			@RequestBody ProTableVo proTableVo, 
 			BindingResult bindingResult) {
 		
@@ -152,7 +151,7 @@ public class DatabaseController {
 	
 	@RequestMapping(value = "modifyTable", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> modifyTable (
-			@Validated(value = {DValid.ModifyEntity.class}) 
+			@Validated 
 			@RequestBody ProTableVo proTableVo, 
 			BindingResult bindingResult) {
 		
@@ -182,7 +181,7 @@ public class DatabaseController {
 	// table column
 	@RequestMapping(value = "addTableColumn", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<ProTableColumnVo> addTableColumn (
-			@Validated(value = {DValid.AddEntity.class}) 
+			@Validated 
 			@RequestBody ProTableColumnVo proTableColumnVo, 
 			BindingResult bindingResult) {
 		
@@ -196,7 +195,7 @@ public class DatabaseController {
 	
 	@RequestMapping(value = "modifyTableColumn", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> modifyTableColumn (
-			@Validated(value = {DValid.ModifyEntity.class}) 
+			@Validated 
 			@RequestBody ProTableColumnVo proTableColumnVo, 
 			BindingResult bindingResult) {
 		

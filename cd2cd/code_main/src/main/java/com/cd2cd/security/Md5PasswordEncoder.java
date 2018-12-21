@@ -4,7 +4,7 @@ import java.security.MessageDigest;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class MyMd5PasswordEncoder implements PasswordEncoder {
+public class Md5PasswordEncoder implements PasswordEncoder {
 
 	@Override
 	public String encode(CharSequence rawPassword) {

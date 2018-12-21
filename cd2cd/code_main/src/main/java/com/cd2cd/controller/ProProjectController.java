@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cd2cd.comm.DValid;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.service.ProProjectService;
 import com.cd2cd.vo.BaseRes;
@@ -78,7 +77,7 @@ public class ProProjectController extends BaseController {
 	}
 
 	@RequestMapping(value = "add", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> add(@Validated(value = { DValid.AddEntity.class }) @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
+	public @ResponseBody BaseRes<String> add(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
 		ServiceCode serviceCode = proProjectService.add(proProjectVo);
@@ -87,7 +86,7 @@ public class ProProjectController extends BaseController {
 	}
 
 	@RequestMapping(value = "modify", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> modify(@Validated(value = { DValid.ModifyEntity.class }) @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
+	public @ResponseBody BaseRes<String> modify(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
 		ServiceCode serviceCode = proProjectService.modify(proProjectVo);
@@ -96,7 +95,7 @@ public class ProProjectController extends BaseController {
 	}
 
 	@RequestMapping(value = "genProject", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> genProject(@Validated(value = { DValid.ModifyEntity.class }) @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
+	public @ResponseBody BaseRes<String> genProject(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
 
 		proProjectService.modify(proProjectVo);
 		BaseRes<String> res = proProjectService.genProject(proProjectVo.getId());
@@ -150,7 +149,7 @@ public class ProProjectController extends BaseController {
 	}
 
 	@RequestMapping(value = "addModule", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> addModule(@Validated(value = { DValid.AddEntity.class }) @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
+	public @ResponseBody BaseRes<String> addModule(@Validated @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
 		ServiceCode serviceCode = proProjectService.addModule(proModuleVo);
@@ -159,7 +158,7 @@ public class ProProjectController extends BaseController {
 	}
 
 	@RequestMapping(value = "modifyModule", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> modify(@Validated(value = { DValid.ModifyEntity.class }) @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
+	public @ResponseBody BaseRes<String> modify(@Validated @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
 		ServiceCode serviceCode = proProjectService.modifyModule(proModuleVo);
