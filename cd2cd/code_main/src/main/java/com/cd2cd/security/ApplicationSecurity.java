@@ -52,7 +52,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
+		
 		http.headers().frameOptions().disable();
 		http.csrf().disable();
 
@@ -72,6 +72,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		.accessDeniedHandler(restAccessDeniedHandler);
 
 		http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry);
+		
 	}
 
 	/**

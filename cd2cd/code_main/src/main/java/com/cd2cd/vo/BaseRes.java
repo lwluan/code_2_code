@@ -9,11 +9,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class BaseRes<T> {
 
 	private T data;
-
 	private String msg;
 	private Integer code;
-
 	private ServiceCode serviceCode;
+	
+	public BaseRes() {}
+	public BaseRes(ServiceCode serviceCode) {
+		this.serviceCode = serviceCode;
+	}
+	public BaseRes(ServiceCode serviceCode, T data) {
+		this.serviceCode = serviceCode;
+		this.data = data;
+	}
 	
 	public void setServiceCode(ServiceCode serviceCode) {
 		this.serviceCode = serviceCode;

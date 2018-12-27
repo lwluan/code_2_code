@@ -17,6 +17,7 @@ import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
+import com.cd2cd.domain.ProFunArg;
 import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProPage;
 import com.cd2cd.domain.ProProject;
@@ -25,6 +26,7 @@ import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
+import com.cd2cd.domain.gen.ProFunArgCriteria;
 import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProPageCriteria;
@@ -33,6 +35,7 @@ import com.cd2cd.domain.gen.ProTableColumnCriteria;
 import com.cd2cd.domain.gen.ProTableCriteria;
 import com.cd2cd.mapper.ProFieldMapper;
 import com.cd2cd.mapper.ProFileMapper;
+import com.cd2cd.mapper.ProFunArgMapper;
 import com.cd2cd.mapper.ProFunMapper;
 import com.cd2cd.mapper.ProModuleMapper;
 import com.cd2cd.mapper.ProPageMapper;
@@ -49,6 +52,7 @@ import com.cd2cd.util.mbg.Constants;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProFunArgVo;
 import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProPageVo;
 import com.cd2cd.vo.ProTableColumnVo;
@@ -66,6 +70,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired ProTableMapper proTableMapper;
 	@Autowired ProFunMapper proFunMapper;
 	@Autowired ProPageMapper proPageMapper;
+	@Autowired ProFunArgMapper proFunArgMapper;
 	
 	@Override
 	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
@@ -690,6 +695,38 @@ public class ProjectServiceImpl implements ProjectService {
 		res.setServiceCode(ServiceCode.SUCCESS);
 		return res;
 	}
-	
+
+	@Override
+	public BaseRes<List<ProFunArg>> fetchFunArgsByFunId(Long funId) {
+		/**
+		 * 返回参数为vo时，成员变量包括，已添加和未添加的vo成员变量， 已添加排在前面显示
+		 * vo最多显示两级参数
+		 */
+		ProFunArgCriteria mProFunArgCriteria = new ProFunArgCriteria();
+		mProFunArgCriteria.createCriteria()
+		.andFunIdEqualTo(funId);
+		
+		List<ProFunArg> args = proFunArgMapper.selectByExample(mProFunArgCriteria);
+		
+		
+		
+		
+		return null;
+	}
+
+	@Override
+	public BaseRes<String> addFunArgs(ProFunArgVo proFunArg) {
+		proFunArg.setCreateTime(new Date());
+		proFunArg.setUpdateTime(new Date());
+		proFunArgMapper.insertSelective(proFunArg);
+		return new BaseRes<String>(ServiceCode.SUCCESS, "ok");
+	}
+
+	@Override
+	public BaseRes<String> modifyFunArgs(ProFunArgVo proFunArg) {
+		proFunArg.setUpdateTime(new Date());
+		proFunArgMapper.updateByPrimaryKeySelective(proFunArg);
+		return new BaseRes<String>(ServiceCode.SUCCESS, "ok");
+	}
 
 }

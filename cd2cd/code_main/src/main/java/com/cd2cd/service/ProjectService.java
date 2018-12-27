@@ -2,9 +2,11 @@ package com.cd2cd.service;
 
 import java.util.List;
 
+import com.cd2cd.domain.ProFunArg;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProFunArgVo;
 import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProPageVo;
 import com.cd2cd.vo.ProTableVo;
@@ -110,5 +112,14 @@ public interface ProjectService {
 	 * @return
 	 */
 	BaseRes<ProFileVo> fetchFileWithFieldByVoId(Long id);
+
+	/**
+	 * =============方法参数相关操作
+	 * */
+	BaseRes<List<ProFunArg>> fetchFunArgsByFunId(Long funId);
+
+	BaseRes<String> addFunArgs(ProFunArgVo proFunArg);
+
+	BaseRes<String> modifyFunArgs(ProFunArgVo proFunArg);
 
 }

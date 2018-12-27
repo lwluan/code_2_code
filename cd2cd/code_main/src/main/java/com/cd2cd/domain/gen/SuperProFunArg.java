@@ -12,6 +12,11 @@ public class SuperProFunArg implements Serializable {
     private Long funId;
 
     /**
+     * 上一级ID用于VO
+     */
+    private Long pid;
+
+    /**
      * 参数名称，英文
      */
     private String name;
@@ -25,6 +30,11 @@ public class SuperProFunArg implements Serializable {
      * 集合:single/list/map/set
      */
     private String collectionType;
+
+    /**
+     * 字段验证JSON数组
+     */
+    private String valid;
 
     /**
      * 备注
@@ -57,6 +67,20 @@ public class SuperProFunArg implements Serializable {
      */
     public void setFunId(Long funId) {
         this.funId = funId;
+    }
+
+    /**
+     * 上一级ID用于VO
+     */
+    public Long getPid() {
+        return pid;
+    }
+
+    /**
+     * 上一级ID用于VO
+     */
+    public void setPid(Long pid) {
+        this.pid = pid;
     }
 
     /**
@@ -102,6 +126,20 @@ public class SuperProFunArg implements Serializable {
     }
 
     /**
+     * 字段验证JSON数组
+     */
+    public String getValid() {
+        return valid;
+    }
+
+    /**
+     * 字段验证JSON数组
+     */
+    public void setValid(String valid) {
+        this.valid = valid;
+    }
+
+    /**
      * 备注
      */
     public String getComment() {
@@ -139,9 +177,11 @@ public class SuperProFunArg implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", funId=").append(funId);
+        sb.append(", pid=").append(pid);
         sb.append(", name=").append(name);
         sb.append(", argType=").append(argType);
         sb.append(", collectionType=").append(collectionType);
+        sb.append(", valid=").append(valid);
         sb.append(", comment=").append(comment);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
@@ -164,9 +204,11 @@ public class SuperProFunArg implements Serializable {
         SuperProFunArg other = (SuperProFunArg) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getFunId() == null ? other.getFunId() == null : this.getFunId().equals(other.getFunId()))
+            && (this.getPid() == null ? other.getPid() == null : this.getPid().equals(other.getPid()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getArgType() == null ? other.getArgType() == null : this.getArgType().equals(other.getArgType()))
             && (this.getCollectionType() == null ? other.getCollectionType() == null : this.getCollectionType().equals(other.getCollectionType()))
+            && (this.getValid() == null ? other.getValid() == null : this.getValid().equals(other.getValid()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
@@ -178,9 +220,11 @@ public class SuperProFunArg implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getFunId() == null) ? 0 : getFunId().hashCode());
+        result = prime * result + ((getPid() == null) ? 0 : getPid().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getArgType() == null) ? 0 : getArgType().hashCode());
         result = prime * result + ((getCollectionType() == null) ? 0 : getCollectionType().hashCode());
+        result = prime * result + ((getValid() == null) ? 0 : getValid().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());

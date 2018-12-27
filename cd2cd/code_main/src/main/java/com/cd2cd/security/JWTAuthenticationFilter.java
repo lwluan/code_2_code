@@ -41,8 +41,11 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 			ServletException {
 		
 		String header = request.getHeader("Authorization");
+		
+		LOG.info("header=" + header);
+		
 		boolean toAuthentication = false;
-		if (header == null || !header.startsWith("Bearer ")) {
+		if (header != null && header.startsWith("Bearer ")) {
 			toAuthentication = true;
 		} else if("get".equalsIgnoreCase(request.getMethod())) {
 			String token = request.getParameter("token");

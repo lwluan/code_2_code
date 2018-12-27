@@ -6,28 +6,30 @@ import javax.annotation.Resource;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.domain.ProFunArg;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
 import com.cd2cd.vo.ProFileVo;
+import com.cd2cd.vo.ProFunArgVo;
 import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProPageVo;
 import com.cd2cd.vo.ProTableVo;
+import com.cd2cd.vo.validator.Valid;
 
 /**
  * 项目管理
  * @author leiwuluan
  */
-@Controller
+@RestController
 @RequestMapping("project")
 public class ProjectController {
 	
@@ -42,14 +44,12 @@ public class ProjectController {
 	 * @param packageType: Flat \ Hierachical
 	 * @param moduleId: 只显示对应模块
 	 */
-	@ResponseBody
 	@RequestMapping("fetchProjectFileTree")
 	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
 		LOG.info("packageType={}, moduleId={}", packageType, moduleId);
 		return projectService.fetchProjectFileTree(projectId, packageType, moduleId);
 	}
-
-	@ResponseBody
+	
 	@RequestMapping("fetchTableListByProjectHasDb")
 	public BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId) {
 		LOG.info("projectId={}", projectId);
@@ -61,7 +61,6 @@ public class ProjectController {
 	 * @param projectId
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping("fetchTableHasColumnsByTableId")
 	public BaseRes<ProTableVo> fetchTableHasColumnsByTableId(Long tableId) {
 		LOG.info("projectId={}", tableId);
@@ -74,7 +73,6 @@ public class ProjectController {
 	 * 添加文件
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping(value = "addFile", method = RequestMethod.POST)
 	public BaseRes<String> addFile(
 			@Validated 
@@ -88,7 +86,6 @@ public class ProjectController {
 		} 
 		
 		return projectService.addFile(proFileVo);
-		
 	}
 	
 	/**
@@ -97,7 +94,6 @@ public class ProjectController {
 	 * @param bindingResult
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping(value = "modifyFileInfo", method = RequestMethod.POST)
 	public BaseRes<ProFileVo> modifyFileInfo(
 			@Validated 
@@ -113,26 +109,22 @@ public class ProjectController {
 		return projectService.modifyFileInfo(proFileVo);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "fetchFileByClassType", method = RequestMethod.GET)
 	public BaseRes<List<ProFileVo>> fetchFileByClassType(Long projectId, String fileType) {
 		return projectService.fetchFileByClassType(projectId, fileType);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "fetchAllTablesByProject", method = RequestMethod.GET)
 	public BaseRes<List<ProTableVo>> fetchAllTablesByProject(Long projectId) {
 		return projectService.fetchAllTablesByProject(projectId);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "fetchFileInfo", method = RequestMethod.GET)
 	public BaseRes<ProFileVo> fetchFileInfo(Long fileId) {
 		BaseRes<ProFileVo> res = projectService.fetchFileInfo(fileId);
 		return res;
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "saveFieldToFile", method = RequestMethod.POST)
 	public BaseRes<ProFieldVo> saveFieldToFile(
 			@Validated 
@@ -148,7 +140,6 @@ public class ProjectController {
 		return projectService.saveOrUpdateFieldToFile(fieldVo);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "updateFieldToFile", method = RequestMethod.POST)
 	public BaseRes<ProFieldVo> updateFieldToFile(
 			@Validated 
@@ -164,30 +155,26 @@ public class ProjectController {
 		return projectService.saveOrUpdateFieldToFile(fieldVo);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "delFieldFromFile", method = RequestMethod.GET)
 	public BaseRes<String> delFieldFromFile(Long id) {
 		return projectService.delFieldFromFile(id);
 	}
-
-	@ResponseBody
+	
 	@RequestMapping(value = "fetchFileWithFieldByVoId", method = RequestMethod.GET)
 	public BaseRes<ProFileVo> fetchFileWithFieldByVoId(Long id) {
 		return projectService.fetchFileWithFieldByVoId(id);
 	}
 
-	
 	/**
 	 * 删除文件
 	 * @return
 	 */
-	@ResponseBody
 	@RequestMapping(value = "delFileById", method = RequestMethod.GET)
 	public BaseRes<String> delFileById(Long fileId) {
 		return projectService.delFileById(fileId);
 	}
 	
-	@ResponseBody
+	
 	@RequestMapping(value = "addFunction", method = RequestMethod.POST)
 	public BaseRes<ProFunVo> addFunction(
 			@Validated 
@@ -203,7 +190,6 @@ public class ProjectController {
 		
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "modifyFunction", method = RequestMethod.POST)
 	public BaseRes<ProFunVo> modifyFunction(
 			@Validated 
@@ -218,24 +204,39 @@ public class ProjectController {
 		return projectService.modifyFunction(proFunVo);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "deleteFunctionByFunId", method = RequestMethod.GET)
 	public BaseRes<String> deleteFunctionByFunId(Long funId) {
 		return projectService.deleteFunctionByFunId(funId);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "fetchFunsByFileId", method = RequestMethod.GET)
 	public BaseRes<List<ProFunVo>> fetchFunsByFileId(Long fileId) {
 		return projectService.fetchFunsByFileId(fileId);
 	}
 	
-	@ResponseBody
 	@RequestMapping(value = "fetchAllPageByProjectId", method = RequestMethod.GET)
 	public BaseRes<List<ProPageVo>> fetchAllPageByProjectId(Long projectId) {
 		return projectService.fetchAllPageByProjectId(projectId);
 	}
 	
+	@RequestMapping(value = "fetchFunArgsByFunId", method = RequestMethod.GET)
+	public BaseRes<List<ProFunArg>> fetchFunArgsByFunId(Long funId) {
+		return projectService.fetchFunArgsByFunId(funId);
+	}
+	
+	@RequestMapping(value = "addFunArgs", method = RequestMethod.POST)
+	public BaseRes<String> addFunArgs( 
+			@Validated({Valid.add.class}) @RequestBody
+			ProFunArgVo proFunArg, BindingResult bindingResult) {
+		return projectService.addFunArgs(proFunArg);
+	}
+	
+	@RequestMapping(value = "modifyFunArgs", method = RequestMethod.POST)
+	public BaseRes<String> modifyFunArgs( 
+			@Validated({Valid.modify.class}) @RequestBody
+			ProFunArgVo proFunArg, BindingResult bindingResult) {
+		return projectService.modifyFunArgs(proFunArg);
+	}
 	
 	// fetch return vo or page
 	
