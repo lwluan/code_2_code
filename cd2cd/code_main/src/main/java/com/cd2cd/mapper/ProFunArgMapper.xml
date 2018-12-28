@@ -1,32 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cd2cd.mapper.ProFunArgMapper">
-	<resultMap id="FunArgResultMap" extends="BaseResultMap">
-		<collection column="pid" property="childArgs" ofType="ProFunArg"
-			javaType="java.util.ArrayList" select="fetchFunArgsChildrenById" />
+	<resultMap id="FunArgResultMap" type="com.cd2cd.domain.ProFunArg" extends="BaseResultMap">
+		<collection column="id" property="childArgs" ofType="ProFunArg" javaType="java.util.ArrayList" select="fetchFunArgsChildrenById" />
 	</resultMap>
 
-	<select id="fetchFunArgsByFunId" parameterType="com.cd2cd.domain.gen.ProFunArgCriteria"
-		resultMap="BaseResultMap">
+	<select id="fetchFunArgsByFunId" resultMap="FunArgResultMap">
 		select
-		<if test="distinct">
-			distinct
-		</if>
-		<include refid="Base_Column_List" />
-		from pro_fun_arg
-		<if test="_parameter != null">
-			<include refid="Example_Where_Clause" />
-		</if>
-		<if test="orderByClause != null">
-			order by ${orderByClause}
-		</if>
-		<if test="mysqlOffset != null and mysqlLength != null">
-      <![CDATA[ limit #{mysqlOffset} , #{mysqlLength} ]]>
-		</if>
+			*
+		from 
+			pro_fun_arg
+		where 
+			fun_id=#{funId}
+			and (pid = 0 or pid is null)
 	</select>
 
 	<select id="fetchFunArgsChildrenById" resultMap="FunArgResultMap">
-		select * from pro_fun_arg where pid=#{pid}
+		select * from pro_fun_arg where pid=#{id}
 	</select>
 
 </mapper>

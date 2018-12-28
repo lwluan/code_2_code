@@ -13,6 +13,6 @@ public interface ProFunArgMapper extends SuperProFunArgMapper {
 	
 	List<ProFunArg> fetchFunArgsByFunId(@Param("funId") Long funId);
 	
-	List<ProFunArg> fetchFunArgsChildrenById(@Param("pid") Long pid);
+	List<ProFunArg> fetchFunArgsChildrenById(@Param("id") Long id);
 	
 }

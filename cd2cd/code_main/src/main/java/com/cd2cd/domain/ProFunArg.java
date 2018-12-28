@@ -8,6 +8,11 @@ import com.cd2cd.domain.gen.SuperProFunArg;
 public class ProFunArg extends SuperProFunArg implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	
+	public ProFunArg() {
+		super();
+	}
+
 	private List<ProFunArg> childArgs;
 
 	public List<ProFunArg> getChildArgs() {
@@ -18,4 +23,14 @@ public class ProFunArg extends SuperProFunArg implements Serializable {
 		this.childArgs = childArgs;
 	}
 
+	@Override
+	public String toString() {
+		return "ProFunArg [childArgs=" + childArgs + ", getId()=" + getId() + ", getFunId()=" + getFunId() + ", getPid()=" + getPid()
+				+ ", getName()=" + getName() + ", getArgType()=" + getArgType() + ", getCollectionType()=" + getCollectionType()
+				+ ", getValid()=" + getValid() + ", getComment()=" + getComment() + ", getCreateTime()=" + getCreateTime()
+				+ ", getUpdateTime()=" + getUpdateTime() + ", toString()=" + super.toString() + ", hashCode()=" + hashCode()
+				+ ", getClass()=" + getClass() + "]";
+	}
+
+	
 }

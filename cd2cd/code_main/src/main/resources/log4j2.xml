@@ -19,12 +19,12 @@
         </RollingRandomAccessFile>
     </Appenders>
     <Loggers>
-        <Root level="info">
+        <Root level="debug">
             <AppenderRef ref="Console" />
             <AppenderRef ref="running-log" />
         </Root>
         <Logger name="com.cd2cd.mapper" level="debug" additivity="true" />
-        <Logger name="org.springframework.web" level="info" additivity="true" />
-        <Logger name="org.springframework.boot" level="info" additivity="true"/>
+        <Logger name="org.springframework.web" level="debug" additivity="true" />
+        <Logger name="org.springframework.boot" level="debug" additivity="true"/>
     </Loggers>
 </Configuration>
