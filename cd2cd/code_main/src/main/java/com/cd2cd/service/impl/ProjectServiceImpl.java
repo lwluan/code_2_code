@@ -708,10 +708,10 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		List<ProFunArg> args = proFunArgMapper.selectByExample(mProFunArgCriteria);
 		
+		BaseRes<List<ProFunArg>> res = new BaseRes<List<ProFunArg>>(ServiceCode.SUCCESS);
+		res.setData(args);
 		
-		
-		
-		return null;
+		return res;
 	}
 
 	@Override

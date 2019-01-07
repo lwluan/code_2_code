@@ -58,8 +58,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
 		initAuthoritys(http); // 初始化权限
 
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).
-		and().authorizeRequests()
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+		.authorizeRequests()
 		.antMatchers(LOGIN_PATH).permitAll()
 		.antMatchers("/static/**").permitAll()
 		.anyRequest().authenticated()
@@ -71,7 +71,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		.authenticationEntryPoint(entryPointUnauthorizedHandler)
 		.accessDeniedHandler(restAccessDeniedHandler);
 
-		http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry);
+//		http.sessionManagement().maximumSessions(1).sessionRegistry(sessionRegistry);
 		
 	}
 

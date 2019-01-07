@@ -47,7 +47,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 		boolean toAuthentication = false;
 		if (header != null && header.startsWith("Bearer ")) {
 			toAuthentication = true;
-		} else if("get".equalsIgnoreCase(request.getMethod())) {
+		} else {
 			String token = request.getParameter("token");
 			if(StringUtils.isNotEmpty(token)) {
 				toAuthentication = true;

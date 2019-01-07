@@ -4,7 +4,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.cd2cd.domain.gen.SuperProFunArg;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ProFunArg extends SuperProFunArg implements Serializable {
 	private static final long serialVersionUID = 1L;
 

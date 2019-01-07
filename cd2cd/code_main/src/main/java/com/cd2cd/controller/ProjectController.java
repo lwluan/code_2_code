@@ -23,7 +23,6 @@ import com.cd2cd.vo.ProFunArgVo;
 import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProPageVo;
 import com.cd2cd.vo.ProTableVo;
-import com.cd2cd.vo.validator.Valid;
 
 /**
  * 项目管理
@@ -31,7 +30,7 @@ import com.cd2cd.vo.validator.Valid;
  */
 @RestController
 @RequestMapping("project")
-public class ProjectController {
+public class ProjectController extends BaseController {
 	
 	private static Logger LOG = LoggerFactory.getLogger(ProjectController.class);
 	
@@ -65,7 +64,6 @@ public class ProjectController {
 	public BaseRes<ProTableVo> fetchTableHasColumnsByTableId(Long tableId) {
 		LOG.info("projectId={}", tableId);
 		
-		// TODO 
 		return projectService.fetchColumnsByTableId(tableId);
 	}
 	
@@ -219,6 +217,9 @@ public class ProjectController {
 		return projectService.fetchAllPageByProjectId(projectId);
 	}
 	
+	/**
+	 * funArgs 
+	 */
 	@RequestMapping(value = "fetchFunArgsByFunId", method = RequestMethod.GET)
 	public BaseRes<List<ProFunArg>> fetchFunArgsByFunId(Long funId) {
 		return projectService.fetchFunArgsByFunId(funId);
@@ -226,18 +227,21 @@ public class ProjectController {
 	
 	@RequestMapping(value = "addFunArgs", method = RequestMethod.POST)
 	public BaseRes<String> addFunArgs( 
-			@Validated({Valid.add.class}) @RequestBody
+			@Validated({add.class}) @RequestBody
 			ProFunArgVo proFunArg, BindingResult bindingResult) {
 		return projectService.addFunArgs(proFunArg);
 	}
 	
 	@RequestMapping(value = "modifyFunArgs", method = RequestMethod.POST)
 	public BaseRes<String> modifyFunArgs( 
-			@Validated({Valid.modify.class}) @RequestBody
+			@Validated({modify.class}) @RequestBody
 			ProFunArgVo proFunArg, BindingResult bindingResult) {
 		return projectService.modifyFunArgs(proFunArg);
 	}
 	
+	/**
+	 * fun return vo
+	 */
 	// fetch return vo or page
 	
 	
