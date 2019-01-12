@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cd2cd.mapper.ProFunArgMapper">
 	<resultMap id="FunArgResultMap" type="com.cd2cd.domain.ProFunArg" extends="BaseResultMap">
-		<collection column="id" property="childArgs" ofType="ProFunArg" javaType="java.util.ArrayList" select="fetchFunArgsChildrenById" />
+		<collection column="id" property="children" ofType="ProFunArg" javaType="java.util.ArrayList" select="fetchFunArgsChildrenById" />
 	</resultMap>
 
 	<select id="fetchFunArgsByFunId" resultMap="FunArgResultMap">

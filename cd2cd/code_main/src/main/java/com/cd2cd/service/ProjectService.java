@@ -116,10 +116,12 @@ public interface ProjectService {
 	/**
 	 * =============方法参数相关操作
 	 * */
-	BaseRes<List<ProFunArg>> fetchFunArgsByFunId(Long funId);
+	BaseRes<List<ProFunArg>> listFunArg(Long funId);
 
-	BaseRes<String> addFunArgs(ProFunArgVo proFunArg);
+	BaseRes<String> addFunArg(ProFunArgVo proFunArg);
 
-	BaseRes<String> modifyFunArgs(ProFunArgVo proFunArg);
+	BaseRes<String> modifyFunArg(ProFunArgVo proFunArg);
+
+	BaseRes<String> deleteFunArg(Long argId);
 
 }

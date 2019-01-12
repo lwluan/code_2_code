@@ -10,29 +10,30 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class ProFunArg extends SuperProFunArg implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	
 	public ProFunArg() {
 		super();
 	}
 
-	private List<ProFunArg> childArgs;
+	private List<ProFunArg> children;
 
-	public List<ProFunArg> getChildArgs() {
-		return childArgs;
+	public List<ProFunArg> getChildren() {
+		if(null == children || children.size() == 0) {
+			return null;
+		}
+		return children;
 	}
 
-	public void setChildArgs(List<ProFunArg> childArgs) {
-		this.childArgs = childArgs;
+	public void setChildren(List<ProFunArg> children) {
+		this.children = children;
 	}
 
 	@Override
 	public String toString() {
-		return "ProFunArg [childArgs=" + childArgs + ", getId()=" + getId() + ", getFunId()=" + getFunId() + ", getPid()=" + getPid()
+		return "ProFunArg [children=" + children + ", getId()=" + getId() + ", getFunId()=" + getFunId() + ", getPid()=" + getPid()
 				+ ", getName()=" + getName() + ", getArgType()=" + getArgType() + ", getCollectionType()=" + getCollectionType()
 				+ ", getValid()=" + getValid() + ", getComment()=" + getComment() + ", getCreateTime()=" + getCreateTime()
 				+ ", getUpdateTime()=" + getUpdateTime() + ", toString()=" + super.toString() + ", hashCode()=" + hashCode()
 				+ ", getClass()=" + getClass() + "]";
 	}
 
-	
 }

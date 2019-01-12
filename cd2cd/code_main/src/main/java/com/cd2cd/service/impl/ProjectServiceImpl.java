@@ -26,7 +26,6 @@ import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
-import com.cd2cd.domain.gen.ProFunArgCriteria;
 import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProPageCriteria;
@@ -697,16 +696,12 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public BaseRes<List<ProFunArg>> fetchFunArgsByFunId(Long funId) {
+	public BaseRes<List<ProFunArg>> listFunArg(Long funId) {
 		/**
 		 * 返回参数为vo时，成员变量包括，已添加和未添加的vo成员变量， 已添加排在前面显示
 		 * vo最多显示两级参数
 		 */
-		ProFunArgCriteria mProFunArgCriteria = new ProFunArgCriteria();
-		mProFunArgCriteria.createCriteria()
-		.andFunIdEqualTo(funId);
-		
-		List<ProFunArg> args = proFunArgMapper.selectByExample(mProFunArgCriteria);
+		List<ProFunArg> args = proFunArgMapper.fetchFunArgsByFunId(funId);
 		
 		BaseRes<List<ProFunArg>> res = new BaseRes<List<ProFunArg>>(ServiceCode.SUCCESS);
 		res.setData(args);
@@ -715,7 +710,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public BaseRes<String> addFunArgs(ProFunArgVo proFunArg) {
+	public BaseRes<String> addFunArg(ProFunArgVo proFunArg) {
 		proFunArg.setCreateTime(new Date());
 		proFunArg.setUpdateTime(new Date());
 		proFunArgMapper.insertSelective(proFunArg);
@@ -723,10 +718,29 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public BaseRes<String> modifyFunArgs(ProFunArgVo proFunArg) {
+	public BaseRes<String> modifyFunArg(ProFunArgVo proFunArg) {
 		proFunArg.setUpdateTime(new Date());
 		proFunArgMapper.updateByPrimaryKeySelective(proFunArg);
 		return new BaseRes<String>(ServiceCode.SUCCESS, "ok");
 	}
 
+	@Override
+	public BaseRes<String> deleteFunArg(Long argId) {
+		
+		proFunArgMapper.deleteByPrimaryKey(argId);
+		
+		List<ProFunArg> args = proFunArgMapper.fetchFunArgsChildrenById(argId);
+		recursionDeleteArg(args);
+		
+		return new BaseRes<String>(ServiceCode.SUCCESS, "ok");
+	}
+
+	private void recursionDeleteArg(List<ProFunArg> args) {
+		if(args != null) {
+			for(ProFunArg a : args) {
+				proFunArgMapper.deleteByPrimaryKey(a.getId());
+				recursionDeleteArg(a.getChildren());
+			}
+		}
+	}
 }

@@ -22,9 +22,19 @@ public class SuperProFunArg implements Serializable {
     private String name;
 
     /**
-     * 参数类型: base、vo 、page
+     * 参数类型: base、vo 、pojo
      */
     private String argType;
+
+    /**
+     * 类型名称：String,Integer,User
+     */
+    private String argTypeName;
+
+    /**
+     * 类型ID：当arg_type为vo时:vo_id;pojo:id
+     */
+    private Long argTypeId;
 
     /**
      * 集合:single/list/map/set
@@ -98,17 +108,45 @@ public class SuperProFunArg implements Serializable {
     }
 
     /**
-     * 参数类型: base、vo 、page
+     * 参数类型: base、vo 、pojo
      */
     public String getArgType() {
         return argType;
     }
 
     /**
-     * 参数类型: base、vo 、page
+     * 参数类型: base、vo 、pojo
      */
     public void setArgType(String argType) {
         this.argType = argType;
+    }
+
+    /**
+     * 类型名称：String,Integer,User
+     */
+    public String getArgTypeName() {
+        return argTypeName;
+    }
+
+    /**
+     * 类型名称：String,Integer,User
+     */
+    public void setArgTypeName(String argTypeName) {
+        this.argTypeName = argTypeName;
+    }
+
+    /**
+     * 类型ID：当arg_type为vo时:vo_id;pojo:id
+     */
+    public Long getArgTypeId() {
+        return argTypeId;
+    }
+
+    /**
+     * 类型ID：当arg_type为vo时:vo_id;pojo:id
+     */
+    public void setArgTypeId(Long argTypeId) {
+        this.argTypeId = argTypeId;
     }
 
     /**
@@ -180,6 +218,8 @@ public class SuperProFunArg implements Serializable {
         sb.append(", pid=").append(pid);
         sb.append(", name=").append(name);
         sb.append(", argType=").append(argType);
+        sb.append(", argTypeName=").append(argTypeName);
+        sb.append(", argTypeId=").append(argTypeId);
         sb.append(", collectionType=").append(collectionType);
         sb.append(", valid=").append(valid);
         sb.append(", comment=").append(comment);
@@ -207,6 +247,8 @@ public class SuperProFunArg implements Serializable {
             && (this.getPid() == null ? other.getPid() == null : this.getPid().equals(other.getPid()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getArgType() == null ? other.getArgType() == null : this.getArgType().equals(other.getArgType()))
+            && (this.getArgTypeName() == null ? other.getArgTypeName() == null : this.getArgTypeName().equals(other.getArgTypeName()))
+            && (this.getArgTypeId() == null ? other.getArgTypeId() == null : this.getArgTypeId().equals(other.getArgTypeId()))
             && (this.getCollectionType() == null ? other.getCollectionType() == null : this.getCollectionType().equals(other.getCollectionType()))
             && (this.getValid() == null ? other.getValid() == null : this.getValid().equals(other.getValid()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
@@ -223,6 +265,8 @@ public class SuperProFunArg implements Serializable {
         result = prime * result + ((getPid() == null) ? 0 : getPid().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getArgType() == null) ? 0 : getArgType().hashCode());
+        result = prime * result + ((getArgTypeName() == null) ? 0 : getArgTypeName().hashCode());
+        result = prime * result + ((getArgTypeId() == null) ? 0 : getArgTypeId().hashCode());
         result = prime * result + ((getCollectionType() == null) ? 0 : getCollectionType().hashCode());
         result = prime * result + ((getValid() == null) ? 0 : getValid().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());

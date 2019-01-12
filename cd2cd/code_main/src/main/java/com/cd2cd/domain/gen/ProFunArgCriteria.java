@@ -465,6 +465,136 @@ public class ProFunArgCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andArgTypeNameIsNull() {
+            addCriterion("arg_type_name is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameIsNotNull() {
+            addCriterion("arg_type_name is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameEqualTo(String value) {
+            addCriterion("arg_type_name =", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameNotEqualTo(String value) {
+            addCriterion("arg_type_name <>", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameGreaterThan(String value) {
+            addCriterion("arg_type_name >", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameGreaterThanOrEqualTo(String value) {
+            addCriterion("arg_type_name >=", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameLessThan(String value) {
+            addCriterion("arg_type_name <", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameLessThanOrEqualTo(String value) {
+            addCriterion("arg_type_name <=", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameLike(String value) {
+            addCriterion("arg_type_name like", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameNotLike(String value) {
+            addCriterion("arg_type_name not like", value, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameIn(List<String> values) {
+            addCriterion("arg_type_name in", values, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameNotIn(List<String> values) {
+            addCriterion("arg_type_name not in", values, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameBetween(String value1, String value2) {
+            addCriterion("arg_type_name between", value1, value2, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeNameNotBetween(String value1, String value2) {
+            addCriterion("arg_type_name not between", value1, value2, "argTypeName");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdIsNull() {
+            addCriterion("arg_type_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdIsNotNull() {
+            addCriterion("arg_type_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdEqualTo(Long value) {
+            addCriterion("arg_type_id =", value, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdNotEqualTo(Long value) {
+            addCriterion("arg_type_id <>", value, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdGreaterThan(Long value) {
+            addCriterion("arg_type_id >", value, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("arg_type_id >=", value, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdLessThan(Long value) {
+            addCriterion("arg_type_id <", value, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdLessThanOrEqualTo(Long value) {
+            addCriterion("arg_type_id <=", value, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdIn(List<Long> values) {
+            addCriterion("arg_type_id in", values, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdNotIn(List<Long> values) {
+            addCriterion("arg_type_id not in", values, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdBetween(Long value1, Long value2) {
+            addCriterion("arg_type_id between", value1, value2, "argTypeId");
+            return (Criteria) this;
+        }
+
+        public Criteria andArgTypeIdNotBetween(Long value1, Long value2) {
+            addCriterion("arg_type_id not between", value1, value2, "argTypeId");
+            return (Criteria) this;
+        }
+
         public Criteria andCollectionTypeIsNull() {
             addCriterion("collection_type is null");
             return (Criteria) this;
