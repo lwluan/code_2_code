@@ -2,7 +2,9 @@ package com.cd2cd.service.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -14,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.domain.CommValidate;
 import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
@@ -24,6 +27,7 @@ import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
 import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.ProTableColumn;
+import com.cd2cd.domain.gen.CommValidateCriteria;
 import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
 import com.cd2cd.domain.gen.ProFunCriteria;
@@ -32,6 +36,7 @@ import com.cd2cd.domain.gen.ProPageCriteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
 import com.cd2cd.domain.gen.ProTableColumnCriteria;
 import com.cd2cd.domain.gen.ProTableCriteria;
+import com.cd2cd.mapper.CommValidateMapper;
 import com.cd2cd.mapper.ProFieldMapper;
 import com.cd2cd.mapper.ProFileMapper;
 import com.cd2cd.mapper.ProFunArgMapper;
@@ -44,6 +49,8 @@ import com.cd2cd.mapper.ProTableColumnMapper;
 import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.util.BeanUtil;
+import com.cd2cd.util.Constants.FieldDataType;
+import com.cd2cd.util.Constants.FunArgType;
 import com.cd2cd.util.FileTypeEnum;
 import com.cd2cd.util.PackageTypeEnum;
 import com.cd2cd.util.ProjectModuleTypeEnum;
@@ -70,6 +77,7 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired ProFunMapper proFunMapper;
 	@Autowired ProPageMapper proPageMapper;
 	@Autowired ProFunArgMapper proFunArgMapper;
+	@Autowired CommValidateMapper commValidateMapper;
 	
 	@Override
 	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
@@ -704,6 +712,53 @@ public class ProjectServiceImpl implements ProjectService {
 		List<ProFunArg> args = proFunArgMapper.fetchFunArgsByFunId(funId);
 		
 		BaseRes<List<ProFunArg>> res = new BaseRes<List<ProFunArg>>(ServiceCode.SUCCESS);
+		// 查出vo成员属性列表
+		for(ProFunArg fa: args) {
+			if (FunArgType.vo.name().equals(fa.getArgType())) {
+				Long argTypeId = fa.getArgTypeId();
+				ProFile mProFile = proFileMapper.selectByPrimaryKey(argTypeId);
+
+				Long superId = mProFile.getSuperId(); // vo是否继承了数据库表
+				
+				
+				Map<String, ProFunArg> voFiledMap = new HashMap<String, ProFunArg>();
+				
+				ProFieldCriteria mProFieldCriteria = new ProFieldCriteria();
+				mProFieldCriteria.createCriteria().andFileIdEqualTo(argTypeId);
+				
+				// 获取vo定义成员域
+				List<ProField> proFiles = proFieldMapper.selectByExample(mProFieldCriteria);
+				proFiles.stream().forEach(field->{
+					
+					if(FieldDataType.base.name().equals(field.getDataType())) {
+						ProFunArg _fa = new ProFunArg("children");
+						_fa.setArgType(FunArgType.base.name());
+						_fa.setName(field.getName());
+						_fa.setFunId(funId);
+						_fa.setCollectionType(field.getCollectionType());
+						_fa.setFieldId(field.getId());
+						_fa.setPid(fa.getId());
+						
+						voFiledMap.put(_fa.getName(), _fa);
+					}
+				});
+				
+				
+				if(voFiledMap.size() > 0) {
+					
+					// merge name 一至合并
+					if(fa.getChildren().size() > 0) {
+						fa.getChildren().stream().forEach(__fa -> {
+							voFiledMap.remove(__fa.getName());
+						});
+						fa.getChildren().addAll(new ArrayList<ProFunArg>(voFiledMap.values()));
+					} else {
+						fa.setChildren(new ArrayList<ProFunArg>(voFiledMap.values()));
+					}
+				} 
+			}
+		}
+		
 		res.setData(args);
 		
 		return res;
@@ -711,6 +766,24 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public BaseRes<String> addFunArg(ProFunArgVo proFunArg) {
+		
+		if(null != proFunArg.getFieldId()) {
+			
+			// 从vo成员添加 TODO
+			ProField mProField = proFieldMapper.selectByPrimaryKey(proFunArg.getFieldId());
+			
+			proFunArg.setName(mProField.getName());
+			proFunArg.setArgType(mProField.getDataType());
+			proFunArg.setArgTypeName(mProField.getTypePath());
+			proFunArg.setCollectionType(mProField.getCollectionType());
+			proFunArg.setComment(mProField.getComment());
+			
+			if(FieldDataType.vo.name().equals(mProField.getDataType())) {
+				proFunArg.setArgTypeId(Long.valueOf(mProField.getTypeKey()));
+			}
+			// name argType argTypeName argTypeId collectionType comment
+		}
+		
 		proFunArg.setCreateTime(new Date());
 		proFunArg.setUpdateTime(new Date());
 		proFunArgMapper.insertSelective(proFunArg);
@@ -742,5 +815,17 @@ public class ProjectServiceImpl implements ProjectService {
 				recursionDeleteArg(a.getChildren());
 			}
 		}
+	}
+
+	@Override
+	public BaseRes<List<CommValidate>> validateList(Long proId) {
+		CommValidateCriteria mCommValidateCriteria = new CommValidateCriteria();
+		mCommValidateCriteria.createCriteria().andProIdEqualTo(proId);
+		
+		mCommValidateCriteria.or().andProIdIsNull();
+		mCommValidateCriteria.or().andProIdEqualTo(0l);
+		
+		List<CommValidate> list = commValidateMapper.selectByExample(mCommValidateCriteria);
+		return new BaseRes<List<CommValidate>>(ServiceCode.SUCCESS, list);
 	}
 }

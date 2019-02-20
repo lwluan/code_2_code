@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.domain.CommValidate;
 import com.cd2cd.domain.ProFunArg;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.vo.BaseRes;
@@ -218,6 +219,13 @@ public class ProjectController extends BaseController {
 		return projectService.listFunArg(funId);
 	}
 	
+	@RequestMapping(value = "addFunArgByFieldId", method = RequestMethod.POST)
+	public BaseRes<String> addFunArgByFieldId( 
+			@Validated({ProFunArgVo.addByFieldId.class}) @RequestBody
+			ProFunArgVo proFunArg, BindingResult bindingResult) {
+		return projectService.addFunArg(proFunArg);
+	}
+	
 	@RequestMapping(value = "funArg", method = RequestMethod.POST)
 	public BaseRes<String> addFunArg( 
 			@Validated({add.class}) @RequestBody
@@ -237,6 +245,13 @@ public class ProjectController extends BaseController {
 		return projectService.deleteFunArg(argId);
 	}
 	
+	/**
+	 * ------------------ validate
+	 */
+	@RequestMapping(value = "validateList", method = RequestMethod.GET)
+	public BaseRes<List<CommValidate>> validateList(Long proId) {
+		return projectService.validateList(proId);
+	}
 	
 	/**
 	 * ------------------ fun return vo

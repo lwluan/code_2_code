@@ -94,5 +94,9 @@
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
+		<table domainObjectName="CommValidate" tableName="comm_validate" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
 	</context>
 </generatorConfiguration>

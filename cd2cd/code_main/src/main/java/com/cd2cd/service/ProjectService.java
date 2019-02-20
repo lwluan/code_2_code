@@ -2,6 +2,7 @@ package com.cd2cd.service;
 
 import java.util.List;
 
+import com.cd2cd.domain.CommValidate;
 import com.cd2cd.domain.ProFunArg;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.ProFieldVo;
@@ -123,5 +124,10 @@ public interface ProjectService {
 	BaseRes<String> modifyFunArg(ProFunArgVo proFunArg);
 
 	BaseRes<String> deleteFunArg(Long argId);
+
+	/**
+	 * ============= validate
+	 */
+	BaseRes<List<CommValidate>> validateList(Long proId);
 
 }
