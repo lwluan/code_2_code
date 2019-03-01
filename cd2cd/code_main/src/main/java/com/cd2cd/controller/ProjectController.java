@@ -167,7 +167,7 @@ public class ProjectController extends BaseController {
 	/**
 	 * ------------------ function
 	 */
-	@RequestMapping(value = "addFunction", method = RequestMethod.POST)
+	@RequestMapping(value = "functionInfo", method = RequestMethod.POST)
 	public BaseRes<ProFunVo> addFunction(
 			@Validated 
 			@RequestBody ProFunVo proFunVo,
@@ -182,7 +182,7 @@ public class ProjectController extends BaseController {
 		
 	}
 	
-	@RequestMapping(value = "modifyFunction", method = RequestMethod.POST)
+	@RequestMapping(value = "functionInfo", method = RequestMethod.PUT)
 	public BaseRes<ProFunVo> modifyFunction(
 			@Validated 
 			@RequestBody ProFunVo proFunVo,
@@ -196,7 +196,7 @@ public class ProjectController extends BaseController {
 		return projectService.modifyFunction(proFunVo);
 	}
 	
-	@RequestMapping(value = "deleteFunctionByFunId", method = RequestMethod.GET)
+	@RequestMapping(value = "functionInfo", method = RequestMethod.DELETE)
 	public BaseRes<String> deleteFunctionByFunId(Long funId) {
 		return projectService.deleteFunctionByFunId(funId);
 	}
@@ -205,6 +205,10 @@ public class ProjectController extends BaseController {
 	public BaseRes<List<ProFunVo>> fetchFunsByFileId(Long fileId) {
 		return projectService.fetchFunsByFileId(fileId);
 	}
+	
+	/**
+	 * page
+	 **/
 	
 	@RequestMapping(value = "fetchAllPageByProjectId", method = RequestMethod.GET)
 	public BaseRes<List<ProPageVo>> fetchAllPageByProjectId(Long projectId) {
