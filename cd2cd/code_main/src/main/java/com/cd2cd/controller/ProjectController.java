@@ -38,18 +38,24 @@ public class ProjectController extends BaseController {
 	@Resource
 	private ProjectService projectService;
 	
+	/** database table columns */
+	@RequestMapping(value = "tableAndColumns", method = RequestMethod.GET)
+	public BaseRes<ProTableVo> fetchTableHasColumnsByTableId(Long tableId) {
+		LOG.info("projectId={}", tableId);
+		
+		return projectService.fetchColumnsByTableId(tableId);
+	}
+	
+	
+	
+	
 	@RequestMapping("fetchTableListByProjectHasDb")
 	public BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId) {
 		LOG.info("projectId={}", projectId);
 		return projectService.fetchTableListByProjectHasDb(projectId);
 	}	
 	
-	@RequestMapping(value = "tableInfo", method = RequestMethod.GET)
-	public BaseRes<ProTableVo> fetchTableHasColumnsByTableId(Long tableId) {
-		LOG.info("projectId={}", tableId);
-		
-		return projectService.fetchColumnsByTableId(tableId);
-	}
+	
 	
 	@RequestMapping(value = "tableList", method = RequestMethod.GET)
 	public BaseRes<List<ProTableVo>> fetchAllTablesByProject(Long projectId) {
