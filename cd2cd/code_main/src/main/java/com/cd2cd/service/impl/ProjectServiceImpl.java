@@ -485,7 +485,7 @@ public class ProjectServiceImpl implements ProjectService {
 		// update
 		if( fileVo.getId() != null ) {
 			
-			effect = proFieldMapper.updateByPrimaryKey(fileVo);
+			effect = proFieldMapper.updateByPrimaryKeySelective(fileVo);
 		} else {
 			// to save 
 			fileVo.setCreateTime(new Date());

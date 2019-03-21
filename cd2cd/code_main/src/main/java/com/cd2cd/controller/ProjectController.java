@@ -163,7 +163,7 @@ public class ProjectController extends BaseController {
 		return projectService.saveOrUpdateFieldToFile(fieldVo);
 	}
 	
-	@RequestMapping(value = "fileField", method = RequestMethod.DELETE)
+	@RequestMapping(value = "fileFieldInfo", method = RequestMethod.DELETE)
 	public BaseRes<String> delFieldFromFile(Long id) {
 		return projectService.delFieldFromFile(id);
 	}
