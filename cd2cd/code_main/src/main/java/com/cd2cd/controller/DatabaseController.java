@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.domain.ProTable;
 import com.cd2cd.service.ProDatabaseService;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DbTreeNode;
@@ -125,6 +126,17 @@ public class DatabaseController {
 	}
 	
 	// ----- table -----
+	
+	@RequestMapping(value = "tableList", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<List<ProTable>> tableList(Long id) {
+		BaseRes<List<ProTable>> res = new BaseRes<List<ProTable>>();
+		
+		List<ProTable> tables = proDatabaseService.getTableListByDbId(id);
+		res.setData(tables);
+		
+		res.setServiceCode(ServiceCode.SUCCESS);
+		return res;
+	} 
 	
 	@RequestMapping(value = "tableDetail", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<ProTableVo> tableDetail(ProTableVo proTableVo) {

@@ -384,4 +384,11 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 		return true;
 	}
 
+	@Override
+	public List<ProTable> getTableListByDbId(Long id) {
+		ProTableCriteria example = new ProTableCriteria();
+		example.createCriteria().andDatabaseIdEqualTo(id);
+		return proTableMapper.selectByExample(example);
+	}
+
 }

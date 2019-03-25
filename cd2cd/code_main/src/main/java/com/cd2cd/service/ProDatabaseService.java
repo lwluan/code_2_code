@@ -2,6 +2,7 @@ package com.cd2cd.service;
 
 import java.util.List;
 
+import com.cd2cd.domain.ProTable;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DbTreeNode;
 import com.cd2cd.vo.ProDatabaseVo;
@@ -39,5 +40,7 @@ public interface ProDatabaseService {
 	boolean modifyTableColumn(ProTableColumnVo proTableColumnVo);
 
 	boolean delTableColumn(Long id);
+
+	List<ProTable> getTableListByDbId(Long id);
 	
 }

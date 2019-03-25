@@ -46,9 +46,6 @@ public class ProjectController extends BaseController {
 		return projectService.fetchColumnsByTableId(tableId);
 	}
 	
-	
-	
-	
 	@RequestMapping("fetchTableListByProjectHasDb")
 	public BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId) {
 		LOG.info("projectId={}", projectId);
