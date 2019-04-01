@@ -121,9 +121,7 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 			
 			ProTableColumnCriteria example = new ProTableColumnCriteria();
 			example.createCriteria().andTableIdEqualTo(mProTableVo.getId());
-			List<ProTableColumn> tables = proTableColumnMapper.selectByExample(example);
-			
-			List<ProTableColumnVo> columns = BeanUtil.voConvertList(tables, ProTableColumnVo.class);
+			List<ProTableColumn> columns = proTableColumnMapper.selectByExample(example);
 			mProTableVo.setColumns(columns);
 			
 			return mProTableVo;

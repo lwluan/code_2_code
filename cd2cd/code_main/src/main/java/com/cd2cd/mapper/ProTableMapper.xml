@@ -1,7 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.cd2cd.mapper.ProTableMapper">
-  <!-- 自定义sql -->
 
+	<resultMap id="TableAndColumnResultMap" type="com.cd2cd.domain.ProTable"
+		extends="BaseResultMap">
+		<collection column="id" property="columns" ofType="TableColumnResultMap"
+			javaType="java.util.ArrayList" select="fetchColumnsByTableId" />
+	</resultMap>
+
+	<resultMap id="TableColumnResultMap" type="com.cd2cd.domain.ProTableColumn">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="table_id" jdbcType="BIGINT" property="tableId" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="comment" jdbcType="VARCHAR" property="comment" />
+		<result column="mysql_type" jdbcType="VARCHAR" property="mysqlType" />
+		<result column="default_value" jdbcType="VARCHAR" property="defaultValue" />
+		<result column="allow_null" jdbcType="VARCHAR" property="allowNull" />
+		<result column="key_type" jdbcType="VARCHAR" property="keyType" />
+		<result column="extra" jdbcType="VARCHAR" property="extra" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+
+	<select id="selectTableAndColumnByDbId" resultMap="TableAndColumnResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from
+		pro_table
+		where
+		database_id in
+		<foreach close=")" collection="dbIds" item="listItem" open="("
+			separator=",">
+			#{listItem}
+		</foreach>
+	</select>
+
+	<select id="fetchColumnsByTableId" resultMap="TableColumnResultMap">
+		select * from pro_table_column where table_id = #{id}
+	</select>
 
 </mapper>

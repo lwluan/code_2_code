@@ -61,7 +61,6 @@ import com.cd2cd.vo.ProFileVo;
 import com.cd2cd.vo.ProFunArgVo;
 import com.cd2cd.vo.ProFunVo;
 import com.cd2cd.vo.ProPageVo;
-import com.cd2cd.vo.ProTableColumnVo;
 import com.cd2cd.vo.ProTableVo;
 
 @Service
@@ -463,11 +462,8 @@ public class ProjectServiceImpl implements ProjectService {
 				ProTableColumnCriteria mProTableColumnCriteria = new ProTableColumnCriteria();
 				mProTableColumnCriteria.createCriteria().andTableIdEqualTo(proTable.getId());
 				List<ProTableColumn> columns = proTableColumnMapper.selectByExample(mProTableColumnCriteria);
-				
-				List<ProTableColumnVo> columnVos = BeanUtil.voConvertList(columns, ProTableColumnVo.class);
-			
 				ProTableVo table = BeanUtil.voConvert(proTable, ProTableVo.class);
-				table.setColumns(columnVos);
+				table.setColumns(columns);
 				mProFileVo.setTable(table);
 			}
 		}
@@ -577,10 +573,8 @@ public class ProjectServiceImpl implements ProjectService {
 		mProTableColumnCriteria.createCriteria()
 		.andTableIdEqualTo(tableId);
 		List<ProTableColumn> columns = proTableColumnMapper.selectByExample(mProTableColumnCriteria);
-		List<ProTableColumnVo> columnVos = BeanUtil.voConvertList(columns, ProTableColumnVo.class);
-		
 		ProTableVo mProTableVo = BeanUtil.voConvert(mProTable, ProTableVo.class);
-		mProTableVo.setColumns(columnVos);
+		mProTableVo.setColumns(columns);
 		
 		BaseRes<ProTableVo> res = new BaseRes<ProTableVo>();
 		res.setData(mProTableVo);
@@ -689,11 +683,8 @@ public class ProjectServiceImpl implements ProjectService {
 				ProTableColumnCriteria mProTableColumnCriteria = new ProTableColumnCriteria();
 				mProTableColumnCriteria.createCriteria().andTableIdEqualTo(proTable.getId());
 				List<ProTableColumn> columns = proTableColumnMapper.selectByExample(mProTableColumnCriteria);
-				
-				List<ProTableColumnVo> columnVos = BeanUtil.voConvertList(columns, ProTableColumnVo.class);
-			
 				ProTableVo table = BeanUtil.voConvert(proTable, ProTableVo.class);
-				table.setColumns(columnVos);
+				table.setColumns(columns);
 				mProFileVo.setTable(table);
 			}
 		}

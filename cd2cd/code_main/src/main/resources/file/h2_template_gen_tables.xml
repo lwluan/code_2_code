@@ -25,23 +25,18 @@
 			<property name="suppressAllComments" value="true"/>
 		</commentGenerator>
 		
-		
-		 <jdbcConnection driverClass="${driverClass}"
-			connectionURL="${connectionURL}" userId="${userId}" password="${password}" >
+		 <jdbcConnection driverClass="org.h2.Driver"
+			connectionURL="jdbc:h2:./h2db/test" userId="sa" password="" >
 		</jdbcConnection>
 		
-		<javaModelGenerator targetPackage="${javaModel}" targetProject="${targetProject}src/main/java/" />
-		<sqlMapGenerator targetPackage="${sqlMap}" targetProject="${targetProject}src/main/java/" />
-		<javaClientGenerator targetPackage="${javaClient}" targetProject="${targetProject}src/main/java/" type="XMLMAPPER" />
+		<javaModelGenerator targetPackage="com.cd2cd.admin.domain" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/code_2_code/code_template/code_template_main/src/main/java/" />
+		<sqlMapGenerator targetPackage="com.cd2cd.admin.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/code_2_code/code_template/code_template_main/src/main/java/" />
+		<javaClientGenerator targetPackage="com.cd2cd.admin.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/code_2_code/code_template/code_template_main/src/main/java/" type="XMLMAPPER" />
 		
 		<!-- sys table -->
-		<#list tables as table>
-		
-			<table domainObjectName="${table.getJavaTableName()}" tableName="${table.name}" >
-				<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-			</table>
-		
-		</#list>
+		<table domainObjectName="Test" tableName="WEATHERINFO" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
 		
 	</context>
 </generatorConfiguration>

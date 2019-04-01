@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -26,6 +27,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.util.Strings;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
@@ -41,11 +44,15 @@ import org.w3c.dom.NodeList;
 import com.cd2cd.domain.ProDatabase;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProTable;
-import com.cd2cd.util.mbg.GenTest;
+import com.cd2cd.domain.ProTableColumn;
+import com.cd2cd.util.mbg.h2.H2DatabaseUtil;
 
 public class ProjectUtils {
 	private static String code_path = "code_template";
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectUtils.class);
+	private static final String H2_DB_PATH = "./h2db";
+	private static final String H2_DB_PASSWORD = "h2";
+	private static final String H2_DB_USER = "123456";
 
 	/**
 	 * 复制一个目录及其子目录、文件到另外一个目录
@@ -492,6 +499,46 @@ public class ProjectUtils {
 		return result;
 	}
 	
+	public static void initH2Database(List<ProTable> tables, ProProject project, ProDatabase database) throws SQLException {
+		
+		String dbName = database.getDbName();
+		String user = H2_DB_USER;
+		String password = H2_DB_PASSWORD;
+		
+		H2DatabaseUtil nH2DatabaseUtil = new H2DatabaseUtil(H2_DB_PATH, dbName, user, password);
+		
+		for(ProTable t: tables) {
+			String dropTable = "DROP TABLE IF EXISTS " + t.getName();
+			nH2DatabaseUtil.exeSchema(dropTable);
+			
+			
+			StringBuilder createTab = new StringBuilder();
+			createTab.append("CREATE TABLE IF NOT EXISTS ");
+			createTab.append(t.getName());
+			createTab.append("(");
+			List<ProTableColumn> columns = t.getColumns();
+			List<String> _columnAndType = new ArrayList<String>();
+			
+			String primaryKeyColumn = null;
+			for(ProTableColumn c: columns) {
+				
+				_columnAndType.add(c.getName() + " " + c.getMysqlType());
+				if("PRI".equalsIgnoreCase(c.getKeyType())) {
+					primaryKeyColumn = c.getName();
+				}
+			}
+			if(StringUtils.isNotBlank(primaryKeyColumn)) {
+				_columnAndType.add("PRIMARY KEY (`"+primaryKeyColumn+"`)");
+			}
+			createTab.append(Strings.join(_columnAndType, ','));
+			createTab.append(")");
+			
+			System.out.println("createTab=" + createTab);
+			nH2DatabaseUtil.exeSchema(createTab.toString());
+		}
+		
+	}
+	
 	public static void genJavaFromDb(List<ProTable> tables, ProProject project, ProDatabase database) {
 		try {
 			
@@ -516,14 +563,21 @@ public class ProjectUtils {
 			
 			String sqlMap = groupId + "." + artifactId + ".mapper";
 			String javaModel = groupId + "." + artifactId + ".domain";;
-			String connectionURL = "jdbc:mysql://" + database.getHostname() + ":" + database.getPort() + "/" + database.getDbName();
+//			String connectionURL = "jdbc:mysql://" + database.getHostname() + ":" + database.getPort() + "/" + database.getDbName();
+			
+			// h2
+			String connectionURL = "jdbc:h2:"+H2_DB_PATH+"/" + database.getDbName();
+			
 			
 			ByteArrayOutputStream bai = new ByteArrayOutputStream();
 			GenFileByFtl mGenFileByFtl = new GenFileByFtl();
 			Map<String, Object> dataObj = new HashMap<String, Object>();
 			
+			dataObj.put("userId", H2_DB_USER);
+			dataObj.put("password", H2_DB_PASSWORD);
 			
-			dataObj.put("driverClass", "com.mysql.jdbc.Driver");
+//			dataObj.put("driverClass", "com.mysql.jdbc.Driver");
+			dataObj.put("driverClass", "org.h2.Driver");
 			dataObj.put("connectionURL", connectionURL);
 			dataObj.put("javaModel", javaModel);
 			dataObj.put("sqlMap", sqlMap);

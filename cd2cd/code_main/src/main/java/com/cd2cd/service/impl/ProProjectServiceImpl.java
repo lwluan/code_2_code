@@ -1,6 +1,7 @@
 package com.cd2cd.service.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -168,13 +169,10 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 		BaseRes<String> res = new BaseRes<String>();
 
-		// copy project to folder
 		try {
-			
+		
+			// copy project to folder
 			ProjectUtils.genProject(mProProject);
-			
-			
-			// 生成 mapper/entity
 			
 			// db list
 			ProProjectDatabaseRelCriteria ppdrc = new ProProjectDatabaseRelCriteria();
@@ -193,13 +191,14 @@ public class ProProjectServiceImpl implements ProProjectService {
 			if( dababases.size() > 0 ) {
 				ProDatabase database = dababases.get(0);
 				
-				ProTableCriteria ptCriteria = new ProTableCriteria();
-				ptCriteria.createCriteria().andDatabaseIdEqualTo(database.getId());
-				List<ProTable> tables = proTableMapper.selectByExample(ptCriteria);
+				List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
 				
-				/**
-				 * 暂时支持一个数据库
+				/** TODO
+				 * 暂时支持一个数据库 
+				 * mapper/entity
 				 */
+				ProjectUtils.initH2Database(tables, mProProject, database);
+				
 				ProjectUtils.genJavaFromDb(tables, mProProject, database);
 				
 			}

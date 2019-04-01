@@ -27,11 +27,22 @@ public class Constants {
     }
     
     public static void setObjVal(Object obj, String filedName, Object value) {
+    	Field field = null;
     	try {
-			Field field = obj.getClass().getDeclaredField(filedName);
-			field.setAccessible(true);
-			field.set(obj, value);
+    		field = obj.getClass().getDeclaredField(filedName);
+			
 		} catch (Exception e) {
+			try {
+				field = obj.getClass().getSuperclass().getDeclaredField(filedName);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		}
+    	
+    	field.setAccessible(true);
+		try {
+			field.set(obj, value);
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
     }
