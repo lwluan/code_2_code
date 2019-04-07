@@ -12,13 +12,13 @@ import java.io.OutputStream;
 import java.io.StringWriter;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.validation.Valid;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -30,12 +30,21 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.JavaVisibility;
+import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
+import org.mybatis.generator.api.dom.java.TopLevelClass;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -43,92 +52,51 @@ import org.w3c.dom.NodeList;
 
 import com.cd2cd.domain.ProDatabase;
 import com.cd2cd.domain.ProFile;
+import com.cd2cd.domain.ProFun;
+import com.cd2cd.domain.ProFunArg;
+import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.util.mbg.h2.H2DatabaseUtil;
 
-@Deprecated
-public class ProjectUtils {
+public class ProjectGenUtil {
 	private static String code_path = "code_template";
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectUtils.class);
 	private static final String H2_DB_PATH = "./h2db";
 	private static final String H2_DB_PASSWORD = "h2";
 	private static final String H2_DB_USER = "123456";
-
-	/**
-	 * 复制一个目录及其子目录、文件到另外一个目录
-	 */
-	public static void copyFolder(File src, File dest) throws IOException {
-		if (src.isDirectory()) {
-			if (!dest.exists()) {
-				dest.mkdir();
-			}
-			String files[] = src.list();
-			for (String file : files) {
-				File srcFile = new File(src, file);
-				File destFile = new File(dest, file);
-				// 递归复制
-				copyFolder(srcFile, destFile);
-			}
-		} else {
-			InputStream in = new FileInputStream(src);
-			OutputStream out = new FileOutputStream(dest);
-
-			byte[] buffer = new byte[1024];
-
-			int length;
-
-			while ((length = in.read(buffer)) > 0) {
-				out.write(buffer, 0, length);
-			}
-			in.close();
-			out.close();
-		}
+	
+	private ProProject project;
+	String contextPath;			// 项目访问地址
+	String artifactId;			// test_main
+	String artifactIdName;		// artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
+	String groupId;				// 包名 com.test
+	String name;				// 项目，中文名称
+	String packageType;  		// 包结构类型：standard、module
+	String version;				// 项目版本号
+	String description;			// 项目描述
+	String localPath;			// 本地生成路径
+	
+	public ProjectGenUtil(ProProject project) {
+		this.project = project;
+		
+		contextPath = project.getContextPath();
+		artifactId = project.getArtifactId();
+		groupId = project.getGroupId();
+		name = project.getName();
+		packageType = project.getPackageType();
+		version = project.getVersion();
+		description = project.getDescription();
+		localPath = project.getLocalPath();
+		artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
 	}
 
-	private static String fileFolderPath(String name) {
-		String _path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "../../" + name + "/";
-		_path = _path.replace("file:", "");
-
-		File file = new File(_path);
-		if (!file.exists()) {
-			file.mkdirs();
-		}
-		_path = getRealPath(_path);
-		return _path;
-	}
-
-	private static String getRealPath(String path) {
-		int n = path.indexOf("../");
-		if (n > -1) {
-			String eStr = path.substring(n + 3, path.length());
-			String sStr = path.substring(0, n - 1);
-			sStr = sStr.substring(0, sStr.lastIndexOf("/") + 1);
-			String p = sStr + eStr;
-			path = p;
-			if (path.indexOf("../") > -1) {
-				path = getRealPath(path);
-			}
-		}
-		return path;
-	}
-
-	public static void genProject(ProProject project) throws Exception {
-		String contextPath = project.getContextPath();
-		String artifactId = project.getArtifactId();
-		String groupId = project.getGroupId();
-		String name = project.getName();
-		String packageType = project.getPackageType();
-		String version = project.getVersion();
-		String description = project.getDescription();
-		String localPath = project.getLocalPath();
+	public void genProjectBase() throws Exception {
 
 		if (!new File(localPath).exists()) {
 			throw new Exception("localPath=" + localPath + ",不存在");
 		}
-
-		String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
 
 		String _path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "../../../../" + code_path;
 		_path = _path.replace("file:", "");
@@ -141,24 +109,17 @@ public class ProjectUtils {
 			copyFolder(src, dest);
 		}
 		// 2、项目替换
-		replaceProject(project);
+		replaceProject();
 	}
 
+	
 	/**
 	 * 替换文件内容
 	 * 
 	 * @param project
 	 * @throws Exception
 	 */
-	public static void replaceProject(ProProject project) throws Exception {
-		String contextPath = project.getContextPath();
-		String artifactId = project.getArtifactId();
-		String groupId = project.getGroupId();
-		String name = project.getName();
-		String packageType = project.getPackageType();
-		String version = project.getVersion();
-		String description = project.getDescription();
-		String localPath = project.getLocalPath();
+	private void replaceProject() throws Exception {
 
 		String groupIdName = groupId.replaceAll("\\.", "/").replaceAll("-", "_");
 		String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
@@ -197,16 +158,12 @@ public class ProjectUtils {
 		reNameFile(projectMainSrcArtifactIdPath, targetMainSrcArtifactIdPaht);
 		projectMainSrcArtifactIdPath = targetMainSrcArtifactIdPaht;
 
-		reNameFolder(project);
-		replacePomXml(project);
-		replaceJavaAndMapperXml(project);
+		reNameFolder();
+		replacePomXml();
+		replaceJavaAndMapperXml();
 	}
-
-	private static void replaceJavaAndMapperXml(ProProject project) throws Exception {
-		String contextPath = project.getContextPath();
-		String artifactId = project.getArtifactId();
-		String groupId = project.getGroupId();
-		String localPath = project.getLocalPath();
+	
+	private void replaceJavaAndMapperXml() throws Exception {
 
 		String groupIdName = groupId.replaceAll("\\.", "/").replaceAll("-", "_");
 		String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
@@ -255,56 +212,40 @@ public class ProjectUtils {
 
 		}
 	}
+	
+	public void listAllFile(String filePath, List<File> files) {
+		File file = new File(filePath);
 
-	private static void reNameFolder(ProProject project) {
-		String artifactId = project.getArtifactId();
-		String groupId = project.getGroupId();
-		String localPath = project.getLocalPath();
+		File[] files2 = file.listFiles(new FileFilter() {
+			public boolean accept(File file) {
+				if (file.isDirectory())
+					return true;
+				else {
+					String name = file.getName();
+					if (name.endsWith(".java") || name.endsWith(".xml") || name.endsWith(".html")
+							|| name.endsWith(".properties"))
+						return true;
+					else
+						return false;
+				}
+			}
+		});
 
-		String groupIdName = groupId.replaceAll("\\.", "/").replaceAll("-", "_");
-		String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
-
-		String mainProjectName = artifactIdName + "_main";
-		String parentProjectName = artifactIdName + "_parent";
-
-		// 项目模板地址
-		String projectPath = localPath + "/" + code_path;
-		String targetRootPath = localPath + "/" + artifactIdName;
-		reNameFile(projectPath, targetRootPath);
-		projectPath = targetRootPath;
-
-		String projectMainPath = projectPath + "/" + code_path + "_main";
-		String targetMainPath = projectPath + "/" + mainProjectName;
-		reNameFile(projectMainPath, targetMainPath);
-		projectMainPath = targetMainPath;
-
-		String projectParentPath = projectPath + "/" + code_path + "_parent";
-		String targetParentPath = projectPath + "/" + parentProjectName;
-		reNameFile(projectParentPath, targetParentPath);
-		projectParentPath = targetParentPath;
-
-		// rename group id
-		String projectMainSrcGroupIdPath = targetMainPath + "/src/main/java/com/cd2cd";
-		String targetMainSrcGroupIdPath = targetMainPath + "/src/main/java/" + groupIdName;
-		reNameFile(projectMainSrcGroupIdPath, targetMainSrcGroupIdPath);
-		projectMainSrcGroupIdPath = targetMainSrcGroupIdPath;
-
-		// rename artifact id
-		String projectMainSrcArtifactIdPath = projectMainSrcGroupIdPath + "/admin";
-		String targetMainSrcArtifactIdPaht = projectMainSrcGroupIdPath + "/" + artifactIdName;
-		reNameFile(projectMainSrcArtifactIdPath, targetMainSrcArtifactIdPaht);
-		projectMainSrcArtifactIdPath = targetMainSrcArtifactIdPaht;
-
+		if (files2 != null) {
+			for (File fi : files2) {
+				if (fi.isDirectory()) {
+					listAllFile(fi.getAbsolutePath(), files);
+				}
+				if (fi.isFile()) {
+					files.add(fi);
+				}
+			}
+		}
 	}
-
-	private static void replacePomXml(ProProject project) throws Exception {
+	
+	private void replacePomXml() throws Exception {
 
 		// - = - = - = - = - 内容替换 - = - = - = - = -
-		String artifactId = project.getArtifactId();
-		String groupId = project.getGroupId();
-		String version = project.getVersion();
-		String localPath = project.getLocalPath();
-
 		String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
 
 		String mainProjectName = artifactIdName + "_main";
@@ -373,16 +314,16 @@ public class ProjectUtils {
 
 		saveDocument(document, pomFilePath);
 	}
-
-	private static void cleanNodeChilds(Node node) {
+	
+	private void cleanNodeChilds(Node node) {
 		NodeList nodeList = node.getChildNodes();
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			node.removeChild(nodeList.item(0));
 			i--;
 		}
 	}
-
-	private static List<Node> getChildsByTagName(Node node, String tagName) {
+	
+	private List<Node> getChildsByTagName(Node node, String tagName) {
 		NodeList nodeList = node.getChildNodes();
 		List<Node> nodes = new ArrayList<Node>();
 		for (int i = 0; i < nodeList.getLength(); i++) {
@@ -392,68 +333,8 @@ public class ProjectUtils {
 		}
 		return nodes;
 	}
-
-	private static void reNameFile(String f1, String f2) {
-		File file1 = new File(f1);
-		File file2 = new File(f2);
-
-		if (file1.exists() && !file2.exists()) {
-			file1.renameTo(file2);
-		}
-	}
-
-	public static void main(String[] args) throws Exception {
-
-		ProProject project = new ProProject();
-		project.setArtifactId("dome_admin");
-		project.setGroupId("com.lwl");
-		project.setContextPath("/demo_admin");
-		project.setLocalPath("/Users/leiwuluan/Desktop/temp");
-		project.setName("用户管理后台");
-		project.setPackageType("standard");
-		project.setVersion("1.0");
-		project.setDescription("用户管理后台，人员管理");
-		project.setUpdateTime(new Date());
-		project.setCreateTime(new Date());
-
-		genProject(project);
-
-		// 修改 package
-		// 修改 import
-
-	}
-
-	public static void listAllFile(String filePath, List<File> files) {
-		File file = new File(filePath);
-
-		File[] files2 = file.listFiles(new FileFilter() {
-			public boolean accept(File file) {
-				if (file.isDirectory())
-					return true;
-				else {
-					String name = file.getName();
-					if (name.endsWith(".java") || name.endsWith(".xml") || name.endsWith(".html")
-							|| name.endsWith(".properties"))
-						return true;
-					else
-						return false;
-				}
-			}
-		});
-
-		if (files2 != null) {
-			for (File fi : files2) {
-				if (fi.isDirectory()) {
-					listAllFile(fi.getAbsolutePath(), files);
-				}
-				if (fi.isFile()) {
-					files.add(fi);
-				}
-			}
-		}
-	}
-
-	public static Document getDocumentByFilePath(String filePath) throws Exception {
+	
+	private Document getDocumentByFilePath(String filePath) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(false);
 		factory.setIgnoringComments(true);
@@ -467,12 +348,12 @@ public class ProjectUtils {
 		return document;
 	}
 
-	public static void saveDocument(Document document, String filePath) throws Exception {
+	private void saveDocument(Document document, String filePath) throws Exception {
 		String contentStr = toStringFromDoc(document);
 		IOUtils.write(contentStr, new FileOutputStream(filePath), "utf-8");
 	}
 
-	public static String toStringFromDoc(Document document) {
+	private String toStringFromDoc(Document document) {
 		String result = null;
 
 		if (document != null) {
@@ -501,8 +382,97 @@ public class ProjectUtils {
 		return result;
 	}
 	
-	public static void initH2Database(List<ProTable> tables, ProProject project, ProDatabase database) throws SQLException {
-		
+	private void reNameFolder() {
+
+		String groupIdName = groupId.replaceAll("\\.", "/").replaceAll("-", "_");
+		String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
+
+		String mainProjectName = artifactIdName + "_main";
+		String parentProjectName = artifactIdName + "_parent";
+
+		// 项目模板地址
+		String projectPath = localPath + "/" + code_path;
+		String targetRootPath = localPath + "/" + artifactIdName;
+		reNameFile(projectPath, targetRootPath);
+		projectPath = targetRootPath;
+
+		String projectMainPath = projectPath + "/" + code_path + "_main";
+		String targetMainPath = projectPath + "/" + mainProjectName;
+		reNameFile(projectMainPath, targetMainPath);
+		projectMainPath = targetMainPath;
+
+		String projectParentPath = projectPath + "/" + code_path + "_parent";
+		String targetParentPath = projectPath + "/" + parentProjectName;
+		reNameFile(projectParentPath, targetParentPath);
+		projectParentPath = targetParentPath;
+
+		// rename group id
+		String projectMainSrcGroupIdPath = targetMainPath + "/src/main/java/com/cd2cd";
+		String targetMainSrcGroupIdPath = targetMainPath + "/src/main/java/" + groupIdName;
+		reNameFile(projectMainSrcGroupIdPath, targetMainSrcGroupIdPath);
+		projectMainSrcGroupIdPath = targetMainSrcGroupIdPath;
+
+		// rename artifact id
+		String projectMainSrcArtifactIdPath = projectMainSrcGroupIdPath + "/admin";
+		String targetMainSrcArtifactIdPaht = projectMainSrcGroupIdPath + "/" + artifactIdName;
+		reNameFile(projectMainSrcArtifactIdPath, targetMainSrcArtifactIdPaht);
+		projectMainSrcArtifactIdPath = targetMainSrcArtifactIdPaht;
+
+	}
+	
+	private void reNameFile(String f1, String f2) {
+		File file1 = new File(f1);
+		File file2 = new File(f2);
+
+		if (file1.exists() && !file2.exists()) {
+			file1.renameTo(file2);
+		}
+	}
+	
+	/**
+	 * 复制一个目录及其子目录、文件到另外一个目录
+	 */
+	private void copyFolder(File src, File dest) throws IOException {
+		if (src.isDirectory()) {
+			if (!dest.exists()) {
+				dest.mkdir();
+			}
+			String files[] = src.list();
+			for (String file : files) {
+				File srcFile = new File(src, file);
+				File destFile = new File(dest, file);
+				// 递归复制
+				copyFolder(srcFile, destFile);
+			}
+		} else {
+			InputStream in = new FileInputStream(src);
+			OutputStream out = new FileOutputStream(dest);
+			IOUtils.copy(in, out);
+		}
+	}
+
+	
+	/**
+	 * 将相对路径替换成决对路径
+	 * @param path
+	 * @return
+	 */
+	private String getRealPath(String path) {
+		int n = path.indexOf("../");
+		if (n > -1) {
+			String eStr = path.substring(n + 3, path.length());
+			String sStr = path.substring(0, n - 1);
+			sStr = sStr.substring(0, sStr.lastIndexOf("/") + 1);
+			String p = sStr + eStr;
+			path = p;
+			if (path.indexOf("../") > -1) {
+				path = getRealPath(path);
+			}
+		}
+		return path;
+	}
+
+	public void initH2Database(List<ProTable> tables, ProDatabase database) throws SQLException {
 		String dbName = database.getDbName();
 		String user = H2_DB_USER;
 		String password = H2_DB_PASSWORD;
@@ -538,10 +508,9 @@ public class ProjectUtils {
 			System.out.println("createTab=" + createTab);
 			nH2DatabaseUtil.exeSchema(createTab.toString());
 		}
-		
 	}
-	
-	public static void genJavaFromDb(List<ProTable> tables, ProProject project, ProDatabase database) {
+
+	public void genJavaFromDb(List<ProTable> tables, ProDatabase database) {
 		try {
 			
 			String artifactId = project.getArtifactId();
@@ -604,17 +573,130 @@ public class ProjectUtils {
 			
 			myBatisGenerator.generate(null, ids);
 		} catch (Exception e) {
-			System.out.println("Message=" + e.getMessage());
-			e.printStackTrace();
+			LOG.error("error={}", e.getMessage(), e);
 		}
 	}
 
-	/**
-	 * 生成controller
-	 * @param mProProject
-	 * @param controllerList
-	 */
-	public static void genController(ProProject mProProject, List<ProFile> controllerList) {
+	public void genController(ProProject proProject, List<ProFile> controllerList) throws Exception {
+		
+		
+		// /Users/lwl/Desktop/test_project/test_pro/test_pro_main/src/main/java/com/test/test_pro/controller/
+		// /Users/lwl/Desktop/test_project/test_pro/user/controller/
+		for(ProFile file : controllerList) {
+			
+			ProModule module = file.getModule();
+			String fileGenPath = (localPath + "/" + artifactId + "/"+artifactId+"_main/src/main/java/" + groupId + "." + artifactId).replaceAll("\\.", "/");
+			String filePkg = groupId + "." + artifactId;
+			String fileClassPath = filePkg + ".controller." + file.getName();
+			
+			if( PackageTypeEnum.Flat.name().equals(packageType) ) {
+				fileGenPath += "/controller/" + file.getName() + ".java";
+			} else { // 模块化
+				fileGenPath += "/" + module.getName() + "/controller/" + file.getName() + ".java";
+				fileClassPath = filePkg + "." + module.getName() + ".controller." + file.getName();
+			}
+			
+			FullyQualifiedJavaType controllerType = new FullyQualifiedJavaType(fileClassPath);
+			TopLevelClass topClass = new TopLevelClass(controllerType);
+			topClass.setVisibility(JavaVisibility.PUBLIC);
+			topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+			
+			topClass.addAnnotation("@Controller");
+			topClass.addAnnotation("@RequestMapping(\""+file.getReqPath()+"\")");
+			
+			/**
+			 *  import class
+			 */
+			topClass.addImportedType(RequestMapping.class.getName());
+			topClass.addImportedType(Controller.class.getName());
+			topClass.addImportedType(ResponseBody.class.getName());
+			topClass.addImportedType(Valid.class.getName());
+			
+			
+			/**
+			 * 生成方法，参数，返回值
+			 **/
+			for(ProFun fun : file.getFuns()) {
+				Method m = new Method(fun.getFunName());
+				m.setVisibility(JavaVisibility.PUBLIC);
+				
+				
+				/**
+				 * 方法注解
+				 */
+				m.addAnnotation("@ResponseBody");
+				m.addAnnotation("@RequestMapping(\""+fun.getReqPath()+"\")");
+				
+				
+				/**
+				 * 方法参数
+				 */
+				List<ProFunArg> args = fun.getArgs();
+				for(ProFunArg arg : args) {
+					Parameter mp = new Parameter(new FullyQualifiedJavaType(arg.getArgTypeName()), arg.getName());
+					
+					if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
+						mp.addAnnotation("@RequestBody");
+					}
+					mp.addAnnotation("@Valid");
+					m.addParameter(mp);
+				}
+				/**
+				 * 方法返回值
+				 */
+				if(StringUtils.isNotBlank(fun.getReturnShow())) {
+					m.setReturnType(new FullyQualifiedJavaType(fun.getReturnShow()));
+				}
+				
+				/**
+				 * todo
+				 */
+				m.addBodyLine("// TODO ");
+				
+				topClass.addMethod(m);
+			}
+			
+			
+			System.out.println(topClass.getFormattedContent());
+			// 生成文件
+			File genFile = new File(fileGenPath);
+			if( ! genFile.getParentFile().exists()) {
+				genFile.getParentFile().mkdirs();
+			}
+			IOUtils.write(topClass.getFormattedContent(), new FileOutputStream(new File(fileGenPath)), "utf-8");
+		}
+	}
+	
+	public static void main(String[] args) {
+		FullyQualifiedJavaType fjt = new FullyQualifiedJavaType("com.cd2cd.controller.UserController");
+		TopLevelClass topClass = new TopLevelClass(fjt);
+		topClass.setVisibility(JavaVisibility.PUBLIC);
+		topClass.addFileCommentLine("/** \n 文件注释 \n @author leiwuluan \n @time 2019-04-07 \n **/");
+		
+		topClass.addAnnotation("@Controller");
+		topClass.addAnnotation("@RequestMapping(\"user\")");
+		
+		topClass.addImportedType("org.springframework.web.bind.annotation.*");
+		
+		Method m = new Method("getUserInfo");
+		m.setVisibility(JavaVisibility.PUBLIC);
+		m.setReturnType(new FullyQualifiedJavaType("BaseRes<User>"));
+		m.addBodyLine("//TODO");
+		
+		Parameter mp = new Parameter(new FullyQualifiedJavaType("UserInfo"), "userInfo");
+		mp.addAnnotation("@ResquestBody");
+		mp.addAnnotation("@Valid");
+		m.addParameter(mp);
+		
+		m.addAnnotation("@ResponseBody");
+		m.addAnnotation("@RequestMapping(\"userInfo\")");
+		
+		topClass.addMethod(m);
+		System.out.println(topClass.getFormattedContent());
 		
 	}
 }
+
+
+
+

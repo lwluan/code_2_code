@@ -11,24 +11,32 @@ import org.springframework.stereotype.Service;
 
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.ProDatabase;
+import com.cd2cd.domain.ProFile;
+import com.cd2cd.domain.ProFun;
+import com.cd2cd.domain.ProFunArg;
 import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
 import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.gen.ProDatabaseCriteria;
+import com.cd2cd.domain.gen.ProFileCriteria;
+import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria.Criteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
-import com.cd2cd.domain.gen.ProTableCriteria;
 import com.cd2cd.mapper.ProDatabaseMapper;
+import com.cd2cd.mapper.ProFileMapper;
+import com.cd2cd.mapper.ProFunArgMapper;
+import com.cd2cd.mapper.ProFunMapper;
 import com.cd2cd.mapper.ProModuleMapper;
 import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
 import com.cd2cd.mapper.ProProjectMapper;
 import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProProjectService;
 import com.cd2cd.util.BeanUtil;
-import com.cd2cd.util.ProjectUtils;
+import com.cd2cd.util.FileTypeEnum;
+import com.cd2cd.util.ProjectGenUtil;
 import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DataPageWrapper;
 import com.cd2cd.vo.ProModuleVo;
@@ -51,6 +59,15 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 	@Autowired
 	private ProTableMapper proTableMapper;
+	
+	@Autowired
+	private ProFileMapper proFileMapper;
+	
+	@Autowired
+	private ProFunMapper funMapper;
+	
+	@Autowired
+	private ProFunArgMapper funArgMapper;
 	
 	@Override
 	public BaseRes<DataPageWrapper<ProProjectVo>> list(Integer currPage, Integer pageSize, ProProjectVo proProjectVo) {
@@ -165,15 +182,11 @@ public class ProProjectServiceImpl implements ProProjectService {
 	@Override
 	public BaseRes<String> genProject(Long id) {
 
-		ProProject mProProject = proProjectMapper.selectByPrimaryKey(id);
+		ProProject proProject = proProjectMapper.selectByPrimaryKey(id);
 
 		BaseRes<String> res = new BaseRes<String>();
 
 		try {
-		
-			// copy project to folder
-			ProjectUtils.genProject(mProProject);
-			
 			// db list
 			ProProjectDatabaseRelCriteria ppdrc = new ProProjectDatabaseRelCriteria();
 			ppdrc.createCriteria().andProjectIdEqualTo(id);
@@ -187,6 +200,12 @@ public class ProProjectServiceImpl implements ProProjectService {
 			ProDatabaseCriteria pdc = new ProDatabaseCriteria();
 			pdc.createCriteria().andIdIn(dbIds);
 			List<ProDatabase> dababases = proDatabaseMapper.selectByExample(pdc);
+		
+			// 创建util
+			ProjectGenUtil projectGenUtil = new ProjectGenUtil(proProject);
+			
+			// 初始被创建项目
+			projectGenUtil.genProjectBase();
 			
 			if( dababases.size() > 0 ) {
 				ProDatabase database = dababases.get(0);
@@ -197,11 +216,41 @@ public class ProProjectServiceImpl implements ProProjectService {
 				 * 暂时支持一个数据库 
 				 * mapper/entity
 				 */
-				ProjectUtils.initH2Database(tables, mProProject, database);
-				
-				ProjectUtils.genJavaFromDb(tables, mProProject, database);
-				
+				projectGenUtil.initH2Database(tables, database);
+				projectGenUtil.genJavaFromDb(tables, database);
 			}
+			
+			/**
+			 * 生成Controller 控制器 
+			 */
+			ProFileCriteria mProFileCriteria = new ProFileCriteria();
+			mProFileCriteria.createCriteria()
+			.andFileTypeEqualTo(FileTypeEnum.controller.name())
+			.andProjectIdEqualTo(proProject.getId());
+			List<ProFile> controllerList = proFileMapper.selectFileAndModule(mProFileCriteria);
+			
+			// 加载方法列表
+			for(ProFile file : controllerList) {
+				ProFunCriteria mProFunCriteria = new ProFunCriteria();
+				mProFunCriteria.createCriteria().andCidEqualTo(file.getId());
+				List<ProFun> funs = funMapper.selectByExample(mProFunCriteria);
+				
+				// 加载参数
+				for(ProFun fun : funs) {
+					List<ProFunArg> args = funArgMapper.fetchFunArgsByFunId(fun.getId());
+					fun.setArgs(args);
+				}
+				
+				file.setFuns(funs);
+			}
+			
+			projectGenUtil.genController(proProject, controllerList);
+			
+			/**
+			 * 生成 Vo验证规则 - 加载不能的验证规则
+			 */
+			
+			
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} catch (Exception e) {
 			e.printStackTrace();
