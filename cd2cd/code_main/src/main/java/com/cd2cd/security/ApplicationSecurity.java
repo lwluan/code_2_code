@@ -61,7 +61,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.authorizeRequests()
 		.antMatchers(LOGIN_PATH).permitAll()
-		.antMatchers("/static/**").permitAll()
+		.antMatchers("/static/**", "/index.html", "/manifest.json", "/favicon.ico").permitAll()
 		.anyRequest().authenticated()
 		.and().headers().cacheControl();
 
