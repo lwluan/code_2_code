@@ -23,7 +23,7 @@
             <AppenderRef ref="Console" />
             <AppenderRef ref="running-log" />
         </Root>
-        <Logger name="com.cd2cd.mapper" level="debug" additivity="true" />
+        <Logger name="com.cd2cd" level="debug" additivity="true" />
         <Logger name="org.springframework.web" level="debug" additivity="true" />
         <Logger name="org.springframework.boot" level="debug" additivity="true"/>
     </Loggers>

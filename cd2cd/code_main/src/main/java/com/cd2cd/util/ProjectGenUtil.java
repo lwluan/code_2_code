@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -43,6 +44,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.w3c.dom.Document;
@@ -50,6 +52,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.alibaba.fastjson.JSONObject;
+import com.cd2cd.dom.java.FunReturnType;
+import com.cd2cd.dom.java.TypeEnum.CollectionType;
+import com.cd2cd.dom.java.TypeEnum.PackageTypeEnum;
 import com.cd2cd.domain.ProDatabase;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
@@ -62,7 +68,7 @@ import com.cd2cd.util.mbg.h2.H2DatabaseUtil;
 
 public class ProjectGenUtil {
 	private static String code_path = "code_template";
-	private static final Logger LOG = LoggerFactory.getLogger(ProjectUtils.class);
+	private static final Logger LOG = LoggerFactory.getLogger(ProjectGenUtil.class);
 	private static final String H2_DB_PATH = "./h2db";
 	private static final String H2_DB_PASSWORD = "h2";
 	private static final String H2_DB_USER = "123456";
@@ -77,6 +83,7 @@ public class ProjectGenUtil {
 	String version;				// 项目版本号
 	String description;			// 项目描述
 	String localPath;			// 本地生成路径
+	String basePkgname;			// groupId + artifactId
 	
 	public ProjectGenUtil(ProProject project) {
 		this.project = project;
@@ -90,6 +97,8 @@ public class ProjectGenUtil {
 		description = project.getDescription();
 		localPath = project.getLocalPath();
 		artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
+		
+		basePkgname = groupId + "." + artifactId.replaceAll("-", "_");;
 	}
 
 	public void genProjectBase() throws Exception {
@@ -612,6 +621,10 @@ public class ProjectGenUtil {
 			topClass.addImportedType(ResponseBody.class.getName());
 			topClass.addImportedType(Valid.class.getName());
 			
+			LOG.info("file.getImportTypes()={}", String.join(",", file.getImportTypes()));
+			for(String importedType : file.getImportTypes()) {
+				topClass.addImportedType(importedType);
+			}
 			
 			/**
 			 * 生成方法，参数，返回值
@@ -641,10 +654,21 @@ public class ProjectGenUtil {
 					mp.addAnnotation("@Valid");
 					m.addParameter(mp);
 				}
+				
+				/**
+				 * 需要数据验证时，添加 BindingResult bindingResult
+				 */
+				if(args.size() > 0) {
+					Parameter mp = new Parameter(new FullyQualifiedJavaType(BindingResult.class.getName()), "bindingResult");
+					m.addParameter(mp);
+					topClass.addImportedType(BindingResult.class.getName());
+				}
+				
 				/**
 				 * 方法返回值
 				 */
 				if(StringUtils.isNotBlank(fun.getReturnShow())) {
+					LOG.info("returnShow={}", fun.getReturnShow());
 					m.setReturnType(new FullyQualifiedJavaType(fun.getReturnShow()));
 				}
 				
@@ -666,6 +690,35 @@ public class ProjectGenUtil {
 			IOUtils.write(topClass.getFormattedContent(), new FileOutputStream(new File(fileGenPath)), "utf-8");
 		}
 	}
+	
+	public FunReturnType getFunReturnType(String returnVoJson) {
+		// {"name":"BaseRes","id":3,"collectionType":"single","paradigm":"yes","next":{"name":"TestVO","id":6,"collectionType":"map","paradigm":"no"}}
+		FunReturnType frt = new FunReturnType();
+		if(StringUtils.isNotBlank(returnVoJson)) {
+			JSONObject obj = JSONObject.parseObject(returnVoJson);
+			parseFunReturnType(frt, obj);
+		}
+		return frt;
+	}
+	
+	private void parseFunReturnType(FunReturnType frt, JSONObject obj) {
+		String collectionType = obj.getString("collectionType");
+		Long objId = obj.getLong("id");
+		
+		frt.getTypeIds().add(objId);
+		if(CollectionType.list.name().equalsIgnoreCase(collectionType)) {
+			frt.getTypePaths().add(List.class.getName());
+		} else if(CollectionType.map.name().equalsIgnoreCase(collectionType)) {
+			frt.getTypePaths().add(Map.class.getName());
+		} else if(CollectionType.set.name().equalsIgnoreCase(collectionType)) {
+			frt.getTypePaths().add(Set.class.getName());
+		}
+		
+		if(obj.containsKey("next")) {
+			parseFunReturnType(frt, obj.getJSONObject("next"));
+		}
+	}
+	
 	
 	public static void main(String[] args) {
 		FullyQualifiedJavaType fjt = new FullyQualifiedJavaType("com.cd2cd.controller.UserController");
@@ -694,6 +747,26 @@ public class ProjectGenUtil {
 		topClass.addMethod(m);
 		System.out.println(topClass.getFormattedContent());
 		
+	}
+
+	/**
+	 * 返回类文件路径, 根据module 和包结构类型
+	 * @param fileList
+	 * @return
+	 */
+	public Set<String> getFileTypes(List<ProFile> fileList) {
+		Set<String> types = new HashSet<String>();
+		for(ProFile f : fileList) {
+
+			// f.getFileType() controller|service|vo|dao|domain
+			String pkgName = basePkgname;
+			pkgName += "."+f.getFileType()+"." + f.getName();
+			if( PackageTypeEnum.Hierarchical.name().equals(packageType) ) {
+				pkgName += "." + f.getModule().getName() + "."+f.getFileType()+"." + f.getName();
+			}
+			types.add(pkgName);
+		}
+		return types;
 	}
 }
 

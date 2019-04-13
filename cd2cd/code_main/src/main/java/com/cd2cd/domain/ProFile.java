@@ -1,7 +1,9 @@
 package com.cd2cd.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.cd2cd.domain.gen.SuperProFile;
 
@@ -11,6 +13,8 @@ public class ProFile extends SuperProFile implements Serializable {
 	private List<ProTableColumn> columns; // vo 列表使用
 	private ProModule module;
 	private List<ProFun> funs; // controller 使用 method方法列表
+	
+	private Set<String> importTypes = new HashSet<String>(); // 方法返回类型import
 	
 	public List<ProTableColumn> getColumns() {
 		return columns;
@@ -36,4 +40,12 @@ public class ProFile extends SuperProFile implements Serializable {
 		this.funs = funs;
 	}
 
+	public Set<String> getImportTypes() {
+		return importTypes;
+	}
+
+	public void setImportTypes(Set<String> importTypes) {
+		this.importTypes = importTypes;
+	}
+	
 }
