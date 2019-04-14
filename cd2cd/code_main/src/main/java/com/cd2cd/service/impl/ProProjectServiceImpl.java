@@ -13,9 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cd2cd.comm.ServiceCode;
-import com.cd2cd.dom.java.FunReturnType;
+import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
 import com.cd2cd.domain.ProDatabase;
+import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
 import com.cd2cd.domain.ProFunArg;
@@ -24,6 +25,7 @@ import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
 import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.gen.ProDatabaseCriteria;
+import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
 import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
@@ -31,6 +33,7 @@ import com.cd2cd.domain.gen.ProProjectCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria.Criteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
 import com.cd2cd.mapper.ProDatabaseMapper;
+import com.cd2cd.mapper.ProFieldMapper;
 import com.cd2cd.mapper.ProFileMapper;
 import com.cd2cd.mapper.ProFunArgMapper;
 import com.cd2cd.mapper.ProFunMapper;
@@ -68,6 +71,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 	
 	@Autowired
 	private ProFileMapper proFileMapper;
+	
+	@Autowired
+	private ProFieldMapper proFieldMapper;
 	
 	@Autowired
 	private ProFunMapper funMapper;
@@ -218,7 +224,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 				
 				List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
 				
-				/** TODO
+				/** 
 				 * 暂时支持一个数据库 
 				 * mapper/entity
 				 */
@@ -250,33 +256,31 @@ public class ProProjectServiceImpl implements ProProjectService {
 					List<ProFunArg> args = funArgMapper.fetchFunArgsByFunId(fun.getId());
 					fun.setArgs(args);
 					
+					
+					List<Long> voIds = new ArrayList<Long>();
+					
 					/**
 					 * 将参数的类类型加入到 file的import中
 					 */
-					// TODO 未实现
-					
-					
+					if( ! org.springframework.util.CollectionUtils.isEmpty(args)) {
+						FileIdsAndType argFrt = projectGenUtil.getArgTypes(args);
+						file.getImportTypes().addAll(argFrt.getTypePaths());
+						
+						voIds.addAll(argFrt.getTypeIds());
+					}
 					/**
 					 * 方法返回值类加入到file的import中
 					 */
 					if(null != fun.getResVoId()) {
 						LOG.info("returnVoJson={}", fun.getReturnVo());
-						FunReturnType frt = projectGenUtil.getFunReturnType(fun.getReturnVo());
+						FileIdsAndType frt = projectGenUtil.getFunReturnType(fun.getReturnVo());
 						file.getImportTypes().addAll(frt.getTypePaths());
 						
-						List<Long> voIds = frt.getTypeIds();
+						voIds.addAll(frt.getTypeIds());
 						voIds.add(fun.getResVoId());
 						
-						if( ! org.springframework.util.CollectionUtils.isEmpty(voIds)) {
-							ProFileCriteria fileCriteria = new ProFileCriteria();
-							fileCriteria.createCriteria().andIdIn(voIds);
-							List<ProFile> fileList = proFileMapper.selectFileAndModule(fileCriteria);
-							
-							LOG.info("fileList={}", fileList.size());
-							
-							Set<String> fileTypes = projectGenUtil.getFileTypes(fileList);
-							file.getImportTypes().addAll(fileTypes);
-						}
+						// 导入import
+						importTypeToFile(voIds, file, projectGenUtil);
 					}
 				}
 				
@@ -288,6 +292,28 @@ public class ProProjectServiceImpl implements ProProjectService {
 			/**
 			 * 生成 Vo验证规则 - 加载不能的验证规则
 			 */
+			ProFileCriteria voCriteria = new ProFileCriteria();
+			voCriteria.createCriteria()
+			.andFileTypeEqualTo(FileTypeEnum.vo.name())
+			.andProjectIdEqualTo(proProject.getId());
+			List<ProFile> voList = proFileMapper.selectFileAndModule(voCriteria);
+			for(ProFile file : voList) {
+				// TODO field list
+				ProFieldCriteria fieldCriteria = new ProFieldCriteria();
+				fieldCriteria.createCriteria().andFileIdEqualTo(file.getId());
+				
+				List<ProField> fields = proFieldMapper.selectByExample(fieldCriteria);
+				file.setFields(fields);
+				
+				FileIdsAndType frt = projectGenUtil.getFieldTypes(fields);
+				file.getImportTypes().addAll(frt.getTypePaths());
+				
+				// 导入import
+				importTypeToFile(frt.getTypeIds(), file, projectGenUtil);
+				
+			}
+			
+			projectGenUtil.genVo(proProject, voList);
 			
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} catch (Exception e) {
@@ -301,6 +327,20 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 	}
 
+	private void importTypeToFile(List<Long> voIds, ProFile file, ProjectGenUtil projectGenUtil) {
+		// 提取
+		if( ! org.springframework.util.CollectionUtils.isEmpty(voIds)) {
+			ProFileCriteria fileCriteria = new ProFileCriteria();
+			fileCriteria.createCriteria().andIdIn(voIds);
+			List<ProFile> fileList = proFileMapper.selectFileAndModule(fileCriteria);
+			
+			LOG.info("fileList={}", fileList.size());
+			
+			Set<String> fileTypes = projectGenUtil.getFileTypes(fileList);
+			file.getImportTypes().addAll(fileTypes);
+		}
+	}
+	
 	@Override
 	public BaseRes<DataPageWrapper<ProModuleVo>> moduleList(Integer currPage, Integer pageSize, ProModuleVo proModuleVo) {
 

@@ -5,6 +5,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,7 +17,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 
 import javax.validation.Valid;
@@ -31,6 +31,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
@@ -44,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -53,10 +55,13 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.alibaba.fastjson.JSONObject;
-import com.cd2cd.dom.java.FunReturnType;
+import com.cd2cd.dom.java.CodeUtils;
+import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
-import com.cd2cd.dom.java.TypeEnum.PackageTypeEnum;
+import com.cd2cd.dom.java.TypeEnum.FieldDataType;
+import com.cd2cd.dom.java.TypeEnum.ProjectModulTypeEnum;
 import com.cd2cd.domain.ProDatabase;
+import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
 import com.cd2cd.domain.ProFunArg;
@@ -598,7 +603,7 @@ public class ProjectGenUtil {
 			String filePkg = groupId + "." + artifactId;
 			String fileClassPath = filePkg + ".controller." + file.getName();
 			
-			if( PackageTypeEnum.Flat.name().equals(packageType) ) {
+			if( ProjectModulTypeEnum.standard.name().equals(packageType) ) {
 				fileGenPath += "/controller/" + file.getName() + ".java";
 			} else { // 模块化
 				fileGenPath += "/" + module.getName() + "/controller/" + file.getName() + ".java";
@@ -664,18 +669,25 @@ public class ProjectGenUtil {
 					topClass.addImportedType(BindingResult.class.getName());
 				}
 				
+				
+				/**
+				 * todo
+				 */
+				m.addBodyLine("// TODO ");
+				
+				
 				/**
 				 * 方法返回值
 				 */
 				if(StringUtils.isNotBlank(fun.getReturnShow())) {
 					LOG.info("returnShow={}", fun.getReturnShow());
 					m.setReturnType(new FullyQualifiedJavaType(fun.getReturnShow()));
+					
+					/**
+					 * 默认返回 null
+					 */
+					m.addBodyLine("return null;");
 				}
-				
-				/**
-				 * todo
-				 */
-				m.addBodyLine("// TODO ");
 				
 				topClass.addMethod(m);
 			}
@@ -691,9 +703,9 @@ public class ProjectGenUtil {
 		}
 	}
 	
-	public FunReturnType getFunReturnType(String returnVoJson) {
+	public FileIdsAndType getFunReturnType(String returnVoJson) {
 		// {"name":"BaseRes","id":3,"collectionType":"single","paradigm":"yes","next":{"name":"TestVO","id":6,"collectionType":"map","paradigm":"no"}}
-		FunReturnType frt = new FunReturnType();
+		FileIdsAndType frt = new FileIdsAndType();
 		if(StringUtils.isNotBlank(returnVoJson)) {
 			JSONObject obj = JSONObject.parseObject(returnVoJson);
 			parseFunReturnType(frt, obj);
@@ -701,24 +713,30 @@ public class ProjectGenUtil {
 		return frt;
 	}
 	
-	private void parseFunReturnType(FunReturnType frt, JSONObject obj) {
+	private void parseFunReturnType(FileIdsAndType frt, JSONObject obj) {
 		String collectionType = obj.getString("collectionType");
 		Long objId = obj.getLong("id");
 		
 		frt.getTypeIds().add(objId);
-		if(CollectionType.list.name().equalsIgnoreCase(collectionType)) {
-			frt.getTypePaths().add(List.class.getName());
-		} else if(CollectionType.map.name().equalsIgnoreCase(collectionType)) {
-			frt.getTypePaths().add(Map.class.getName());
-		} else if(CollectionType.set.name().equalsIgnoreCase(collectionType)) {
-			frt.getTypePaths().add(Set.class.getName());
-		}
+		
+		String type = getCollectionClassPathByName(collectionType);
+		if(type != null) frt.getTypePaths().add(type);
 		
 		if(obj.containsKey("next")) {
 			parseFunReturnType(frt, obj.getJSONObject("next"));
 		}
 	}
 	
+	private String getCollectionClassPathByName(String collectionType) {
+		if(CollectionType.list.name().equalsIgnoreCase(collectionType)) {
+			return List.class.getName();
+		} else if(CollectionType.map.name().equalsIgnoreCase(collectionType)) {
+			return Map.class.getName();
+		} else if(CollectionType.set.name().equalsIgnoreCase(collectionType)) {
+			return Set.class.getName();
+		}
+		return null;
+	}
 	
 	public static void main(String[] args) {
 		FullyQualifiedJavaType fjt = new FullyQualifiedJavaType("com.cd2cd.controller.UserController");
@@ -760,13 +778,137 @@ public class ProjectGenUtil {
 
 			// f.getFileType() controller|service|vo|dao|domain
 			String pkgName = basePkgname;
-			pkgName += "."+f.getFileType()+"." + f.getName();
-			if( PackageTypeEnum.Hierarchical.name().equals(packageType) ) {
+			if( ProjectModulTypeEnum.module.name().equals(packageType) && f.getModule() != null) {
 				pkgName += "." + f.getModule().getName() + "."+f.getFileType()+"." + f.getName();
+			} else {
+				pkgName += "."+f.getFileType()+"." + f.getName();
 			}
 			types.add(pkgName);
 		}
 		return types;
+	}
+
+	/**
+	 * 获取参数中的，import type 和vo id
+	 * @param args
+	 * @return
+	 */
+	public FileIdsAndType getArgTypes(List<ProFunArg> args) {
+		FileIdsAndType fit = new FileIdsAndType();
+		parseArgType(args, fit);
+		return fit;
+	}
+	
+	private void parseArgType(List<ProFunArg> args, FileIdsAndType fit) {
+		for(ProFunArg arg : args) {
+			if(null != arg.getArgTypeId() && 0 < arg.getArgTypeId()) {
+				fit.getTypeIds().add(arg.getArgTypeId());
+			}
+			String type = getCollectionClassPathByName(arg.getCollectionType());
+			if(type != null) fit.getTypePaths().add(type);
+			
+			if( ! CollectionUtils.isEmpty(arg.getChildren())) {
+				parseArgType(arg.getChildren(), fit);
+			}
+		}
+	}
+
+	/**
+	 * 生成 vo类
+	 * @param proProject
+	 * @param voList
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
+	 */
+	public void genVo(ProProject proProject, List<ProFile> voList) throws FileNotFoundException, IOException {
+		for(ProFile file : voList) {
+			
+			ProModule module = file.getModule();
+			String fileGenPath = (localPath + "/" + artifactId + "/"+artifactId+"_main/src/main/java/" + groupId + "." + artifactId).replaceAll("\\.", "/");
+			String filePkg = groupId + "." + artifactId;
+			
+			String fileClassPath = filePkg + ".vo." + file.getName();
+			String fileTargetPath = fileGenPath + "/vo/" + file.getName() + ".java";
+			if( ProjectModulTypeEnum.module.name().equals(packageType) ) {
+				if(null != module && StringUtils.isNotBlank(module.getName())) { // 模块化
+					fileTargetPath = fileGenPath + "/" + module.getName() + "/vo/" + file.getName() + ".java";
+					fileClassPath = filePkg + "." + module.getName() + ".vo." + file.getName();
+				}
+			}
+			
+			/**
+			 * 范型
+			 */
+			if("yes".equalsIgnoreCase(file.getParadigm())) {
+				fileClassPath += "<T>";
+			}
+			
+			FullyQualifiedJavaType fileType = new FullyQualifiedJavaType(fileClassPath);
+			TopLevelClass topClass = new TopLevelClass(fileType);
+			topClass.setVisibility(JavaVisibility.PUBLIC);
+			topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+			
+			/**
+			 * 导入vo import
+			 */
+			for(String importedType : file.getImportTypes()) {
+				topClass.addImportedType(importedType);
+			}
+			
+			/**
+			 * vo生成
+			 */
+			List<ProField> fields = file.getFields();
+			for(ProField field: fields) {
+				
+				Field f = new Field();
+				f.setVisibility(JavaVisibility.PRIVATE);
+				f.setName(field.getName());
+				
+				String typeStr = CodeUtils.typeByCollectionType(field.getTypePath(), field.getCollectionType());
+				
+				FullyQualifiedJavaType type = new FullyQualifiedJavaType(typeStr);
+				f.setType(type);
+				topClass.addField(f);
+				
+				/**
+				 * 添加 set get 方法
+				 */
+				Method getM = new Method("get" + StringUtil.firstUpCase(field.getName()));
+				getM.setVisibility(JavaVisibility.PUBLIC);
+				getM.setReturnType(type);
+				getM.addBodyLine("return this." + field.getName() + ";");
+				topClass.addMethod(getM);
+				
+				// set
+				Method setM = new Method("set" + StringUtil.firstUpCase(field.getName()));
+				setM.setVisibility(JavaVisibility.PUBLIC);
+				setM.addBodyLine("this." + field.getName() + " = "+field.getName()+";");
+				Parameter parameter = new Parameter(type, field.getName());
+				setM.addParameter(parameter);
+				topClass.addMethod(setM);
+			}
+			
+			System.out.println(topClass.getFormattedContent());
+			// 生成文件
+			File genFile = new File(fileTargetPath);
+			if( ! genFile.getParentFile().exists()) {
+				genFile.getParentFile().mkdirs();
+			}
+			IOUtils.write(topClass.getFormattedContent(), new FileOutputStream(new File(fileTargetPath)), "utf-8");
+		}
+	}
+
+	public FileIdsAndType getFieldTypes(List<ProField> fields) {
+		FileIdsAndType fit = new FileIdsAndType();
+		for(ProField field : fields) {
+			if(FieldDataType.vo.name().equalsIgnoreCase(field.getDataType())) {
+				fit.getTypeIds().add(Long.valueOf(field.getTypeKey()));
+			}
+			String type = getCollectionClassPathByName(field.getCollectionType());
+			if(type != null) fit.getTypePaths().add(type);
+		}
+		return fit;
 	}
 }
 

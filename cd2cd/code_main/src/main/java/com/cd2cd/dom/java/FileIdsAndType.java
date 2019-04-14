@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class FunReturnType {
+public class FileIdsAndType {
 
 	private Set<String> typePaths = new HashSet<String>();
 	private List<Long> typeIds = new ArrayList<Long>();

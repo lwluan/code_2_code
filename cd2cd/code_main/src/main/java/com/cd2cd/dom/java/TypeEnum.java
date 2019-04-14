@@ -10,6 +10,10 @@ public class TypeEnum {
 		}
 	}
 	
+	public static enum ProjectModulTypeEnum {
+		standard, module
+	}
+	
 	public static enum PackageTypeEnum {
 		Flat,
 		Hierarchical;

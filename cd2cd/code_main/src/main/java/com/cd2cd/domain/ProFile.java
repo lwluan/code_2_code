@@ -13,6 +13,7 @@ public class ProFile extends SuperProFile implements Serializable {
 	private List<ProTableColumn> columns; // vo 列表使用
 	private ProModule module;
 	private List<ProFun> funs; // controller 使用 method方法列表
+	private List<ProField> fields; // vo 使用,用于vo类成员域
 	
 	private Set<String> importTypes = new HashSet<String>(); // 方法返回类型import
 	
@@ -46,6 +47,14 @@ public class ProFile extends SuperProFile implements Serializable {
 
 	public void setImportTypes(Set<String> importTypes) {
 		this.importTypes = importTypes;
+	}
+
+	public List<ProField> getFields() {
+		return fields;
+	}
+
+	public void setFields(List<ProField> fields) {
+		this.fields = fields;
 	}
 	
 }

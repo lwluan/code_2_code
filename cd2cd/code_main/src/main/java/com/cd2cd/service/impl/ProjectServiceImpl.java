@@ -450,8 +450,7 @@ public class ProjectServiceImpl implements ProjectService {
 		mProFieldCriteria.createCriteria().andFileIdEqualTo(fileId);
 		List<ProField> proFields = proFieldMapper.selectByExample(mProFieldCriteria);
 		
-		List<ProFieldVo> proFieldVos = BeanUtil.voConvertList(proFields, ProFieldVo.class);
-		mProFileVo.setFields(proFieldVos);
+		mProFileVo.setFields(proFields);
 		if( proFile.getSuperId() != null && proFile.getSuperId() > 0 ) {
 			
 			if( Constants.FileType.VO.equals(proFile.getFileType()) ) {
@@ -671,8 +670,7 @@ public class ProjectServiceImpl implements ProjectService {
 		mProFieldCriteria.createCriteria().andFileIdEqualTo(fileId);
 		List<ProField> proFields = proFieldMapper.selectByExample(mProFieldCriteria);
 		
-		List<ProFieldVo> proFieldVos = BeanUtil.voConvertList(proFields, ProFieldVo.class);
-		mProFileVo.setFields(proFieldVos);
+		mProFileVo.setFields(proFields);
 		if( proFile.getSuperId() != null && proFile.getSuperId() > 0 ) {
 			
 			if( Constants.FileType.VO.equals(proFile.getFileType()) ) {
