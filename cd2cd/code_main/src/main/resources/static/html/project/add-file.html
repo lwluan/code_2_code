@@ -1,0 +1,72 @@
+<!-- pop obj -->
+<div class="modal fade" tabindex="-1" role="dialog" data-keyboard="false" data-backdrop="static" aria-labelledby="modalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> Add File </h4>
+            </div>
+            <div class="modal-body">
+                <form id="formAddFileValidate" class="form-horizontal" novalidate>
+					
+					<form-text-input v-bind:label="'文件名称'" v-bind:tip="'* 文件名称不可为空'" 
+                    	v-model="formData.name" v-bind:name="'name'"  >
+                    </form-text-input>
+					
+					<!-- 文件类型 controller|service|vo|dao|domain| -->
+					<form-down-menu
+                		v-bind:label="'文件类型'" v-bind:tip="'* 文件类型不可为空'"
+                		v-bind:values="fileTypeDropdown.values"
+                		v-bind:selected="fileTypeDropdown.selected"
+                		v-on:changeSelected="function(val){ formData.fileType = val.key; changeFileType(val.key) }"
+                		v-model="formData.fileType" v-bind:name="'fileType'">
+                	</form-down-menu>
+					
+					<!-- extends table  -->
+					<form-down-menu
+                		v-bind:label="'继承对象'" v-bind:tip="'继承'"
+                		v-bind:values="tableListDrodown.values"
+                		v-bind:selected="tableListDrodown.selected"
+                		v-on:changeSelected="function(val){ formData.superId = val.key; console.info('val.key='+val.key); }"
+                		v-model="formData.superId" v-bind:name="'superId'">
+                	</form-down-menu>
+					
+					<!-- 是否范型 -->
+					<form-group-btns 
+                    	v-bind:label="'是否范型'" v-bind:tip="'* 是否为范型不可为空'"
+	                    v-model="formData.paradigm" v-bind:name="'paradigm'"
+	                    v-bind:selected="formData.paradigm"	                    
+	                    v-bind:values="[{key:'no', label:'非范型'}, {key:'yes', label:'范型'}]"	                    
+	                    v-on:changeSelected="function(val){formData.paradigm=val;}" >
+                    </form-group-btns>
+                    
+					<!-- 类类型 class|generics|enum|interface|abstruct -->
+					<form-down-menu
+                		v-bind:label="'类类型'" v-bind:tip="'类类型'"
+                		v-bind:values="classTypeListDrodown.values"
+                		v-bind:selected="classTypeListDrodown.selected"
+                		v-on:changeSelected="function(val){ formData.classType = val.key; }"
+                		v-model="formData.classType" v-bind:name="'classType'">
+                	</form-down-menu>
+					
+					<!-- 所属模块  -->
+					<form-down-menu
+                		v-bind:label="'所属模块'" v-bind:tip="'所属模块'"
+                		v-bind:values="moduleListDrodown.values"
+                		v-bind:selected="moduleListDrodown.selected"
+                		v-on:changeSelected="function(val){ formData.moduleId = val.key; }"
+                		v-model="formData.moduleId" v-bind:name="'moduleId'">
+                	</form-down-menu>
+					
+                    <div style="clear: both"></div>
+                </form>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
+                <button type="button" v-on:click="subToAddFile" class="btn btn-primary"> 确定 </button>
+            </div>
+        </div>
+    </div>
+
+</div>

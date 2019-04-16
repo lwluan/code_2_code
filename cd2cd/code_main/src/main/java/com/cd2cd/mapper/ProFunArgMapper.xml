@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cd2cd.mapper.ProFunArgMapper">
+	<resultMap id="FunArgResultMap" type="com.cd2cd.domain.ProFunArg" extends="BaseResultMap">
+		<collection column="id" property="children" ofType="ProFunArg" javaType="java.util.ArrayList" select="fetchFunArgsChildrenById" />
+	</resultMap>
+
+	<select id="fetchFunArgsByFunId" resultMap="FunArgResultMap">
+		select
+			*
+		from 
+			pro_fun_arg
+		where 
+			fun_id=#{funId}
+			and (pid = 0 or pid is null)
+	</select>
+
+	<select id="fetchFunArgsChildrenById" resultMap="FunArgResultMap">
+		select * from pro_fun_arg where pid=#{id}
+	</select>
+
+</mapper>

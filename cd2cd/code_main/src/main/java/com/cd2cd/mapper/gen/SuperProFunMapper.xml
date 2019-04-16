@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cd2cd.mapper.gen.SuperProFunMapper">
+  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProFun">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="cid" jdbcType="BIGINT" property="cid" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="comment" jdbcType="VARCHAR" property="comment" />
+    <result column="fun_name" jdbcType="VARCHAR" property="funName" />
+    <result column="req_method" jdbcType="VARCHAR" property="reqMethod" />
+    <result column="req_path" jdbcType="VARCHAR" property="reqPath" />
+    <result column="res_type" jdbcType="VARCHAR" property="resType" />
+    <result column="res_vo_id" jdbcType="BIGINT" property="resVoId" />
+    <result column="res_page_id" jdbcType="BIGINT" property="resPageId" />
+    <result column="return_vo" jdbcType="VARCHAR" property="returnVo" />
+    <result column="return_show" jdbcType="VARCHAR" property="returnShow" />
+    <result column="todo_content" jdbcType="VARCHAR" property="todoContent" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, cid, name, comment, fun_name, req_method, req_path, res_type, res_vo_id, res_page_id, 
+    return_vo, return_show, todo_content, create_time, update_time
+  </sql>
+  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFunCriteria" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from pro_fun
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+    <if test="mysqlOffset != null and mysqlLength != null">
+      <![CDATA[ limit #{mysqlOffset} , #{mysqlLength} ]]>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from pro_fun
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from pro_fun
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProFunCriteria">
+    delete from pro_fun
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cd2cd.domain.ProFun">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pro_fun (cid, name, comment, 
+      fun_name, req_method, req_path, 
+      res_type, res_vo_id, res_page_id, 
+      return_vo, return_show, todo_content, 
+      create_time, update_time)
+    values (#{cid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
+      #{funName,jdbcType=VARCHAR}, #{reqMethod,jdbcType=VARCHAR}, #{reqPath,jdbcType=VARCHAR}, 
+      #{resType,jdbcType=VARCHAR}, #{resVoId,jdbcType=BIGINT}, #{resPageId,jdbcType=BIGINT}, 
+      #{returnVo,jdbcType=VARCHAR}, #{returnShow,jdbcType=VARCHAR}, #{todoContent,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProFun">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into pro_fun
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="cid != null">
+        cid,
+      </if>
+      <if test="name != null">
+        name,
+      </if>
+      <if test="comment != null">
+        comment,
+      </if>
+      <if test="funName != null">
+        fun_name,
+      </if>
+      <if test="reqMethod != null">
+        req_method,
+      </if>
+      <if test="reqPath != null">
+        req_path,
+      </if>
+      <if test="resType != null">
+        res_type,
+      </if>
+      <if test="resVoId != null">
+        res_vo_id,
+      </if>
+      <if test="resPageId != null">
+        res_page_id,
+      </if>
+      <if test="returnVo != null">
+        return_vo,
+      </if>
+      <if test="returnShow != null">
+        return_show,
+      </if>
+      <if test="todoContent != null">
+        todo_content,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="cid != null">
+        #{cid,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="funName != null">
+        #{funName,jdbcType=VARCHAR},
+      </if>
+      <if test="reqMethod != null">
+        #{reqMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="reqPath != null">
+        #{reqPath,jdbcType=VARCHAR},
+      </if>
+      <if test="resType != null">
+        #{resType,jdbcType=VARCHAR},
+      </if>
+      <if test="resVoId != null">
+        #{resVoId,jdbcType=BIGINT},
+      </if>
+      <if test="resPageId != null">
+        #{resPageId,jdbcType=BIGINT},
+      </if>
+      <if test="returnVo != null">
+        #{returnVo,jdbcType=VARCHAR},
+      </if>
+      <if test="returnShow != null">
+        #{returnShow,jdbcType=VARCHAR},
+      </if>
+      <if test="todoContent != null">
+        #{todoContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProFunCriteria" resultType="java.lang.Long">
+    select count(*) from pro_fun
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update pro_fun
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.cid != null">
+        cid = #{record.cid,jdbcType=BIGINT},
+      </if>
+      <if test="record.name != null">
+        name = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.comment != null">
+        comment = #{record.comment,jdbcType=VARCHAR},
+      </if>
+      <if test="record.funName != null">
+        fun_name = #{record.funName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqMethod != null">
+        req_method = #{record.reqMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="record.reqPath != null">
+        req_path = #{record.reqPath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resType != null">
+        res_type = #{record.resType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.resVoId != null">
+        res_vo_id = #{record.resVoId,jdbcType=BIGINT},
+      </if>
+      <if test="record.resPageId != null">
+        res_page_id = #{record.resPageId,jdbcType=BIGINT},
+      </if>
+      <if test="record.returnVo != null">
+        return_vo = #{record.returnVo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.returnShow != null">
+        return_show = #{record.returnShow,jdbcType=VARCHAR},
+      </if>
+      <if test="record.todoContent != null">
+        todo_content = #{record.todoContent,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createTime != null">
+        create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update pro_fun
+    set id = #{record.id,jdbcType=BIGINT},
+      cid = #{record.cid,jdbcType=BIGINT},
+      name = #{record.name,jdbcType=VARCHAR},
+      comment = #{record.comment,jdbcType=VARCHAR},
+      fun_name = #{record.funName,jdbcType=VARCHAR},
+      req_method = #{record.reqMethod,jdbcType=VARCHAR},
+      req_path = #{record.reqPath,jdbcType=VARCHAR},
+      res_type = #{record.resType,jdbcType=VARCHAR},
+      res_vo_id = #{record.resVoId,jdbcType=BIGINT},
+      res_page_id = #{record.resPageId,jdbcType=BIGINT},
+      return_vo = #{record.returnVo,jdbcType=VARCHAR},
+      return_show = #{record.returnShow,jdbcType=VARCHAR},
+      todo_content = #{record.todoContent,jdbcType=VARCHAR},
+      create_time = #{record.createTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProFun">
+    update pro_fun
+    <set>
+      <if test="cid != null">
+        cid = #{cid,jdbcType=BIGINT},
+      </if>
+      <if test="name != null">
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null">
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+      <if test="funName != null">
+        fun_name = #{funName,jdbcType=VARCHAR},
+      </if>
+      <if test="reqMethod != null">
+        req_method = #{reqMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="reqPath != null">
+        req_path = #{reqPath,jdbcType=VARCHAR},
+      </if>
+      <if test="resType != null">
+        res_type = #{resType,jdbcType=VARCHAR},
+      </if>
+      <if test="resVoId != null">
+        res_vo_id = #{resVoId,jdbcType=BIGINT},
+      </if>
+      <if test="resPageId != null">
+        res_page_id = #{resPageId,jdbcType=BIGINT},
+      </if>
+      <if test="returnVo != null">
+        return_vo = #{returnVo,jdbcType=VARCHAR},
+      </if>
+      <if test="returnShow != null">
+        return_show = #{returnShow,jdbcType=VARCHAR},
+      </if>
+      <if test="todoContent != null">
+        todo_content = #{todoContent,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProFun">
+    update pro_fun
+    set cid = #{cid,jdbcType=BIGINT},
+      name = #{name,jdbcType=VARCHAR},
+      comment = #{comment,jdbcType=VARCHAR},
+      fun_name = #{funName,jdbcType=VARCHAR},
+      req_method = #{reqMethod,jdbcType=VARCHAR},
+      req_path = #{reqPath,jdbcType=VARCHAR},
+      res_type = #{resType,jdbcType=VARCHAR},
+      res_vo_id = #{resVoId,jdbcType=BIGINT},
+      res_page_id = #{resPageId,jdbcType=BIGINT},
+      return_vo = #{returnVo,jdbcType=VARCHAR},
+      return_show = #{returnShow,jdbcType=VARCHAR},
+      todo_content = #{todoContent,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

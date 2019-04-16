@@ -1,0 +1,56 @@
+<div>
+    <div class="row tool-bar-row">
+        <input class="btn btn-default sysRoleAddBtn ROLE_206" v-on:click="$refs.sysRoleInfo.showInfoPanel({})" type="button" value="添加">
+        <div class="pull-right">
+            <form class="form-inline">
+                <div class="form-group">
+                    <input type="text" v-model="queryData.keyword" class="form-control" id="exampleInputAmount"
+                           placeholder="name">
+                </div>
+                <input v-on:click="queryPageData(1, queryData.pageSize)" class="btn btn-primary" type="button" value="搜索">
+            </form>
+        </div>
+    </div>
+
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <td> ID </td>
+            <td> 角色名称 </td>
+            <td> 说明 </td>
+            <td> 添加时间 </td>
+            <td> 更新时间 </td>
+            <td> 操作 </td>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr v-for="sysRole in sysRoleList" >
+            <td> {{sysRole.id}} </td>
+            <td> {{sysRole.name}} </td>
+            <td> {{sysRole.description}} </td>
+            <td> {{sysRole.createTime | date}} </td>
+            <td> {{sysRole.updateTime | date}} </td>
+            <td>
+                <button v-on:click="$refs.sysRoleInfo.showInfoPanel({id:sysRole.id})" type="button" class="btn btn-info btn-xs"> 查看/修改 </button>
+                <button v-on:click="delRowData(sysRole.id)" type="button" class="btn btn-danger btn-xs ROLE_204"> 删除 </button>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+
+    <!-- 分页 -->
+    <table-page
+            v-bind:notification-change="tablePage.notificationChange"
+            v-bind:reload-notification="tablePage.reloadNotification"
+            v-bind:total-count="tablePage.totalCount"
+            v-bind:curr-page="tablePage.currPage"
+            v-on:change-page="queryPageData"></table-page>
+
+
+    <!-- 添加用户 -->
+    <sys-role-info ref="sysRoleInfo" v-on:completed="reloadPage"></sys-role-info>
+
+</div>

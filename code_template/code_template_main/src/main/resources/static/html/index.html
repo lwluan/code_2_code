@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="/code_template/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/code_template/css/index.css?t=10313022">
+	<link rel="stylesheet" href="/code_template/admin/auths">
+</head>
+<body>
+
+<div id="app">
+
+    <!-- header -->
+    <app-header></app-header>
+
+    <div class="container-fluid app-wrapper">
+
+        <!-- slider -->
+        <app-slider-left></app-slider-left>
+
+        <div class="body-content">
+
+            <!-- address -->
+            <nav-route></nav-route>
+
+            <!-- content body -->
+            <div class="container-fluid" id="main-content" style="background-color: white;">
+                <router-view></router-view>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹出提示框 -->
+    <confirm-box></confirm-box>
+
+</div>
+
+
+<script type="text/javascript">
+    var ctx = '/code_template';
+</script>
+<script src="/code_template/js/lib/My97DatePicker/WdatePicker.js"></script>
+<script src="/code_template/js/lib/jquery.min.js"></script>
+<script src="/code_template/js/lib/bootstrap.min.js"></script>
+<script src="/code_template/js/lib/vue.min.js"></script>
+<script src="/code_template/js/lib/jquery.validate.min.js"></script>
+<script src="/code_template/js/lib/vue-router.js"></script>
+<script src="/code_template/js/lib/require.js"></script>
+<script src="/code_template/js/utils.js"></script>
+<script src="/code_template/js/comm.js"></script>
+<script src="/code_template/js/component.js?t=00919"></script>
+<script src="/code_template/js/main.js?t=s1a0"></script>
+
+</body>
+</html>

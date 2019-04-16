@@ -1,0 +1,34 @@
+.database-tree {
+	width: 180px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    border-radius: 0;
+    overflow: auto;
+}
+.database-tree .panel-heading {
+	border-radius: 0;
+}
+.database-body-content {
+	position: absolute;
+    left: 180px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+}
+.tool-bar-row { 
+	margin: 0 !important; 
+}
+.padding-btn {
+	padding: 1px 7px 2px;
+}
+.database-panel-body {
+	padding: 0;
+	overflow: auto;
+}
+.db-table td {
+	padding: 2px !important;
+}

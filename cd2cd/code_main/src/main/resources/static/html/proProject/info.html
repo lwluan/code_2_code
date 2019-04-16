@@ -1,0 +1,65 @@
+<div class="modal fade" id="addEntityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel"> 添加项目 </h4>
+            </div>
+            <div class="modal-body">
+                <form id="formValidate" class="form-horizontal" novalidate>
+                    
+                    <form-text-input v-bind:label="'项目名称'" v-bind:tip="'* 项目名称不可为空'" 
+                    	v-model="formData.name" v-bind:name="'name'"  >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'项目介绍'" v-bind:tip="'* 项目介绍不可为空'" 
+                    	v-model="formData.description" v-bind:name="'description'"  >
+                    </form-text-input>
+                    
+					<form-text-input v-bind:label="'groupId'" v-bind:tip="'* groupId不可为空'" 
+                    	v-model="formData.groupId" v-bind:name="'groupId'"  >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'artifactId'" v-bind:tip="'* artifactId不可为空'" 
+                    	v-model="formData.artifactId" v-bind:name="'artifactId'"  >
+                    </form-text-input>
+                    
+                    <form-group-btns 
+	                    v-model="formData.packageType"
+	                    v-bind:label="'结构'"
+	                    v-bind:values="[{key:'standard', label:'标准化'}, {key:'module', label:'模块化'}]"
+	                    v-bind:selected="formData.packageType"
+	                    v-on:changeSelected="function(val){formData.packageType=val;}"
+	                    v-bind:name="'packageType'" 
+	                    v-bind:tip="'* 结构不可为空'" >
+                    </form-group-btns>
+                    
+                    <form-text-input v-bind:label="'项目版本'" v-bind:tip="'* 项目版本不可为空'" 
+                    	v-model="formData.version" v-bind:name="'version'"  >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'访问路径'" v-bind:tip="' * 访问路径不可为空 '" 
+                    	v-model="formData.contextPath" v-bind:name="'contextPath'"  >
+                    </form-text-input>
+                    
+                    <form-text-input v-bind:label="'生成路径'" v-bind:tip="' 生成本地路径 '" 
+                    	v-model="formData.localPath" v-bind:name="'localPath'"  >
+                    </form-text-input>
+                    
+                    <div style="clear: both"></div>
+                </form>
+                
+                <div id="project-alter" class="alert alert-success alert-dismissible hide" role="alert">
+			      <strong> 成功提示! </strong> 项目成功生成！
+			    </div>
+			    
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"> 关闭 </button>
+                <button v-on:click="subFormData()" type="button" class="btn btn-primary"> 确定 </button>
+                <button v-if="formData.id > 0" v-on:click="genProject()" type="button" class="btn btn-primary btn-success"> 生成项目 </button>
+            </div>
+        </div>
+    </div>
+
+</div>

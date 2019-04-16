@@ -1,0 +1,177 @@
+.navbar {
+    margin-bottom: 1px;
+}
+.app-wrapper {
+    margin:0;
+    padding: 0;
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    width: 100%;
+    background-color: #ddd;
+}
+.slider-left {
+    width: 180px; background: #666;
+    height: 100%;
+    position: fixed;
+    top: 50px;
+}
+.menu-wrapper {
+    padding: 0;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+}
+.menu-wrapper li {
+    border-radius: 0 !important;
+    padding: 0;
+
+}
+
+.menu-wrapper li span, .menu-wrapper li a {
+    height: 40px;
+    display: inline-block;
+    line-height: 40px;
+    padding-left: 15px;
+    cursor: pointer;
+    color: #333;
+    width: 100%;
+}
+
+.menu-wrapper li a {
+    color: #666;
+}
+
+
+.menu-wrapper>li>a>i {
+    font-size: 10px;
+    margin-right: 7px;
+}
+.menu-wrapper>li a i {
+    margin-right: 7px;
+}
+
+.menu-wrapper>li>ul li {
+    background-color: #eee;
+}
+.menu-wrapper .list-group {
+    margin: 0;
+}
+
+.body-content {
+    position: absolute;
+    left: 180px;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: auto;
+}
+/** 导行路径 */
+.nav-route {
+	margin-bottom: 2px;
+	border-radius: 0;
+}
+/** 工具栏 */
+.tool-bar-row {
+	padding: 10px;
+	background-color: #eee;
+}
+
+.role-checkbox {
+    margin-right: 10px;
+}
+
+.router-link-active {
+    background-color: #337ab7;
+    color: white !important;
+}
+
+
+/* ------- 右边筛选框 -------- */
+.filter-btn {
+	position: absolute;
+	left: -27px;
+	top: 100px;
+	z-index: 999;
+	width: 26px;
+	height: 60px;
+	background-color: rgba(0,153, 255, 70);
+	border-radius: 4px 0 0 4px;
+	opacity: 0.7;
+	text-align: center;
+	vertical-align: middle;
+	padding: 2px;
+}
+.filter-btn i {
+	font-size: 22px;
+	color: white;
+}
+.right-filter-panel {
+	position: fixed;
+	right: 0;
+	top: 50px;
+	z-index: 998;
+	min-width: 400px;
+}
+
+/** 列表头部字段显示 */
+.tab-column-panel {
+	display: inline-block;
+}
+.tab-column-option {
+	display: inline-block;
+	font-size: 16px;
+}
+.table-column-list {
+	position: fixed;
+	top: 50px;
+	right: 0;
+	bottom: 10px;
+	min-width: 300px;
+}
+.table-column-list .panel-body {
+	position: absolute;
+	width: 100%;
+	bottom: 41px;
+	top: 41px;
+	overflow:auto;
+}
+.table-column-list .panel-footer {
+	position: absolute;
+	width: 100%;
+	bottom: 0;
+	text-align: center;
+}
+.hide--1 th:nth-child(1), .hide--1 td:nth-child(1) { display: none; }
+.hide--2 th:nth-child(2),.hide--2 td:nth-child(2) { display: none; }
+.hide--3 th:nth-child(3),.hide--3 td:nth-child(3) { display: none; }
+.hide--4 th:nth-child(4),.hide--4 td:nth-child(4) { display: none; }
+.hide--5 th:nth-child(5),.hide--5 td:nth-child(5) { display: none; }
+.hide--6 th:nth-child(6),.hide--6 td:nth-child(6) { display: none; }
+.hide--7 th:nth-child(7),.hide--7 td:nth-child(7) { display: none; }
+.hide--8 th:nth-child(8),.hide--8 td:nth-child(8) { display: none; }
+.hide--9 th:nth-child(9),.hide--9 td:nth-child(9) { display: none; }
+.hide--10 th:nth-child(10),.hide--10 td:nth-child(10) { display: none; }
+.hide--11 th:nth-child(11),.hide--11 td:nth-child(11) { display: none; }
+.hide--12 th:nth-child(12),.hide--12 td:nth-child(12) { display: none; }
+.hide--13 th:nth-child(13),.hide--13 td:nth-child(13) { display: none; }
+.hide--14 th:nth-child(14),.hide--14 td:nth-child(14) { display: none; }
+.hide--15 th:nth-child(15),.hide--15 td:nth-child(15) { display: none; }
+.hide--16 th:nth-child(16),.hide--16 td:nth-child(16) { display: none; }
+.hide--17 th:nth-child(17),.hide--17 td:nth-child(17) { display: none; }
+.hide--18 th:nth-child(18),.hide--17 td:nth-child(18) { display: none; }
+.hide--19 th:nth-child(19),.hide--17 td:nth-child(19) { display: none; }
+.hide--20 th:nth-child(20),.hide--17 td:nth-child(20) { display: none; }
+.hide--21 th:nth-child(21),.hide--17 td:nth-child(21) { display: none; }
+.hide--22 th:nth-child(22),.hide--17 td:nth-child(22) { display: none; }
+.hide--23 th:nth-child(23),.hide--17 td:nth-child(23) { display: none; }
+.hide--24 th:nth-child(24),.hide--17 td:nth-child(24) { display: none; }
+.hide--25 th:nth-child(25),.hide--17 td:nth-child(25) { display: none; }
+.hide--26 th:nth-child(26),.hide--17 td:nth-child(26) { display: none; }
+.hide--27 th:nth-child(27),.hide--17 td:nth-child(27) { display: none; }
+.hide--28 th:nth-child(28),.hide--17 td:nth-child(28) { display: none; }
+.hide--29 th:nth-child(29),.hide--17 td:nth-child(29) { display: none; }
+.hide--30 th:nth-child(30),.hide--17 td:nth-child(30) { display: none; }
+
+

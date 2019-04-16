@@ -1,0 +1,44 @@
+<nav aria-label="Page navigation" style="padding-bottom: 60px;">
+    <ul class="pagination pull-left" style="margin: 0;">
+
+        <li v-bind:class="{disabled:currPage==1}">
+            <a href="javascript:;" aria-label="Previous" v-on:click="queryPageData(1, currPage==1)" >
+                <span aria-hidden="true">首页</span>
+            </a>
+        </li>
+        <li v-bind:class="{disabled:currPage==1}" >
+            <a href="javascript:;" v-on:click="queryPageData(currPage-1, currPage==1)">上一页</a>
+        </li>
+        <li v-for="p in range(startNum, endNum)" v-bind:class="{active:p==currPage}" >
+            <a href="javascript:;" v-on:click="queryPageData(p, false)" >{{p}}</a>
+        </li>
+        <li v-bind:class="{disabled:currPage==totalPage}" >
+            <a href="javascript:;" v-on:click="queryPageData(currPage+1, currPage==totalPage)" >下一页</a>
+        </li>
+        <li v-bind:class="{disabled:currPage==totalPage}" >
+            <a href="javascript:;" aria-label="Next" v-on:click="queryPageData(totalPage, currPage==totalPage)">
+                <span aria-hidden="true">尾页</span>
+            </a>
+        </li>
+    </ul>
+    <div class="pull-left pagination-detail" style="padding-left: 30px;">
+        <span class="pagination-info">共{{totalCount}}条记录，{{totalPage}}页 </span>
+        <span class="page-list">
+            每页显示
+            <span class="btn-group dropup">
+                <button type="button" class="btn btn-default  dropdown-toggle" data-toggle="dropdown">
+                    <span class="page-size">{{pageSize}}</span>
+                    <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu" role="menu">
+
+                    <li v-for="num in pageNumArr" v-bind:class="{active: pageSize == num}">
+                        <a v-on:click="changePageSize(num)" href="javascript:void(0)">{{num}}</a>
+                    </li>
+
+                </ul>
+            </span>
+            条记录
+        </span>
+    </div>
+</nav>

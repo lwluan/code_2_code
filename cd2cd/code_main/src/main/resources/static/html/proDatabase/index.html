@@ -1,0 +1,27 @@
+<div>
+	<!-- database list -->
+	<div class="panel panel-default database-tree">
+		<div class="panel-heading">
+			数据库 <input type="button" v-on:click="showPanel = 'db';$refs.databasePanel.showDetail()"
+				class="btn btn-default padding-btn pull-right" value="添加" />
+		</div>
+		<div class="panel-body database-panel-body">
+			<ul id="databaseTree" class="ztree"></ul>
+		</div>
+	</div>
+
+	<!-- right -->
+	<div class="database-body-content">
+		<!-- db -->
+		<database v-on:completed="initDbTree" 
+		ref="databasePanel" 
+		v-on:toAddTable="showTableDetail"
+		v-show="showPanel == 'db'"></database>
+		
+		<!-- table -->
+		<db-table v-on:completed="initDbTree" 
+		ref="dbTablePanel" 
+		v-show="showPanel == 'tab'"></db-table>
+	</div>
+
+</div>

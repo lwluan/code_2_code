@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE generatorConfiguration PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN" "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd" >
+<generatorConfiguration>
+
+	<context id="tables" targetRuntime="MyBatis3">
+		<property name="beginningDelimiter" value="`"/>
+		<property name="endingDelimiter" value="`"/>  
+		<property name="mergeable" value="true"/>
+		
+		<!-- 插件是顺序执行 -->
+		<plugin type="org.mybatis.generator.plugins.RenameExampleClassPlugin">
+			<property name="searchString" value="Example$" />
+			<property name="replaceString" value="Criteria" />
+		</plugin>
+		<plugin type="org.mybatis.generator.plugins.SerializablePlugin" />
+		<plugin type="org.mybatis.generator.plugins.ToStringPlugin" />
+		<plugin type="com.cd2cd.util.mbg.AnnotationPlugin" />
+		<plugin type="com.cd2cd.util.mbg.MysqlPaginationPlugin" />
+		
+		<!-- xml扩展 -->
+		<plugin type="com.cd2cd.util.mbg.MapperExtPlugin" /> 
+		<plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin" />
+		
+		<commentGenerator type="com.cd2cd.util.mbg.MyCommentGenerator">
+			<property name="suppressAllComments" value="true"/>
+		</commentGenerator>
+		
+		 <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+			connectionURL="jdbc:mysql://127.0.0.1:3306/auto_code" userId="root" password="root" >
+		</jdbcConnection>
+		
+		<javaModelGenerator targetPackage="com.cd2cd.domain" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" />
+		<sqlMapGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" />
+		<javaClientGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" type="XMLMAPPER" />
+		
+		<!-- sys table -->
+		<table domainObjectName="SysUser" tableName="sys_user" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysRole" tableName="sys_role" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysAuthority" tableName="sys_authority" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysUserRoleRel" tableName="sys_user_role_rel" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		<table domainObjectName="SysAuthorityRoleRel" tableName="sys_authority_role_rel" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProProject" tableName="pro_project" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProDatabase" tableName="pro_database" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProTable" tableName="pro_table" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProTableColumn" tableName="pro_table_column" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProModule" tableName="pro_module" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProFile" tableName="pro_file" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProFun" tableName="pro_fun" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProProjectDatabaseRel" tableName="pro_project_database_rel" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProField" tableName="pro_field" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProPage" tableName="pro_page" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="ProFunArg" tableName="pro_fun_arg" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+		<table domainObjectName="CommValidate" tableName="comm_validate" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+		
+	</context>
+</generatorConfiguration>

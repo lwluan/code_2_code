@@ -1,3 +1,22 @@
+cd2cd/.project
+cd2cd/.settings
+cd2cd/code_main/.settings
+cd2cd/code_main/logs
+
+cd2cd/code_parent/.project
+cd2cd/code_parent/.settings
+
+code_template/.project
+code_template/.settings
+code_template/code_template_main/logs
+code_template/code_template_main/.classpath
+code_template/code_template_main/.project
+code_template/code_template_main/.gitignore
+code_template/code_template_main/.settings
+
+code_template/code_template_parent/.project
+code_template/code_template_parent/.settings
+
 # Compiled class file
 *.class
 

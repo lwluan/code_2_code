@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title></title>
+    <link rel="stylesheet" href="/code_main/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/code_main/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/code_main/css/bootoast.css">
+    <link rel="stylesheet" href="/code_main/css/index.css?t=00">
+    <link rel="stylesheet" href="/code_main/css/project.css?t=10">
+	<link rel="stylesheet" href="/code_main/admin/auths">
+</head>
+<body>
+
+<div id="app">
+
+    <!-- header -->
+    <top-toolbar
+    	v-on:change_file_free = "function(a, b){ $refs.leftSlider.fetchProjectFileTree(a, b); }"
+    	v-on:show_project_info = "function(){ $refs.projectInfo.showProjectInfo(); }" 
+    	v-on:show_project_module = "function(){ $refs.projectModuleList.showModuleList(); }"
+    	>
+    </top-toolbar>
+
+    <div class="container-fluid app-wrapper">
+
+        <!-- slider -->
+        <left-slider ref="leftSlider"
+        	v-on:open_file="function(node) { $refs.fileEditorTab.openFile(node); }"
+        	v-on:add_file="function(node) { $refs.addFilePanel.popShowPanel(node); } ">
+        </left-slider>
+
+        <div class="body-content">
+
+            <!-- content body -->
+            <file-editor-tab ref="fileEditorTab"></file-editor-tab>
+                
+        </div>
+    </div>
+
+    
+
+	<!-- 项目详情 -->
+	<project-info ref="projectInfo"
+		v-on:completed="">
+	</project-info>
+	
+	<project-module-list ref="projectModuleList"
+		v-on:show_module_info="function(moduleId){ $refs.projectModule.showProjectModule(moduleId); }">
+	</project-module-list>
+	
+	<project-module ref="projectModule"
+		v-on:completed="">
+	</project-module>
+	
+	<!-- 弹出提示框 -->
+    <confirm-box></confirm-box>
+    
+    
+    <!-- 添加文件/ controller/service/dao/vo/page -->
+    <add-file ref="addFilePanel" v-on:completed="$refs.leftSlider.reloadProjectFileTree()"></add-file>
+    
+</div>
+
+
+<script type="text/javascript">
+    var ctx = '/code_main';
+</script>
+<script src="/code_main/js/lib/jquery.min.js"></script>
+<script src="/code_main/js/lib/bootstrap.min.js"></script>
+<script src="/code_main/js/lib/vue.min.js"></script>
+<script src="/code_main/js/lib/jquery.validate.min.js"></script>
+<script src="/code_main/js/lib/require.js"></script>
+<script src="/code_main/js/lib/bootoast.js"></script>
+<script src="/code_main/js/comm.js"></script>
+<script src="/code_main/js/utils.js"></script>
+<script src="/code_main/js/component.js?t=01330"></script>
+<script src="/code_main/js/project/pro_comm.js"></script>
+<script src="/code_main/js/project/comm.js?t=0033o"></script>
+<script src="/code_main/js/project/dao.js?t=012310"></script>
+<script src="/code_main/js/project/index.js?t=ss382888"></script>
+
+</body>
+</html>
