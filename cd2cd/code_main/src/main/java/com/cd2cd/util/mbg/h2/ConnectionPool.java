@@ -2,11 +2,13 @@ package com.cd2cd.util.mbg.h2;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.h2.jdbcx.JdbcConnectionPool;
 
 public class ConnectionPool {
-    private static ConnectionPool cp = null;
+    private static Map<String, ConnectionPool> cpMap = new HashMap<String, ConnectionPool>();
     private JdbcConnectionPool jdbcCP = null;
 
     private ConnectionPool(String path, String dbName, String user, String password) {
@@ -18,10 +20,11 @@ public class ConnectionPool {
     }
 
     public static ConnectionPool getInstance(String path, String dbName, String user, String password) {
-        if (cp == null) {
-            cp = new ConnectionPool(path, dbName, user, password);
+    	String key = path+"_" + dbName;
+        if (cpMap.get(key) == null) {
+        	cpMap.put(key, new ConnectionPool(path, dbName, user, password));
         }
-        return cp;
+        return cpMap.get(key);
     }
 
     public Connection getConnection() throws SQLException {
