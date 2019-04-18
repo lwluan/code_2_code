@@ -113,7 +113,7 @@ public class ProjectGenUtil {
 	public void genProjectBase() throws Exception {
 
 		if (!new File(localPath).exists()) {
-			throw new Exception("localPath=" + localPath + ",不存在");
+			new File(localPath).mkdirs();
 		}
 
 		String _path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "../../../../" + code_path;

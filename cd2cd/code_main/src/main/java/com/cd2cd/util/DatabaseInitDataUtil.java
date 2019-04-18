@@ -39,17 +39,17 @@ public class DatabaseInitDataUtil {
 			Connection mConnection = mJdbcConnectionPool.getConnection();
 			Statement mStatement = mConnection.createStatement();
 			ResultSet rs = mStatement.executeQuery("select * from sys_user");
+			
 			if( ! rs.next()) {
 				/** 数据库未初始化数据时，向表中插入初始化数据 */
 				rs.close();
 				
 				InputStream inputStream = DatabaseInitDataUtil.class.getResourceAsStream("/sql/data.sql");
-				String sqlContent = IOUtils.toString(inputStream, "utf-8");
-				
-				LOG.info("sqlContent={}", sqlContent);
-				
-				mStatement.execute(sqlContent);
-				
+				if(inputStream != null) {
+					String sqlContent = IOUtils.toString(inputStream, "utf-8");
+					LOG.info("sqlContent={}", sqlContent);
+					mStatement.execute(sqlContent);
+				}
 			}
 		}	
 	}

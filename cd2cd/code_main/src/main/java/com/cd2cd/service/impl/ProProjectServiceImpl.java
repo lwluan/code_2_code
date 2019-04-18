@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.dom.java.FileIdsAndType;
@@ -209,27 +210,29 @@ public class ProProjectServiceImpl implements ProProjectService {
 				dbIds.add(pdr.getDatabaseId());
 			}
 			
-			ProDatabaseCriteria pdc = new ProDatabaseCriteria();
-			pdc.createCriteria().andIdIn(dbIds);
-			List<ProDatabase> dababases = proDatabaseMapper.selectByExample(pdc);
-		
 			// 创建util
 			ProjectGenUtil projectGenUtil = new ProjectGenUtil(proProject);
 			
 			// 初始被创建项目
 			projectGenUtil.genProjectBase();
 			
-			if( dababases.size() > 0 ) {
-				ProDatabase database = dababases.get(0);
+			if( ! CollectionUtils.isEmpty(dbIds)) {
+				ProDatabaseCriteria pdc = new ProDatabaseCriteria();
+				pdc.createCriteria().andIdIn(dbIds);
+				List<ProDatabase> dababases = proDatabaseMapper.selectByExample(pdc);
 				
-				List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
-				
-				/** 
-				 * 暂时支持一个数据库 
-				 * mapper/entity
-				 */
-				projectGenUtil.initH2Database(tables, database);
-				projectGenUtil.genJavaFromDb(tables, database);
+				if( dababases.size() > 0 ) {
+					ProDatabase database = dababases.get(0);
+					
+					List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
+					
+					/** 
+					 * 暂时支持一个数据库 
+					 * mapper/entity
+					 */
+					projectGenUtil.initH2Database(tables, database);
+					projectGenUtil.genJavaFromDb(tables, database);
+				}
 			}
 			
 			/**

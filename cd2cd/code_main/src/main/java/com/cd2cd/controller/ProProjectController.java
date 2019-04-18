@@ -49,8 +49,8 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "detail/{id}", method = RequestMethod.GET)
-	public @ResponseBody BaseRes<ProProjectVo> detail(@PathVariable("id") Long id) {
+	@RequestMapping(value = "projectInfo", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<ProProjectVo> detail(Long id) {
 
 		BaseRes<ProProjectVo> res = new BaseRes<ProProjectVo>();
 
@@ -61,8 +61,8 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "del/{id}", method = RequestMethod.GET)
-	public @ResponseBody BaseRes<String> del(@PathVariable("id") Long id) {
+	@RequestMapping(value = "projectInfo", method = RequestMethod.DELETE)
+	public @ResponseBody BaseRes<String> delProjectInfo(Long id) {
 
 		BaseRes<String> res = new BaseRes<String>();
 
@@ -76,8 +76,8 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "add", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> add(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
+	@RequestMapping(value = "projectInfo", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> addProjectInfo(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
 		ServiceCode serviceCode = proProjectService.add(proProjectVo);
@@ -85,8 +85,8 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "modify", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> modify(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
+	@RequestMapping(value = "projectInfo", method = RequestMethod.PUT)
+	public @ResponseBody BaseRes<String> modifyProjectInfo(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
 		ServiceCode serviceCode = proProjectService.modify(proProjectVo);
