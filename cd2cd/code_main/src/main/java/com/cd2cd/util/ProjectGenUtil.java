@@ -47,6 +47,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.w3c.dom.Document;
@@ -70,6 +71,7 @@ import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.util.mbg.h2.H2DatabaseUtil;
+import com.google.common.collect.Sets;
 
 public class ProjectGenUtil {
 	private static String code_path = "code_template";
@@ -77,6 +79,8 @@ public class ProjectGenUtil {
 	private static final String H2_DB_PATH = "./h2db";
 	private static final String H2_DB_PASSWORD = "h2";
 	private static final String H2_DB_USER = "123456";
+	
+	private static Set<String> IGNORE_VO_GEN = Sets.newHashSet("BaseRes", "BaseReq");
 	
 	private ProProject project;
 	String contextPath;			// 项目访问地址
@@ -624,6 +628,7 @@ public class ProjectGenUtil {
 			topClass.addImportedType(RequestMapping.class.getName());
 			topClass.addImportedType(Controller.class.getName());
 			topClass.addImportedType(ResponseBody.class.getName());
+			topClass.addImportedType(RequestBody.class.getName());
 			topClass.addImportedType(Valid.class.getName());
 			
 			LOG.info("file.getImportTypes()={}", String.join(",", file.getImportTypes()));
@@ -822,6 +827,9 @@ public class ProjectGenUtil {
 	 */
 	public void genVo(ProProject proProject, List<ProFile> voList) throws FileNotFoundException, IOException {
 		for(ProFile file : voList) {
+			
+			// ignore vo BaseRes BaseReq 
+			if(IGNORE_VO_GEN.contains(file.getName())) continue;
 			
 			ProModule module = file.getModule();
 			String fileGenPath = (localPath + "/" + artifactId + "/"+artifactId+"_main/src/main/java/" + groupId + "." + artifactId).replaceAll("\\.", "/");

@@ -486,6 +486,25 @@ VALUES
 /*!40000 ALTER TABLE `sys_user_role_rel` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+
+INSERT INTO `pro_file` (`id`, `project_id`, `module_id`, `super_id`, `name`, `comment`, `req_path`, `file_type`, `paradigm`, `class_type`, `create_time`, `update_time`)
+VALUES
+	(1, NULL, NULL, 0, 'BaseRes', '接口返回数据', NULL, 'vo', 'yes', 'class', '2018-05-17 15:21:08', '2018-05-17 15:21:08'),
+	(2, NULL, NULL, 0, 'BaseReq', '用户请求数据', NULL, 'vo', 'yes', 'class', '2018-05-17 15:23:19', '2018-05-17 15:23:19');
+
+INSERT INTO `pro_field` (`id`, `file_id`, `name`, `data_type`, `type_path`, `type_key`, `collection_type`, `comment`, `create_time`, `update_time`)
+VALUES
+	(1, 1, 'data', 'T', 'T', 'T', 'single', NULL, '2018-05-26 16:03:05', '2018-05-26 16:03:05'),
+	(2, 1, 'msg', 'base', 'String', 'String', 'single', '消息', '2018-06-23 17:54:24', '2018-06-23 17:54:24'),
+	(3, 1, 'code', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:54:31', '2018-06-23 17:54:31');
+
+INSERT INTO `pro_field` (`id`, `file_id`, `name`, `data_type`, `type_path`, `type_key`, `collection_type`, `comment`, `create_time`, `update_time`)
+VALUES
+	(4, 2, 'currPage', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:53:13', '2018-06-23 17:53:13'),
+	(5, 2, 'pageSize', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:53:22', '2018-06-23 17:53:22');
+
+
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

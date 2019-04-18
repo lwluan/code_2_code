@@ -93,7 +93,7 @@ public class ProjectServiceImpl implements ProjectService {
 		ProModule commProModule = new ProModule();
 		
 		/**
-		 * moduleId: -1:为公共模块, 0:他部
+		 * moduleId: -1:为公共模块, 0:全部
 		 * example: com.test.controller
 		 */
 		List<ProModule> modules = new ArrayList<ProModule>();
@@ -142,6 +142,7 @@ public class ProjectServiceImpl implements ProjectService {
 		return res;
 	}
 	
+	/** Package Type Hierarchical */
 	private void processProjectByHierarchical(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules) throws JSONException {
 		
 		// root module-_package
@@ -172,12 +173,14 @@ public class ProjectServiceImpl implements ProjectService {
 			// query file list, the same controller\service\vo\dmain\mapper\page
 			ProFileCriteria mProFileCriteria = new ProFileCriteria();
 			ProFileCriteria.Criteria mCriteria = mProFileCriteria.createCriteria();
-			mCriteria.andProjectIdEqualTo(projectId);
 			if( moduleId != null && moduleId > 0 ) { 
+				mCriteria.andProjectIdEqualTo(projectId);
 				mCriteria.andModuleIdEqualTo(moduleId);
 			} else {
 				mCriteria.andModuleIdIsNull();
+				mProFileCriteria.or().andProjectIdIsNull(); // 所有项目公用 projectId为空
 			}
+			
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);
 			
 			Integer modulePid = pId;
@@ -255,6 +258,7 @@ public class ProjectServiceImpl implements ProjectService {
 		
 	}
 
+	/** Package Type Flat */
 	private void processProjectByFlat(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules) throws JSONException {
 		
 		Long projectId = proProject.getId();
@@ -279,11 +283,12 @@ public class ProjectServiceImpl implements ProjectService {
 			// query file list, the same controller\service\vo\dmain\mapper\page
 			ProFileCriteria mProFileCriteria = new ProFileCriteria();
 			ProFileCriteria.Criteria mCriteria = mProFileCriteria.createCriteria();
-			mCriteria.andProjectIdEqualTo(projectId);
 			if( moduleId != null && moduleId > 0 ) { 
+				mCriteria.andProjectIdEqualTo(projectId);
 				mCriteria.andModuleIdEqualTo(moduleId);
 			} else {
 				mCriteria.andModuleIdIsNull();
+				mProFileCriteria.or().andProjectIdIsNull(); // 所有项目公用 projectId为空
 			}
 			
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);
@@ -508,9 +513,16 @@ public class ProjectServiceImpl implements ProjectService {
 			String fileType) {
 		
 		ProFileCriteria mProFileCriteria = new ProFileCriteria();
-		mProFileCriteria.createCriteria()
-		.andProjectIdEqualTo(projectId)
+		ProFileCriteria.Criteria criteria = mProFileCriteria.createCriteria();
+		
+		criteria.andProjectIdEqualTo(projectId)
 		.andFileTypeEqualTo(fileType);
+		
+		// 获取 公供 VO
+		if(FileTypeEnum.vo.name().equalsIgnoreCase(fileType)) {
+			mProFileCriteria.or().andProjectIdIsNull();
+		}
+		
 		
 		LOG.info("projectId={}, fileType={}", projectId, fileType);
 		

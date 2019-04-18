@@ -34,11 +34,9 @@ public class DatabaseInitDataUtil {
 	
 	public void initDatabase() throws SQLException, FileNotFoundException, IOException {
 		
-		
-		JdbcConnectionPool mJdbcConnectionPool = JdbcConnectionPool.create(url, username, password);
-		Connection mConnection = mJdbcConnectionPool.getConnection();
-		
 		if("org.h2.Driver".equalsIgnoreCase(driverClassName)) {
+			JdbcConnectionPool mJdbcConnectionPool = JdbcConnectionPool.create(url, username, password);
+			Connection mConnection = mJdbcConnectionPool.getConnection();
 			Statement mStatement = mConnection.createStatement();
 			ResultSet rs = mStatement.executeQuery("select * from sys_user");
 			if( ! rs.next()) {
