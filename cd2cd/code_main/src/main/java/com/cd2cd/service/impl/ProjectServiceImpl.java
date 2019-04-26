@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.dom.java.TypeEnum.FieldDataType;
@@ -717,6 +718,10 @@ public class ProjectServiceImpl implements ProjectService {
 		for(ProFunArg fa: args) {
 			if (FunArgType.vo.name().equals(fa.getArgType())) {
 				Long argTypeId = fa.getArgTypeId();
+				
+				LOG.info("argTypeId=" + argTypeId);
+				
+				
 				ProFile mProFile = proFileMapper.selectByPrimaryKey(argTypeId);
 
 				Long superId = mProFile.getSuperId(); // vo是否继承了数据库表
@@ -748,7 +753,7 @@ public class ProjectServiceImpl implements ProjectService {
 				if(voFiledMap.size() > 0) {
 					
 					// merge name 一至合并
-					if(fa.getChildren().size() > 0) {
+					if( ! CollectionUtils.isEmpty(fa.getChildren())) {
 						fa.getChildren().stream().forEach(__fa -> {
 							voFiledMap.remove(__fa.getName());
 						});

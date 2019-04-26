@@ -41,9 +41,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 			ServletException {
 		
 		String header = request.getHeader("Authorization");
-		
-		LOG.info("header=" + header);
-		
 		boolean toAuthentication = false;
 		if (header != null && header.startsWith("Bearer ")) {
 			toAuthentication = true;
@@ -65,8 +62,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 		
         String authHeader = request.getHeader("Authorization");
         String token = request.getParameter("token");
-        
-        LOG.info("authHeader={}, token={}", authHeader, token);
         String tokenHead = "Bearer ";
         if(StringUtils.isBlank(authHeader) && StringUtils.isBlank(token)) {
         	return;
@@ -81,8 +76,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         	try {
 	        	LoginUser mUserVo = jWTHelperUtil.verifyToken(authToken);
 	        	if (mUserVo != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-	        		
-	        		LOG.info("username={}", mUserVo.getUsername());
 	        		
 	        		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(mUserVo, null, mUserVo.getAuthorities());
 	                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

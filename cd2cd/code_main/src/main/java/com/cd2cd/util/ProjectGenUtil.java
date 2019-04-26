@@ -875,6 +875,8 @@ public class ProjectGenUtil {
 				
 				String typeStr = CodeUtils.typeByCollectionType(field.getTypePath(), field.getCollectionType());
 				
+				LOG.info("---{}, typeStr={}, ={}", field.getName(), typeStr, fileClassPath);
+				
 				FullyQualifiedJavaType type = new FullyQualifiedJavaType(typeStr);
 				f.setType(type);
 				topClass.addField(f);
