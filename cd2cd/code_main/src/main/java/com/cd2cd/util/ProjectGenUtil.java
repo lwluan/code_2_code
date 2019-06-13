@@ -81,6 +81,7 @@ public class ProjectGenUtil {
 	private static final String H2_DB_USER = "123456";
 	
 	private static Set<String> IGNORE_VO_GEN = Sets.newHashSet("BaseRes", "BaseReq");
+	private static Set<String> IGNORE_File = Sets.newHashSet(".DS_Store", ".project", ".settings");
 	
 	private ProProject project;
 	String contextPath;			// 项目访问地址
@@ -451,6 +452,11 @@ public class ProjectGenUtil {
 	 * 复制一个目录及其子目录、文件到另外一个目录
 	 */
 	private void copyFolder(File src, File dest) throws IOException {
+		
+		if(IGNORE_File.contains(src.getName())) {
+			LOG.info("ignore file [{}]", src.getName());
+			return;
+		}
 		if (src.isDirectory()) {
 			if (!dest.exists()) {
 				dest.mkdir();

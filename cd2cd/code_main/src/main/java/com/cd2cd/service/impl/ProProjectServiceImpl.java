@@ -426,13 +426,16 @@ public class ProProjectServiceImpl implements ProProjectService {
 	@Override
 	public BaseRes<List<ProModuleVo>> projectModuleList(Long projectId) {
 		BaseRes<List<ProModuleVo>> res = new BaseRes<List<ProModuleVo>>();
-		List<ProModule> proProjectList = proModuleMapper.selectByExample(null);
+		ProModuleCriteria mProModuleCriteria = new ProModuleCriteria();
+		mProModuleCriteria.createCriteria().andProjectIdEqualTo(projectId);
+		List<ProModule> proProjectList = proModuleMapper.selectByExample(mProModuleCriteria);
 		List<ProModuleVo> rows = new ArrayList<ProModuleVo>();
-		for(ProModule project: proProjectList) {
+		for(ProModule module: proProjectList) {
 			ProModuleVo mProModuleVo = new ProModuleVo();
-			mProModuleVo.setId(project.getId());
-			mProModuleVo.setName(project.getName());
-			mProModuleVo.setShowName(project.getShowName());
+			mProModuleVo.setId(module.getId());
+			mProModuleVo.setName(module.getName());
+			mProModuleVo.setShowName(module.getShowName());
+			mProModuleVo.setDescription(module.getDescription());
 			rows.add(mProModuleVo);
 		}
 		res.setServiceCode(ServiceCode.SUCCESS);

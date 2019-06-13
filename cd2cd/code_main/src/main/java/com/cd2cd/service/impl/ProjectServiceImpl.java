@@ -178,8 +178,12 @@ public class ProjectServiceImpl implements ProjectService {
 				mCriteria.andProjectIdEqualTo(projectId);
 				mCriteria.andModuleIdEqualTo(moduleId);
 			} else {
-				mCriteria.andModuleIdIsNull();
-				mProFileCriteria.or().andProjectIdIsNull(); // 所有项目公用 projectId为空
+				
+				// 所有项目公用 projectId为空
+				mCriteria.andProjectIdIsNull();
+
+				// 或者是当前项目的模块ID为空
+				mProFileCriteria.or().andModuleIdIsNull().andProjectIdEqualTo(projectId);
 			}
 			
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);
@@ -288,8 +292,12 @@ public class ProjectServiceImpl implements ProjectService {
 				mCriteria.andProjectIdEqualTo(projectId);
 				mCriteria.andModuleIdEqualTo(moduleId);
 			} else {
-				mCriteria.andModuleIdIsNull();
-				mProFileCriteria.or().andProjectIdIsNull(); // 所有项目公用 projectId为空
+				
+				// 所有项目公用 projectId为空
+				mCriteria.andProjectIdIsNull();
+
+				// 或者是当前项目的模块ID为空
+				mProFileCriteria.or().andModuleIdIsNull().andProjectIdEqualTo(projectId); 
 			}
 			
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);

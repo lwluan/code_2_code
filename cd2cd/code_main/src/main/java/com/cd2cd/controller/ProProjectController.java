@@ -121,8 +121,8 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "moduleDetail/{id}", method = RequestMethod.GET)
-	public @ResponseBody BaseRes<ProModuleVo> moduleDetail(@PathVariable("id") Long id) {
+	@RequestMapping(value = "moduleInfo", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<ProModuleVo> moduleDetail(Long id) {
 
 		BaseRes<ProModuleVo> res = new BaseRes<ProModuleVo>();
 
@@ -133,8 +133,8 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "delModule/{id}", method = RequestMethod.GET)
-	public @ResponseBody BaseRes<String> delModule(@PathVariable("id") Long id) {
+	@RequestMapping(value = "moduleInfo", method = RequestMethod.DELETE)
+	public @ResponseBody BaseRes<String> delModule(Long id) {
 
 		BaseRes<String> res = new BaseRes<String>();
 
@@ -148,7 +148,7 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "addModule", method = RequestMethod.POST)
+	@RequestMapping(value = "moduleInfo", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> addModule(@Validated @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
@@ -157,7 +157,7 @@ public class ProProjectController extends BaseController {
 		return res;
 	}
 
-	@RequestMapping(value = "modifyModule", method = RequestMethod.POST)
+	@RequestMapping(value = "moduleInfo", method = RequestMethod.PUT)
 	public @ResponseBody BaseRes<String> modify(@Validated @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
