@@ -274,6 +274,76 @@ public class CommValidateCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andClassPathIsNull() {
+            addCriterion("class_path is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathIsNotNull() {
+            addCriterion("class_path is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathEqualTo(String value) {
+            addCriterion("class_path =", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathNotEqualTo(String value) {
+            addCriterion("class_path <>", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathGreaterThan(String value) {
+            addCriterion("class_path >", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathGreaterThanOrEqualTo(String value) {
+            addCriterion("class_path >=", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathLessThan(String value) {
+            addCriterion("class_path <", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathLessThanOrEqualTo(String value) {
+            addCriterion("class_path <=", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathLike(String value) {
+            addCriterion("class_path like", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathNotLike(String value) {
+            addCriterion("class_path not like", value, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathIn(List<String> values) {
+            addCriterion("class_path in", values, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathNotIn(List<String> values) {
+            addCriterion("class_path not in", values, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathBetween(String value1, String value2) {
+            addCriterion("class_path between", value1, value2, "classPath");
+            return (Criteria) this;
+        }
+
+        public Criteria andClassPathNotBetween(String value1, String value2) {
+            addCriterion("class_path not between", value1, value2, "classPath");
+            return (Criteria) this;
+        }
+
         public Criteria andCommentIsNull() {
             addCriterion("comment is null");
             return (Criteria) this;

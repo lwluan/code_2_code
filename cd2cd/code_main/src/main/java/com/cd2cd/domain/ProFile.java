@@ -3,6 +3,7 @@ package com.cd2cd.domain;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.cd2cd.domain.gen.SuperProFile;
@@ -15,7 +16,10 @@ public class ProFile extends SuperProFile implements Serializable {
 	private List<ProFun> funs; // controller 使用 method方法列表
 	private List<ProField> fields; // vo 使用,用于vo类成员域
 	
-	private Set<String> importTypes = new HashSet<String>(); // 方法返回类型import
+	private Set<String> importTypes = new HashSet<>(); // 方法返回类型import
+	private String superName; // 继承的父类
+	
+	private Map<String, Map<String, Set<String>>> propertyValid; // 成员变量验证
 	
 	public List<ProTableColumn> getColumns() {
 		return columns;
@@ -55,6 +59,22 @@ public class ProFile extends SuperProFile implements Serializable {
 
 	public void setFields(List<ProField> fields) {
 		this.fields = fields;
+	}
+
+	public String getSuperName() {
+		return superName;
+	}
+
+	public void setSuperName(String superName) {
+		this.superName = superName;
+	}
+
+	public Map<String, Map<String, Set<String>>> getPropertyValid() {
+		return propertyValid;
+	}
+
+	public void setPropertyValid(Map<String, Map<String, Set<String>>> propertyValid) {
+		this.propertyValid = propertyValid;
 	}
 	
 }

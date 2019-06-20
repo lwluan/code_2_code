@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.cd2cd.domain.gen.SuperProTable;
+import com.cd2cd.util.StringUtil;
 
 @SuppressWarnings("serial")
 public class ProTable extends SuperProTable implements Serializable {
@@ -28,15 +29,6 @@ public class ProTable extends SuperProTable implements Serializable {
 	}
 
 	public String getJavaTableName() {
-
-		String name = getName();
-		String newName = "";
-		String[] ss = name.split("_");
-		for (String s : ss) {
-			s = s.substring(0, 1).toUpperCase() + s.substring(1);
-			newName = newName + s;
-		}
-
-		return newName;
+		return StringUtil.getJavaTableName(getName());
 	}
 }

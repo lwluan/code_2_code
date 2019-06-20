@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,7 +33,7 @@ public class ProProjectController extends BaseController {
 	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<DataPageWrapper<ProProjectVo>> queryPageList(Integer currPage, Integer pageSize, ProProjectVo proProjectVo) {
 
-		LOG.info("currPage={}, pageSize={}", currPage, pageSize);
+		LOG.info("  currPage={}, pageSize={}", currPage, pageSize);
 		
 		BaseRes<DataPageWrapper<ProProjectVo>> res = proProjectService.list(currPage, pageSize, proProjectVo);
 

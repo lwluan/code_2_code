@@ -40,7 +40,7 @@ public class DatabaseController {
 		return res;
 	}
 	
-	@RequestMapping("dbDetail")
+	@RequestMapping(value = "dbInfo", method = RequestMethod.GET)
 	public @ResponseBody BaseRes<ProDatabaseVo> dbDetail(ProDatabaseVo proDatabase) {
 		BaseRes<ProDatabaseVo> res = new BaseRes<ProDatabaseVo>();
 		ProDatabaseVo mProDatabaseVo = proDatabaseService.dbDetail(proDatabase.getId());
@@ -49,15 +49,16 @@ public class DatabaseController {
 		return res;
 	}
 	
-	@RequestMapping(value = "addDb", method = RequestMethod.POST)
-	public @ResponseBody BaseRes<String> addDb(
+	@RequestMapping(value = "dbInfo", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<ProDatabaseVo> addDb(
 			@Validated 
 			@RequestBody ProDatabaseVo proDatabaseVo, 
 			BindingResult bindingResult) {
 		
-		BaseRes<String> res = new BaseRes<String>();
+		BaseRes<ProDatabaseVo> res = new BaseRes<>();
 		boolean success = proDatabaseService.addDb(proDatabaseVo);
 		if( success ) {
+			res.setData(proDatabaseVo);
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} else {
 			res.setServiceCode(ServiceCode.FAILED);
@@ -65,7 +66,7 @@ public class DatabaseController {
 		return res;
 	}
 	
-	@RequestMapping(value = "modifyDb", method = RequestMethod.POST)
+	@RequestMapping(value = "dbInfo", method = RequestMethod.PUT)
 	public @ResponseBody BaseRes<String> modifyDb(
 			@Validated 
 			@RequestBody ProDatabaseVo proDatabaseVo, 
@@ -81,7 +82,7 @@ public class DatabaseController {
 		return res;
 	}
 	
-	@RequestMapping(value = "delDb", method = RequestMethod.GET)
+	@RequestMapping(value = "dbInfo", method = RequestMethod.DELETE)
 	public @ResponseBody BaseRes<String> delDb(ProDatabaseVo proDatabaseVo) {
 		
 		BaseRes<String> res = new BaseRes<String>();

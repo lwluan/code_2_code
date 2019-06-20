@@ -29,7 +29,7 @@ public class SuperProFile implements Serializable {
     private String comment;
 
     /**
-     * file_type: controller，时什有效
+     * file_type: controller，时有效
      */
     private String reqPath;
 
@@ -127,14 +127,14 @@ public class SuperProFile implements Serializable {
     }
 
     /**
-     * file_type: controller，时什有效
+     * file_type: controller，时有效
      */
     public String getReqPath() {
         return reqPath;
     }
 
     /**
-     * file_type: controller，时什有效
+     * file_type: controller，时有效
      */
     public void setReqPath(String reqPath) {
         this.reqPath = reqPath;

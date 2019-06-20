@@ -11,6 +11,11 @@ public class SuperCommValidate implements Serializable {
     private String name;
 
     /**
+     * 类路径
+     */
+    private String classPath;
+
+    /**
      * 验证说明： 不可为空
      */
     private String comment;
@@ -47,6 +52,20 @@ public class SuperCommValidate implements Serializable {
      */
     public void setName(String name) {
         this.name = name;
+    }
+
+    /**
+     * 类路径
+     */
+    public String getClassPath() {
+        return classPath;
+    }
+
+    /**
+     * 类路径
+     */
+    public void setClassPath(String classPath) {
+        this.classPath = classPath;
     }
 
     /**
@@ -99,6 +118,7 @@ public class SuperCommValidate implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", name=").append(name);
+        sb.append(", classPath=").append(classPath);
         sb.append(", comment=").append(comment);
         sb.append(", args=").append(args);
         sb.append(", proId=").append(proId);
@@ -121,6 +141,7 @@ public class SuperCommValidate implements Serializable {
         SuperCommValidate other = (SuperCommValidate) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
+            && (this.getClassPath() == null ? other.getClassPath() == null : this.getClassPath().equals(other.getClassPath()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
             && (this.getArgs() == null ? other.getArgs() == null : this.getArgs().equals(other.getArgs()))
             && (this.getProId() == null ? other.getProId() == null : this.getProId().equals(other.getProId()));
@@ -132,6 +153,7 @@ public class SuperCommValidate implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
+        result = prime * result + ((getClassPath() == null) ? 0 : getClassPath().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());
         result = prime * result + ((getArgs() == null) ? 0 : getArgs().hashCode());
         result = prime * result + ((getProId() == null) ? 0 : getProId().hashCode());

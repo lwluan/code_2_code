@@ -33,6 +33,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.InnerClass;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
@@ -47,6 +48,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -55,11 +57,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cd2cd.dom.java.CodeUtils;
 import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 import com.cd2cd.dom.java.TypeEnum.FieldDataType;
+import com.cd2cd.dom.java.TypeEnum.FunArgType;
 import com.cd2cd.dom.java.TypeEnum.ProjectModulTypeEnum;
 import com.cd2cd.domain.ProDatabase;
 import com.cd2cd.domain.ProField;
@@ -603,9 +607,6 @@ public class ProjectGenUtil {
 
 	public void genController(ProProject proProject, List<ProFile> controllerList) throws Exception {
 		
-		
-		// /Users/lwl/Desktop/test_project/test_pro/test_pro_main/src/main/java/com/test/test_pro/controller/
-		// /Users/lwl/Desktop/test_project/test_pro/user/controller/
 		for(ProFile file : controllerList) {
 			
 			ProModule module = file.getModule();
@@ -635,7 +636,7 @@ public class ProjectGenUtil {
 			topClass.addImportedType(Controller.class.getName());
 			topClass.addImportedType(ResponseBody.class.getName());
 			topClass.addImportedType(RequestBody.class.getName());
-			topClass.addImportedType(Valid.class.getName());
+			topClass.addImportedType(Validated.class.getName());
 			
 			LOG.info("file.getImportTypes()={}", String.join(",", file.getImportTypes()));
 			for(String importedType : file.getImportTypes()) {
@@ -649,6 +650,7 @@ public class ProjectGenUtil {
 				Method m = new Method(fun.getFunName());
 				m.setVisibility(JavaVisibility.PUBLIC);
 				
+				String validGroupName = String.format("%s_%s", file.getName(), fun.getFunName());
 				
 				/**
 				 * 方法注解
@@ -664,10 +666,31 @@ public class ProjectGenUtil {
 				for(ProFunArg arg : args) {
 					Parameter mp = new Parameter(new FullyQualifiedJavaType(arg.getArgTypeName()), arg.getName());
 					
+					/**
+					 * add (Valid RequestBody Validated) if arg type is Vo<br>
+					 * base Valid if arg type of base
+					 */
 					if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
-						mp.addAnnotation("@RequestBody");
+							mp.addAnnotation("@RequestBody");
 					}
-					mp.addAnnotation("@Valid");
+					
+					if(FunArgType.vo.name().equals(arg.getArgType())) {
+						if(checkVoHasValid(arg)) {
+							mp.addAnnotation(String.format("@Validated(%s.class)", validGroupName));
+						}
+					} else if(FunArgType.base.name().equals(arg.getArgType())) {
+						// 单独验证
+						if(StringUtils.isNotEmpty(arg.getValid())) {
+							
+							JSONArray arr = JSONArray.parseArray(arg.getValid());
+							
+							for(int i=0; i<arr.size(); i++) {
+								String key = arr.getString(i);
+								mp.addAnnotation(key);
+							}
+						}
+					}
+					
 					m.addParameter(mp);
 				}
 				
@@ -714,6 +737,17 @@ public class ProjectGenUtil {
 		}
 	}
 	
+	private boolean checkVoHasValid(ProFunArg arg) {
+		if(arg.getChildren() != null) {
+			for(ProFunArg a: arg.getChildren()) {
+				if(StringUtils.isNotEmpty(a.getValid())) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	public FileIdsAndType getFunReturnType(String returnVoJson) {
 		// {"name":"BaseRes","id":3,"collectionType":"single","paradigm":"yes","next":{"name":"TestVO","id":6,"collectionType":"map","paradigm":"no"}}
 		FileIdsAndType frt = new FileIdsAndType();
@@ -831,7 +865,7 @@ public class ProjectGenUtil {
 	 * @throws IOException 
 	 * @throws FileNotFoundException 
 	 */
-	public void genVo(ProProject proProject, List<ProFile> voList) throws FileNotFoundException, IOException {
+	public void genVo(ProProject proProject, List<ProFile> voList, Map<String, String> commValidMap) throws FileNotFoundException, IOException {
 		for(ProFile file : voList) {
 			
 			// ignore vo BaseRes BaseReq 
@@ -870,6 +904,21 @@ public class ProjectGenUtil {
 			}
 			
 			/**
+			 * set super class
+			 */
+			System.out.println("file.getSuperName()=" + file.getSuperName());
+			if(StringUtils.isNotBlank(file.getSuperName())) {
+				String superClass = StringUtil.getJavaTableName(file.getSuperName());
+				topClass.addImportedType(filePkg + ".domain." +superClass);
+				topClass.setSuperClass(superClass);
+			}
+			
+			/**
+			 * validate inner class
+			 */
+			Set<String> innerValidClass = new HashSet<>();
+			
+			/**
 			 * vo生成
 			 */
 			List<ProField> fields = file.getFields();
@@ -881,7 +930,30 @@ public class ProjectGenUtil {
 				
 				String typeStr = CodeUtils.typeByCollectionType(field.getTypePath(), field.getCollectionType());
 				
-				LOG.info("---{}, typeStr={}, ={}", field.getName(), typeStr, fileClassPath);
+				// set valid
+				Map<String, Set<String>> valids = file.getPropertyValid().get(field.getName());
+				
+				System.out.println("field.getName()=" + field.getName() + "|" + valids);
+				
+				if(null != valids) {
+					Set<String> keys = valids.keySet();
+					for(String v: keys) {
+						
+						Set<String> groupSet = valids.get(v);
+						innerValidClass.addAll(groupSet);
+						
+						// annotiation group
+						String annotation = getFieldValidAnnotation(v, groupSet);
+						f.addAnnotation(annotation);
+						
+						// gen group interface
+						
+						// import valid class
+						String vName = v.substring(0, v.indexOf("("));
+						String vCPath = commValidMap.get(vName);
+						topClass.addImportedType(vCPath);
+					}
+				}
 				
 				FullyQualifiedJavaType type = new FullyQualifiedJavaType(typeStr);
 				f.setType(type);
@@ -905,7 +977,11 @@ public class ProjectGenUtil {
 				topClass.addMethod(setM);
 			}
 			
+			// inner valid class - innerValidClass
+			addValidInnerClass(topClass, innerValidClass);
+			
 			System.out.println(topClass.getFormattedContent());
+			
 			// 生成文件
 			File genFile = new File(fileTargetPath);
 			if( ! genFile.getParentFile().exists()) {
@@ -915,6 +991,31 @@ public class ProjectGenUtil {
 		}
 	}
 
+	private void addValidInnerClass(TopLevelClass topClass, Set<String> innerValidClass) {
+		for(String iC: innerValidClass) {
+			InnerClass innerClass = new InnerClass(iC);
+			innerClass.setVisibility(JavaVisibility.PUBLIC);
+			topClass.addInnerClass(innerClass);
+		}
+	}
+	
+	private String getFieldValidAnnotation(String annotation, Set<String> groupSet) {
+		Set<String> gs = new HashSet<>();
+		for(String g: groupSet) {
+			gs.add(g+".class");
+		}
+		
+		boolean hasValue = ! annotation.endsWith("()");
+		StringBuilder sb = new StringBuilder("@");
+		sb.append(annotation.substring(0, annotation.indexOf("(")+1));
+		sb.append("groups={");
+		sb.append(Strings.join(gs, ','));
+		sb.append("}");
+		if(hasValue) sb.append(", ");
+		sb.append(annotation.substring(annotation.indexOf("(")+1, annotation.length()));
+		return sb.toString();
+	}
+	
 	public FileIdsAndType getFieldTypes(List<ProField> fields) {
 		FileIdsAndType fit = new FileIdsAndType();
 		for(ProField field : fields) {

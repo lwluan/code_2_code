@@ -1,9 +1,14 @@
 package com.cd2cd.service.impl;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
@@ -13,9 +18,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
+import com.cd2cd.domain.CommValidate;
 import com.cd2cd.domain.ProDatabase;
 import com.cd2cd.domain.ProField;
 import com.cd2cd.domain.ProFile;
@@ -25,14 +32,17 @@ import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
 import com.cd2cd.domain.ProTable;
+import com.cd2cd.domain.gen.CommValidateCriteria;
 import com.cd2cd.domain.gen.ProDatabaseCriteria;
 import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
+import com.cd2cd.domain.gen.ProFunArgCriteria;
 import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria.Criteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
+import com.cd2cd.mapper.CommValidateMapper;
 import com.cd2cd.mapper.ProDatabaseMapper;
 import com.cd2cd.mapper.ProFieldMapper;
 import com.cd2cd.mapper.ProFileMapper;
@@ -49,6 +59,7 @@ import com.cd2cd.vo.BaseRes;
 import com.cd2cd.vo.DataPageWrapper;
 import com.cd2cd.vo.ProModuleVo;
 import com.cd2cd.vo.ProProjectVo;
+
 
 @Service
 public class ProProjectServiceImpl implements ProProjectService {
@@ -81,6 +92,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 	
 	@Autowired
 	private ProFunArgMapper funArgMapper;
+	
+	@Autowired
+	private CommValidateMapper commValidateMapper;
 	
 	@Override
 	public BaseRes<DataPageWrapper<ProProjectVo>> list(Integer currPage, Integer pageSize, ProProjectVo proProjectVo) {
@@ -301,6 +315,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 			.andProjectIdEqualTo(proProject.getId());
 			List<ProFile> voList = proFileMapper.selectFileAndModule(voCriteria);
 			for(ProFile file : voList) {
+				LOG.info("superName={}, id={}", file.getSuperName(), file.getSuperId());
 				// TODO field list
 				ProFieldCriteria fieldCriteria = new ProFieldCriteria();
 				fieldCriteria.createCriteria().andFileIdEqualTo(file.getId());
@@ -316,7 +331,10 @@ public class ProProjectServiceImpl implements ProProjectService {
 				
 			}
 			
-			projectGenUtil.genVo(proProject, voList);
+			/**
+			 * 加入各controller的验证 group
+			 */
+			getVo(projectGenUtil, proProject, voList);
 			
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} catch (Exception e) {
@@ -330,6 +348,81 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 	}
 
+	private Map<String, String> getValidAndClassPath(ProProject proProject) {
+		// 查出所有valid
+		CommValidateCriteria mCommValidateCriteria = new CommValidateCriteria();
+		mCommValidateCriteria.createCriteria().andProIdIsNull();
+		mCommValidateCriteria.or().andProIdEqualTo(proProject.getId());
+		List<CommValidate> validObjs = commValidateMapper.selectByExample(mCommValidateCriteria);
+		
+		Map<String, String> map = new HashMap<>();
+		for(CommValidate cv: validObjs){
+			map.put(cv.getName(), cv.getClassPath());
+		}
+		
+		return map;
+	}
+	
+	private void getVo(ProjectGenUtil projectGenUtil, ProProject proProject, List<ProFile> voList) throws FileNotFoundException, IOException {
+		
+		Map<String, String> commValidMap = getValidAndClassPath(proProject);
+		
+		for(ProFile file : voList) {
+			
+			ProFunArgCriteria mProFunArgCriteria = new ProFunArgCriteria();
+			mProFunArgCriteria.createCriteria().andArgTypeIdEqualTo(file.getId());
+			List<ProFunArg> voArgs = funArgMapper.selectByExample(mProFunArgCriteria);
+			
+			// property, valid
+			final Map<String, Map<String, Set<String>>> propertyValid = file.getPropertyValid() != null ? file.getPropertyValid() : new HashMap<>();
+			file.setPropertyValid(propertyValid);
+			
+			voArgs.forEach(arg->{
+				
+				Long funId = arg.getFunId();
+				ProFun fun = funMapper.selectByPrimaryKey(funId);
+				ProFile controller = proFileMapper.selectByPrimaryKey(fun.getCid());
+				
+				// controller + fun
+				String validateGroupName = controller.getName() +"_" + fun.getFunName();
+				
+				ProFunArgCriteria funArgCriteria = new ProFunArgCriteria();
+				mProFunArgCriteria.createCriteria().andPidEqualTo(arg.getId()).andValidIsNotNull();
+				List<ProFunArg> childArgs = funArgMapper.selectByExample(funArgCriteria);
+				
+				childArgs.forEach(carg -> {
+					
+					String pName = carg.getName();
+					
+					// valid,group
+					Map<String, Set<String>> validGroup = propertyValid.get(pName);
+					if(validGroup == null) {
+						validGroup = new HashMap<>();
+						propertyValid.put(pName, validGroup);
+					}
+					
+					String validStr = carg.getValid();
+					if(StringUtils.isNotBlank(validStr)) {
+						JSONArray arr = JSONArray.parseArray(validStr);
+						
+						for(int i=0; i<arr.size(); i++) {
+							String key = arr.getString(i);
+							
+							Set<String> groupSet = validGroup.get(key);
+							if(null == groupSet) {
+								groupSet = new HashSet<>();
+								validGroup.put(key, groupSet);
+							}
+							groupSet.add(validateGroupName);
+						}
+					}
+				});
+			});
+		}
+		
+		projectGenUtil.genVo(proProject, voList, commValidMap);
+	}
+	
 	private void importTypeToFile(List<Long> voIds, ProFile file, ProjectGenUtil projectGenUtil) {
 		// 提取
 		if( ! org.springframework.util.CollectionUtils.isEmpty(voIds)) {

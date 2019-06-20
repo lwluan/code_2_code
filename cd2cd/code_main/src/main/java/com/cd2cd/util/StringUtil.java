@@ -9,4 +9,18 @@ public class StringUtil extends StringUtils {
 		return value.substring(0, 1).toUpperCase() + value.substring(1, value.length()); 
 	}
 	
+	/**
+	 * 数据库名转为java类名
+	 * @param name
+	 * @return
+	 */
+	public static String getJavaTableName(String name) {
+		String newName = "";
+		String[] ss = name.split("_");
+		for (String s : ss) {
+			s = s.substring(0, 1).toUpperCase() + s.substring(1);
+			newName = newName + s;
+		}
+		return newName;
+	}
 }

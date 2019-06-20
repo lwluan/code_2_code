@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.dom.java.TypeEnum.CollectionType;
 import com.cd2cd.dom.java.TypeEnum.FieldDataType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
 import com.cd2cd.dom.java.TypeEnum.FunArgType;
@@ -726,16 +727,30 @@ public class ProjectServiceImpl implements ProjectService {
 		for(ProFunArg fa: args) {
 			if (FunArgType.vo.name().equals(fa.getArgType())) {
 				Long argTypeId = fa.getArgTypeId();
-				
-				LOG.info("argTypeId=" + argTypeId);
-				
-				
-				ProFile mProFile = proFileMapper.selectByPrimaryKey(argTypeId);
 
-				Long superId = mProFile.getSuperId(); // vo是否继承了数据库表
+				ProFile mProFile = proFileMapper.selectByPrimaryKey(argTypeId);
+				Map<String, ProFunArg> voFiledMap = new HashMap<>();
 				
+				// vo是否继承了数据库表
+				Long superId = mProFile.getSuperId(); 
+				if( superId != null && superId > 0) {
+					ProTableColumnCriteria mProTableColumnCriteria = new ProTableColumnCriteria();
+					mProTableColumnCriteria.createCriteria().andTableIdEqualTo(superId);
+					List<ProTableColumn> columns = proTableColumnMapper.selectByExample(mProTableColumnCriteria);
+					
+					columns.stream().forEach(field->{
+						ProFunArg _fa = new ProFunArg("children");
+						_fa.setArgType(FunArgType.base.name());
+						_fa.setName(field.getName());
+						_fa.setFunId(funId);
+						_fa.setCollectionType(CollectionType.single.name());
+						_fa.setFieldId(field.getId());
+						_fa.setPid(fa.getId());
+						
+						voFiledMap.put(_fa.getName(), _fa);
+					});
+				}
 				
-				Map<String, ProFunArg> voFiledMap = new HashMap<String, ProFunArg>();
 				
 				ProFieldCriteria mProFieldCriteria = new ProFieldCriteria();
 				mProFieldCriteria.createCriteria().andFileIdEqualTo(argTypeId);
@@ -756,7 +771,6 @@ public class ProjectServiceImpl implements ProjectService {
 						voFiledMap.put(_fa.getName(), _fa);
 					}
 				});
-				
 				
 				if(voFiledMap.size() > 0) {
 					
@@ -783,7 +797,6 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		if(null != proFunArg.getFieldId()) {
 			
-			// 从vo成员添加 TODO
 			ProField mProField = proFieldMapper.selectByPrimaryKey(proFunArg.getFieldId());
 			
 			proFunArg.setName(mProField.getName());
