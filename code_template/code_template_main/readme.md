@@ -1,19 +1,11 @@
-
-# VUE 封装
-
-## vue组件
-	自定义组件
-	../readme/component.md
-
-## filter
-	自定义过滤器
-	../readme/filter.md
+# 运行使用
+  先调用登录接口： /api/login   
+  用户名和密码： admin 111111
+  
+  拿到token之后，所有请求带上token
+  1、 header 带上: Authorization Bearer eyJ***
+  2、 或 url 带上 token=fds*****
 	
-# 项目模板
-
-
-## 字体图标 font-awesome
-	参考：http://www.bootcss.com/p/font-awesome/
 	
 ## 自动生成Mybatis 相关文件
 	数据库表配文件：src/main/resources/pro_gen_tables.xml

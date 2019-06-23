@@ -17,7 +17,7 @@ import com.cd2cd.admin.domain.gen.SysUserRoleRelCriteria;
 import com.cd2cd.admin.mapper.SysRoleMapper;
 import com.cd2cd.admin.mapper.SysUserMapper;
 import com.cd2cd.admin.mapper.SysUserRoleRelMapper;
-import com.cd2cd.admin.security.MyMd5PasswordEncoder;
+import com.cd2cd.admin.security.Md5PasswordEncoder;
 import com.cd2cd.admin.service.SysUserService;
 import com.cd2cd.admin.util.BeanUtil;
 import com.cd2cd.admin.vo.BaseRes;
@@ -106,7 +106,7 @@ public class SysUserServiceImpl implements SysUserService {
 		sysUser.setUpdateTime(new Date());
 		
 		// 密码加密处理
-		String password = MyMd5PasswordEncoder.md5Encode(sysUser.getPassword());
+		String password = Md5PasswordEncoder.md5Encode(sysUser.getPassword());
 		sysUser.setPassword(password);
 		
 		sysUserMapper.insertSelective(sysUser);
@@ -123,7 +123,7 @@ public class SysUserServiceImpl implements SysUserService {
 		
 		if( StringUtils.isNotEmpty(sysUser.getPassword()) ) {
 			// 密码加密处理
-			String password = MyMd5PasswordEncoder.md5Encode(sysUser.getPassword());
+			String password = Md5PasswordEncoder.md5Encode(sysUser.getPassword());
 			sysUser.setPassword(password);
 		}
 		

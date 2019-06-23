@@ -15,6 +15,7 @@ public class ProFile extends SuperProFile implements Serializable {
 	private ProModule module;
 	private List<ProFun> funs; // controller 使用 method方法列表
 	private List<ProField> fields; // vo 使用,用于vo类成员域
+	private List<ProField> validateMethods; // 需要验证生成的方法
 	
 	private Set<String> importTypes = new HashSet<>(); // 方法返回类型import
 	private String superName; // 继承的父类
@@ -75,6 +76,14 @@ public class ProFile extends SuperProFile implements Serializable {
 
 	public void setPropertyValid(Map<String, Map<String, Set<String>>> propertyValid) {
 		this.propertyValid = propertyValid;
+	}
+
+	public List<ProField> getValidateMethods() {
+		return validateMethods;
+	}
+
+	public void setValidateMethods(List<ProField> validateMethods) {
+		this.validateMethods = validateMethods;
 	}
 	
 }

@@ -1,8 +1,0 @@
-<div class="btn-group" role="group">
-	<button type="button" class="btn btn-default"
-	v-for="value in values" 
-	v-on:click="selectItem(value.key)" 
-	v-bind:class="{ active: value.key == selectedKey }" > {{value.label}} </button>
-	
-	<input type="hidden" v-model="selectedKey" class="form-control" v-bind:name="buttonName" v-bind:id="buttonName" >
-</div>

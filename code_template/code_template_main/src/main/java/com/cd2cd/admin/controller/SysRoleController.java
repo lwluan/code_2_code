@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.cd2cd.admin.comm.DValid;
 import com.cd2cd.admin.comm.ServiceCode;
 import com.cd2cd.admin.service.SysRoleService;
 import com.cd2cd.admin.vo.BaseRes;
@@ -73,7 +72,7 @@ public class SysRoleController extends BaseController {
 	
 	@RequestMapping(value = "add", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> add(
-			@Validated(value = {DValid.AddEntity.class}) 
+			@Validated() 
 			@RequestBody SysRoleVo sysRoleVo, 
 			BindingResult bindingResult) {
 		
@@ -85,7 +84,7 @@ public class SysRoleController extends BaseController {
 	
 	@RequestMapping(value = "modify", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> modify(
-			@Validated(value = {DValid.ModifyEntity.class}) 
+			@Validated() 
 			@RequestBody SysRoleVo sysRoleVo, 
 			BindingResult bindingResult) {
 		

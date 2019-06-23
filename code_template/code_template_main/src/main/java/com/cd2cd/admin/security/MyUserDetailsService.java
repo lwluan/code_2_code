@@ -39,7 +39,7 @@ public class MyUserDetailsService implements UserDetailsService {
 	private SysUserRoleRelMapper sysUserRoleRelMapper;
 	
 	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public LoginUser loadUserByUsername(String username) throws UsernameNotFoundException {
 		
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
 		

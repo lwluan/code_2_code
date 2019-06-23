@@ -1,16 +1,20 @@
 package com.cd2cd.util.mbg;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.mybatis.generator.api.IntrospectedColumn;
+import org.mybatis.generator.api.JavaTypeResolver;
 import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.config.Configuration;
 import org.mybatis.generator.config.xml.ConfigurationParser;
 import org.mybatis.generator.internal.DefaultShellCallback;
+import org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl;
+import org.mybatis.generator.internal.types.JdbcTypeNameTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,8 +29,13 @@ public class GenTest {
 		GenTest generator = new GenTest();
 //		generator.process("file/zp_tenant_gen_tables.xml");
 //		generator.process("file/template_gen_tables.xml");
-		generator.process("file/auto_code_gen_tables.xml");
+//		generator.process("file/auto_code_gen_tables.xml");
 //		generator.process("file/conn_gen_tables.xml");
+		
+		String s = "datetime";
+//		String s = "int(11) unsigned";
+		int ei = s.indexOf("(");
+		System.out.println(s.substring(0, ei>-1?ei:s.length()));
 	}
 	
 	public void process(String fileName) {

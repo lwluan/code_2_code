@@ -10,6 +10,11 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.mybatis.generator.api.IntrospectedColumn;
+import org.mybatis.generator.api.JavaTypeResolver;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl;
+import org.mybatis.generator.internal.types.JdbcTypeNameTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.dom.java.TypeEnum;
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 import com.cd2cd.dom.java.TypeEnum.FieldDataType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
@@ -798,15 +804,36 @@ public class ProjectServiceImpl implements ProjectService {
 		if(null != proFunArg.getFieldId()) {
 			
 			ProField mProField = proFieldMapper.selectByPrimaryKey(proFunArg.getFieldId());
-			
-			proFunArg.setName(mProField.getName());
-			proFunArg.setArgType(mProField.getDataType());
-			proFunArg.setArgTypeName(mProField.getTypePath());
-			proFunArg.setCollectionType(mProField.getCollectionType());
-			proFunArg.setComment(mProField.getComment());
-			
-			if(FieldDataType.vo.name().equals(mProField.getDataType())) {
-				proFunArg.setArgTypeId(Long.valueOf(mProField.getTypeKey()));
+			if(mProField != null) {
+				proFunArg.setName(mProField.getName());
+				proFunArg.setArgType(mProField.getDataType());
+				proFunArg.setArgTypeName(mProField.getTypePath());
+				proFunArg.setCollectionType(mProField.getCollectionType());
+				proFunArg.setComment(mProField.getComment());
+				
+				if(FieldDataType.vo.name().equals(mProField.getDataType())) {
+					proFunArg.setArgTypeId(Long.valueOf(mProField.getTypeKey()));
+				}
+			} else {
+				// 添加的有可能是 数据库表的字段
+				ProTableColumn mProTableColumn = proTableColumnMapper.selectByPrimaryKey(proFunArg.getFieldId());
+				proFunArg.setName(mProTableColumn.getName());
+
+				String javaType = mProTableColumn.getMysqlType();
+				int ei = javaType.indexOf("(");
+				javaType = javaType.substring(0, ei>-1?ei:javaType.length());
+				
+				int type = JdbcTypeNameTranslator.getJdbcType(javaType.toUpperCase());
+				IntrospectedColumn introspectedColumn = new IntrospectedColumn();
+				introspectedColumn.setJdbcType(type);
+				
+				JavaTypeResolver javaTypeResolver = new JavaTypeResolverDefaultImpl();
+				FullyQualifiedJavaType fullyQualifiedJavaType = javaTypeResolver.calculateJavaType(introspectedColumn);
+				proFunArg.setArgTypeName(fullyQualifiedJavaType.getShortName());
+				
+				proFunArg.setArgType(TypeEnum.FunArgType.base.name());
+				proFunArg.setCollectionType(TypeEnum.CollectionType.single.name());
+				proFunArg.setComment(mProTableColumn.getComment());
 			}
 			// name argType argTypeName argTypeId collectionType comment
 		}

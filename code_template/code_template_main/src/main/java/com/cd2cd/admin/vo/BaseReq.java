@@ -2,6 +2,7 @@ package com.cd2cd.admin.vo;
 
 import javax.validation.Valid;
 
+
 public class BaseReq<T> {
 
 	@Valid

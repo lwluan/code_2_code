@@ -30,5 +30,13 @@ public class LoginUser extends User {
 	public void setRoleIds(List<Integer> roleIds) {
 		this.roleIds = roleIds;
 	}
+
+	@Override
+	public String toString() {
+		return "LoginUser [roleIds=" + roleIds + ", getAuthorities()=" + getAuthorities() + ", getPassword()=" + getPassword()
+				+ ", getUsername()=" + getUsername() + ", isEnabled()=" + isEnabled() + ", isAccountNonExpired()=" + isAccountNonExpired()
+				+ ", isAccountNonLocked()=" + isAccountNonLocked() + ", isCredentialsNonExpired()=" + isCredentialsNonExpired()
+				+ ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + ", getClass()=" + getClass() + "]";
+	}
 	
 }

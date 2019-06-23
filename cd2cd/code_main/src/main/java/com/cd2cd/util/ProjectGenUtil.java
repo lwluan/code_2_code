@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.validation.Valid;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -33,7 +32,7 @@ import org.apache.logging.log4j.util.Strings;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.InnerClass;
+import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
@@ -51,6 +50,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -316,7 +316,7 @@ public class ProjectGenUtil {
 		getChildsByTagName(parentNode, "relativePath").get(0).setTextContent("../" + parentProjectName);
 
 		getChildsByTagName(rootElement, "artifactId").get(0).setTextContent(mainProjectName);
-
+		getChildsByTagName(rootElement, "name").get(0).setTextContent(mainProjectName);
 		Node propertiesNode = getChildsByTagName(rootElement, "properties").get(0);
 		getChildsByTagName(propertiesNode, "start-class").get(0).setTextContent(
 				groupId + "." + artifactIdName + ".AppMainStarter");
@@ -334,6 +334,7 @@ public class ProjectGenUtil {
 		getChildsByTagName(rootElement, "groupId").get(0).setTextContent(groupId);
 		getChildsByTagName(rootElement, "artifactId").get(0).setTextContent(parentProjectName);
 		getChildsByTagName(rootElement, "version").get(0).setTextContent(version);
+		
 
 		saveDocument(document, pomFilePath);
 	}
@@ -605,7 +606,7 @@ public class ProjectGenUtil {
 		}
 	}
 
-	public void genController(ProProject proProject, List<ProFile> controllerList) throws Exception {
+	public void genController(ProProject proProject, List<ProFile> controllerList, Map<String, String> commValidMap) throws Exception {
 		
 		for(ProFile file : controllerList) {
 			
@@ -637,11 +638,17 @@ public class ProjectGenUtil {
 			topClass.addImportedType(ResponseBody.class.getName());
 			topClass.addImportedType(RequestBody.class.getName());
 			topClass.addImportedType(Validated.class.getName());
+			topClass.addImportedType(RequestMethod.class.getName());
+			
 			
 			LOG.info("file.getImportTypes()={}", String.join(",", file.getImportTypes()));
+			Map<String, String> importTypePath = new HashMap<String, String>();
 			for(String importedType : file.getImportTypes()) {
 				topClass.addImportedType(importedType);
+				importTypePath.put(importedType.substring(importedType.lastIndexOf(".")+1), importedType);
 			}
+			
+			
 			
 			/**
 			 * 生成方法，参数，返回值
@@ -656,7 +663,7 @@ public class ProjectGenUtil {
 				 * 方法注解
 				 */
 				m.addAnnotation("@ResponseBody");
-				m.addAnnotation("@RequestMapping(\""+fun.getReqPath()+"\")");
+				m.addAnnotation("@RequestMapping(value=\""+fun.getReqPath()+"\", method=RequestMethod."+fun.getReqMethod()+")");
 				
 				
 				/**
@@ -671,23 +678,31 @@ public class ProjectGenUtil {
 					 * base Valid if arg type of base
 					 */
 					if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
-							mp.addAnnotation("@RequestBody");
+						mp.addAnnotation("@RequestBody");
 					}
 					
 					if(FunArgType.vo.name().equals(arg.getArgType())) {
 						if(checkVoHasValid(arg)) {
 							mp.addAnnotation(String.format("@Validated(%s.class)", validGroupName));
+							// com.aaa.test.vo.TestVo.Controller_fun.class
+							String vgPath = importTypePath.get(arg.getArgTypeName());
+							vgPath = vgPath.substring(0, vgPath.lastIndexOf(".")) + ".gen.Super" + arg.getArgTypeName(); 
+							
+							vgPath = String.format("%s.%s", vgPath, validGroupName);
+							topClass.addImportedType(vgPath);
 						}
-					} else if(FunArgType.base.name().equals(arg.getArgType())) {
+					} else if(FunArgType.base.name().equals(arg.getArgType())
+							&& StringUtils.isNotEmpty(arg.getValid())) {
+						
 						// 单独验证
-						if(StringUtils.isNotEmpty(arg.getValid())) {
-							
-							JSONArray arr = JSONArray.parseArray(arg.getValid());
-							
-							for(int i=0; i<arr.size(); i++) {
-								String key = arr.getString(i);
-								mp.addAnnotation(key);
-							}
+						JSONArray arr = JSONArray.parseArray(arg.getValid());
+						
+						for(int i=0; i<arr.size(); i++) {
+							String key = arr.getString(i);
+							mp.addAnnotation(String.format("@%s", key));
+							String vName = key.substring(0, key.indexOf("("));
+							String vCPath = commValidMap.get(vName);
+							topClass.addImportedType(vCPath);
 						}
 					}
 					
@@ -735,6 +750,16 @@ public class ProjectGenUtil {
 			}
 			IOUtils.write(topClass.getFormattedContent(), new FileOutputStream(new File(fileGenPath)), "utf-8");
 		}
+	}
+	
+	public String getVoClassPath(ProFile f) {
+		String pkgName = basePkgname;
+		if( ProjectModulTypeEnum.module.name().equals(packageType) && f.getModule() != null) {
+			pkgName += "." + f.getModule().getName() + "."+f.getFileType()+"." + f.getName();
+		} else {
+			pkgName += "."+f.getFileType()+"." + f.getName();
+		}
+		return pkgName;
 	}
 	
 	private boolean checkVoHasValid(ProFunArg arg) {
@@ -875,12 +900,20 @@ public class ProjectGenUtil {
 			String fileGenPath = (localPath + "/" + artifactId + "/"+artifactId+"_main/src/main/java/" + groupId + "." + artifactId).replaceAll("\\.", "/");
 			String filePkg = groupId + "." + artifactId;
 			
-			String fileClassPath = filePkg + ".vo." + file.getName();
-			String fileTargetPath = fileGenPath + "/vo/" + file.getName() + ".java";
+			String fileClassPath = filePkg + ".vo.gen.Super" + file.getName();
+			String fileTargetPath = fileGenPath + "/vo/gen/Super" + file.getName() + ".java";
+			
+			String childClassPath = filePkg + ".vo." + file.getName();
+			String childTargetPath = fileGenPath + "/vo/" + file.getName() + ".java";
+			
 			if( ProjectModulTypeEnum.module.name().equals(packageType) ) {
 				if(null != module && StringUtils.isNotBlank(module.getName())) { // 模块化
-					fileTargetPath = fileGenPath + "/" + module.getName() + "/vo/" + file.getName() + ".java";
-					fileClassPath = filePkg + "." + module.getName() + ".vo." + file.getName();
+					fileTargetPath = fileGenPath + "/" + module.getName() + "/vo/gen/Super" + file.getName() + ".java";
+					fileClassPath = filePkg + "." + module.getName() + ".vo.gen.Super" + file.getName();
+					
+					childTargetPath = fileGenPath + "/" + module.getName() + "/vo/" + file.getName() + ".java";
+					childClassPath = filePkg + "." + module.getName() + ".vo." + file.getName();
+					
 				}
 			}
 			
@@ -959,6 +992,7 @@ public class ProjectGenUtil {
 				f.setType(type);
 				topClass.addField(f);
 				
+				
 				/**
 				 * 添加 set get 方法
 				 */
@@ -977,26 +1011,76 @@ public class ProjectGenUtil {
 				topClass.addMethod(setM);
 			}
 			
-			// inner valid class - innerValidClass
-			addValidInnerClass(topClass, innerValidClass);
-			
-			System.out.println(topClass.getFormattedContent());
-			
-			// 生成文件
-			File genFile = new File(fileTargetPath);
-			if( ! genFile.getParentFile().exists()) {
-				genFile.getParentFile().mkdirs();
+			/**
+			 * 设置get 方法使用于 table的验证使用
+			 * */
+			List<ProField> validateMethods = file.getValidateMethods();
+			for(ProField vm:validateMethods) {
+				Method getM = new Method("get" + StringUtil.firstUpCase(vm.getName()));
+				getM.setVisibility(JavaVisibility.PUBLIC);
+				FullyQualifiedJavaType type = new FullyQualifiedJavaType(vm.getDataType());
+				getM.setReturnType(type);
+				getM.addBodyLine("return super.get" + StringUtil.firstUpCase(vm.getName()) + "();");
+				
+				getM.addAnnotation("@Override");
+				Map<String, Set<String>> valids = file.getPropertyValid().get(vm.getName());
+				
+				System.out.println("field.getName()=" + vm.getName() + "|" + valids);
+				
+				if(null != valids) {
+					Set<String> keys = valids.keySet();
+					for(String v: keys) {
+						
+						Set<String> groupSet = valids.get(v);
+						innerValidClass.addAll(groupSet);
+						
+						// annotiation group
+						String annotation = getFieldValidAnnotation(v, groupSet);
+						getM.addAnnotation(annotation);
+						
+						// gen group interface
+						
+						// import valid class
+						String vName = v.substring(0, v.indexOf("("));
+						String vCPath = commValidMap.get(vName);
+						topClass.addImportedType(vCPath);
+					}
+				}
+				topClass.addMethod(getM);
 			}
-			IOUtils.write(topClass.getFormattedContent(), new FileOutputStream(new File(fileTargetPath)), "utf-8");
+			
+			File genFile = new File(childTargetPath);
+			if( ! genFile.getParentFile().exists()) {
+				new File(childTargetPath).getParentFile().mkdirs();
+			}
+			
+			// inner valid class - innerValidClass
+			String inStr = getValidInnerClass(innerValidClass);
+			String clStr = topClass.getFormattedContent();
+			clStr = clStr.substring(0, clStr.lastIndexOf("}")) + "\n" + inStr + "\n}";
+			
+			IOUtils.write(clStr, new FileOutputStream(new File(fileTargetPath)), "utf-8");
+			
+			File childClass = new File(childTargetPath);
+			if( ! childClass.exists()) {
+				// inner extend
+				FullyQualifiedJavaType childType = new FullyQualifiedJavaType(childClassPath);
+				TopLevelClass childTypeClass = new TopLevelClass(childType);
+				childTypeClass.addImportedType(fileClassPath);
+				childTypeClass.setSuperClass("Super" + file.getName());
+				childTypeClass.setVisibility(JavaVisibility.PUBLIC);
+				childTypeClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+				IOUtils.write(childTypeClass.getFormattedContent(), new FileOutputStream(childClass), "utf-8");
+			}
 		}
 	}
 
-	private void addValidInnerClass(TopLevelClass topClass, Set<String> innerValidClass) {
+	private String getValidInnerClass(Set<String> innerValidClass) {
+		StringBuilder ins = new StringBuilder();
 		for(String iC: innerValidClass) {
-			InnerClass innerClass = new InnerClass(iC);
-			innerClass.setVisibility(JavaVisibility.PUBLIC);
-			topClass.addInnerClass(innerClass);
+			ins.append(String.format("\tpublic interface %s{} \n", iC));
 		}
+		return ins.toString();
 	}
 	
 	private String getFieldValidAnnotation(String annotation, Set<String> groupSet) {
@@ -1028,7 +1112,3 @@ public class ProjectGenUtil {
 		return fit;
 	}
 }
-
-
-
-

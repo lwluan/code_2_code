@@ -2,6 +2,7 @@ package com.cd2cd.service.impl;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,6 +23,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
+import com.cd2cd.dom.java.TypeEnum.FunArgType;
 import com.cd2cd.domain.CommValidate;
 import com.cd2cd.domain.ProDatabase;
 import com.cd2cd.domain.ProField;
@@ -32,6 +34,7 @@ import com.cd2cd.domain.ProModule;
 import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProProjectDatabaseRel;
 import com.cd2cd.domain.ProTable;
+import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.domain.gen.CommValidateCriteria;
 import com.cd2cd.domain.gen.ProDatabaseCriteria;
 import com.cd2cd.domain.gen.ProFieldCriteria;
@@ -42,6 +45,7 @@ import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria.Criteria;
 import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
+import com.cd2cd.domain.gen.ProTableColumnCriteria;
 import com.cd2cd.mapper.CommValidateMapper;
 import com.cd2cd.mapper.ProDatabaseMapper;
 import com.cd2cd.mapper.ProFieldMapper;
@@ -51,6 +55,7 @@ import com.cd2cd.mapper.ProFunMapper;
 import com.cd2cd.mapper.ProModuleMapper;
 import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
 import com.cd2cd.mapper.ProProjectMapper;
+import com.cd2cd.mapper.ProTableColumnMapper;
 import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProProjectService;
 import com.cd2cd.util.BeanUtil;
@@ -80,6 +85,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 	@Autowired
 	private ProTableMapper proTableMapper;
+	
+	@Autowired
+	private ProTableColumnMapper tableColumnMapper;
 	
 	@Autowired
 	private ProFileMapper proFileMapper;
@@ -210,131 +218,32 @@ public class ProProjectServiceImpl implements ProProjectService {
 	public BaseRes<String> genProject(Long id) {
 
 		ProProject proProject = proProjectMapper.selectByPrimaryKey(id);
-
 		BaseRes<String> res = new BaseRes<String>();
 
 		try {
-			// db list
-			ProProjectDatabaseRelCriteria ppdrc = new ProProjectDatabaseRelCriteria();
-			ppdrc.createCriteria().andProjectIdEqualTo(id);
-			List<ProProjectDatabaseRel> proDbs = proProjectDatabaseRelMapper.selectByExample(ppdrc);
-			
-			List<Long> dbIds = new ArrayList<Long>();
-			for(ProProjectDatabaseRel pdr: proDbs) {
-				dbIds.add(pdr.getDatabaseId());
-			}
-			
+			Map<String, String> commValidMap = getValidAndClassPath(proProject);
 			// 创建util
 			ProjectGenUtil projectGenUtil = new ProjectGenUtil(proProject);
 			
-			// 初始被创建项目
+			/**
+			 * 初始被创建项目
+			 */
 			projectGenUtil.genProjectBase();
 			
-			if( ! CollectionUtils.isEmpty(dbIds)) {
-				ProDatabaseCriteria pdc = new ProDatabaseCriteria();
-				pdc.createCriteria().andIdIn(dbIds);
-				List<ProDatabase> dababases = proDatabaseMapper.selectByExample(pdc);
-				
-				if( dababases.size() > 0 ) {
-					ProDatabase database = dababases.get(0);
-					
-					List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
-					
-					/** 
-					 * 暂时支持一个数据库 
-					 * mapper/entity
-					 */
-					projectGenUtil.initH2Database(tables, database);
-					projectGenUtil.genJavaFromDb(tables, database);
-				}
-			}
+			/**
+			 * 生成 domain
+			 */
+			genDomain(projectGenUtil, proProject);
 			
 			/**
 			 * 生成Controller 控制器 
 			 */
-			ProFileCriteria mProFileCriteria = new ProFileCriteria();
-			mProFileCriteria.createCriteria()
-			.andFileTypeEqualTo(FileTypeEnum.controller.name())
-			.andProjectIdEqualTo(proProject.getId());
-			List<ProFile> controllerList = proFileMapper.selectFileAndModule(mProFileCriteria);
-			
-			// 加载方法列表
-			for(ProFile file : controllerList) {
-				ProFunCriteria mProFunCriteria = new ProFunCriteria();
-				mProFunCriteria.createCriteria().andCidEqualTo(file.getId());
-				List<ProFun> funs = funMapper.selectByExample(mProFunCriteria);
-				
-				/**
-				 * 1、加载参数
-				 * 2、方法返回值类加入到file的import中
-				 * 3、将参数的类类型加入到 file import中
-				 */
-				for(ProFun fun : funs) {
-					List<ProFunArg> args = funArgMapper.fetchFunArgsByFunId(fun.getId());
-					fun.setArgs(args);
-					
-					
-					List<Long> voIds = new ArrayList<Long>();
-					
-					/**
-					 * 将参数的类类型加入到 file的import中
-					 */
-					if( ! org.springframework.util.CollectionUtils.isEmpty(args)) {
-						FileIdsAndType argFrt = projectGenUtil.getArgTypes(args);
-						file.getImportTypes().addAll(argFrt.getTypePaths());
-						
-						voIds.addAll(argFrt.getTypeIds());
-					}
-					/**
-					 * 方法返回值类加入到file的import中
-					 */
-					if(null != fun.getResVoId()) {
-						LOG.info("returnVoJson={}", fun.getReturnVo());
-						FileIdsAndType frt = projectGenUtil.getFunReturnType(fun.getReturnVo());
-						file.getImportTypes().addAll(frt.getTypePaths());
-						
-						voIds.addAll(frt.getTypeIds());
-						voIds.add(fun.getResVoId());
-						
-						// 导入import
-						importTypeToFile(voIds, file, projectGenUtil);
-					}
-				}
-				
-				file.setFuns(funs);
-			}
-			
-			projectGenUtil.genController(proProject, controllerList);
+			genController(projectGenUtil, proProject, commValidMap);
 			
 			/**
-			 * 生成 Vo验证规则 - 加载不能的验证规则
+			 * 生成 vo 类
 			 */
-			ProFileCriteria voCriteria = new ProFileCriteria();
-			voCriteria.createCriteria()
-			.andFileTypeEqualTo(FileTypeEnum.vo.name())
-			.andProjectIdEqualTo(proProject.getId());
-			List<ProFile> voList = proFileMapper.selectFileAndModule(voCriteria);
-			for(ProFile file : voList) {
-				LOG.info("superName={}, id={}", file.getSuperName(), file.getSuperId());
-				// TODO field list
-				ProFieldCriteria fieldCriteria = new ProFieldCriteria();
-				fieldCriteria.createCriteria().andFileIdEqualTo(file.getId());
-				
-				List<ProField> fields = proFieldMapper.selectByExample(fieldCriteria);
-				file.setFields(fields);
-				
-				FileIdsAndType frt = projectGenUtil.getFieldTypes(fields);
-				file.getImportTypes().addAll(frt.getTypePaths());
-				
-				// 导入import
-				importTypeToFile(frt.getTypeIds(), file, projectGenUtil);
-				
-			}
-			
-			/**
-			 * 加入各controller的验证 group
-			 */
-			getVo(projectGenUtil, proProject, voList);
+			getVo(projectGenUtil, proProject, commValidMap);
 			
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} catch (Exception e) {
@@ -343,11 +252,39 @@ public class ProProjectServiceImpl implements ProProjectService {
 			res.setMsg(e.getMessage());
 		}
 		return res;
-
 		// replace package name from project file, folder
 
 	}
 
+	private void genDomain(ProjectGenUtil projectGenUtil, ProProject proProject) throws SQLException {
+		// db list
+		ProProjectDatabaseRelCriteria ppdrc = new ProProjectDatabaseRelCriteria();
+		ppdrc.createCriteria().andProjectIdEqualTo(proProject.getId());
+		List<ProProjectDatabaseRel> proDbs = proProjectDatabaseRelMapper.selectByExample(ppdrc);
+
+		List<Long> dbIds = new ArrayList<Long>();
+		for (ProProjectDatabaseRel pdr : proDbs) {
+			dbIds.add(pdr.getDatabaseId());
+		}
+		if (!CollectionUtils.isEmpty(dbIds)) {
+			ProDatabaseCriteria pdc = new ProDatabaseCriteria();
+			pdc.createCriteria().andIdIn(dbIds);
+			List<ProDatabase> dababases = proDatabaseMapper.selectByExample(pdc);
+
+			if (dababases.size() > 0) {
+				ProDatabase database = dababases.get(0);
+
+				List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
+
+				/**
+				 * 暂时支持一个数据库 mapper/entity
+				 */
+				projectGenUtil.initH2Database(tables, database);
+				projectGenUtil.genJavaFromDb(tables, database);
+			}
+		}
+	}
+	
 	private Map<String, String> getValidAndClassPath(ProProject proProject) {
 		// 查出所有valid
 		CommValidateCriteria mCommValidateCriteria = new CommValidateCriteria();
@@ -363,14 +300,141 @@ public class ProProjectServiceImpl implements ProProjectService {
 		return map;
 	}
 	
-	private void getVo(ProjectGenUtil projectGenUtil, ProProject proProject, List<ProFile> voList) throws FileNotFoundException, IOException {
+	private void genController(ProjectGenUtil projectGenUtil, ProProject proProject, Map<String, String> commValidMap) throws Exception {
+		ProFileCriteria mProFileCriteria = new ProFileCriteria();
+		mProFileCriteria.createCriteria()
+		.andFileTypeEqualTo(FileTypeEnum.controller.name())
+		.andProjectIdEqualTo(proProject.getId());
+		List<ProFile> controllerList = proFileMapper.selectFileAndModule(mProFileCriteria);
 		
-		Map<String, String> commValidMap = getValidAndClassPath(proProject);
+		// 加载方法列表
+		for(ProFile file : controllerList) {
+			ProFunCriteria mProFunCriteria = new ProFunCriteria();
+			mProFunCriteria.createCriteria().andCidEqualTo(file.getId());
+			List<ProFun> funs = funMapper.selectByExample(mProFunCriteria);
+			
+			/**
+			 * 1、加载参数
+			 * 2、方法返回值类加入到file的import中
+			 * 3、将参数的类类型加入到 file import中
+			 */
+			for(ProFun fun : funs) {
+				List<ProFunArg> args = funArgMapper.fetchFunArgsByFunId(fun.getId());
+				fun.setArgs(args);
+				
+				
+				List<Long> voIds = new ArrayList<Long>();
+				
+				/**
+				 * 将参数的类类型加入到 file的import中
+				 */
+				if( ! org.springframework.util.CollectionUtils.isEmpty(args)) {
+					FileIdsAndType argFrt = projectGenUtil.getArgTypes(args);
+					file.getImportTypes().addAll(argFrt.getTypePaths());
+					
+					voIds.addAll(argFrt.getTypeIds());
+				}
+				/**
+				 * 方法返回值类加入到file的import中
+				 */
+				if(null != fun.getResVoId()) {
+					LOG.info("returnVoJson={}", fun.getReturnVo());
+					FileIdsAndType frt = projectGenUtil.getFunReturnType(fun.getReturnVo());
+					file.getImportTypes().addAll(frt.getTypePaths());
+					
+					voIds.addAll(frt.getTypeIds());
+					voIds.add(fun.getResVoId());
+					
+					// 导入import
+					importTypeToFile(voIds, file, projectGenUtil);
+				}
+			}
+			
+			file.setFuns(funs);
+		}
+		projectGenUtil.genController(proProject, controllerList, commValidMap);
+	}
+	
+	private void getVo(ProjectGenUtil projectGenUtil, ProProject proProject, Map<String, String> commValidMap) throws FileNotFoundException, IOException {
 		
+		/**
+		 * 生成 Vo验证规则 - 加载不能的验证规则
+		 */
+		ProFileCriteria voCriteria = new ProFileCriteria();
+		voCriteria.createCriteria()
+		.andFileTypeEqualTo(FileTypeEnum.vo.name())
+		.andProjectIdEqualTo(proProject.getId());
+		List<ProFile> voList = proFileMapper.selectFileAndModule(voCriteria);
+		for(ProFile file : voList) {
+			ProFieldCriteria fieldCriteria = new ProFieldCriteria();
+			fieldCriteria.createCriteria().andFileIdEqualTo(file.getId());
+			
+			List<ProField> fields = proFieldMapper.selectByExample(fieldCriteria);
+			
+			file.setFields(fields);
+			
+			FileIdsAndType frt = projectGenUtil.getFieldTypes(fields);
+			file.getImportTypes().addAll(frt.getTypePaths());
+			
+			// 导入import
+			importTypeToFile(frt.getTypeIds(), file, projectGenUtil);
+			
+			// table validate
+			if( null != file.getSuperId()) {
+				// 添加table 需要验证的 方法 validateMethods
+				ProTableColumnCriteria criteria = new ProTableColumnCriteria();
+				criteria.createCriteria()
+				.andTableIdEqualTo(file.getSuperId());
+				List<ProTableColumn> columns = tableColumnMapper.selectByExample(criteria);
+				
+				Set<String> columnSet = new HashSet<>();
+				for(ProTableColumn c: columns) {
+					columnSet.add(c.getName());
+				}
+				
+				// 找出当前vo 所有的
+				ProFunArgCriteria argCriteria = new ProFunArgCriteria();
+				argCriteria.createCriteria()
+				.andArgTypeEqualTo(FunArgType.vo.name())
+				.andArgTypeIdEqualTo(file.getId());
+				List<ProFunArg> args = funArgMapper.selectByExample(argCriteria);
+				
+				List<Long> pids = new ArrayList<>();
+				for(ProFunArg arg: args) {
+					pids.add(arg.getId());
+				}
+				
+				argCriteria.clear();
+				argCriteria.createCriteria()
+				.andPidIn(pids);
+				args = funArgMapper.selectByExample(argCriteria);
+				Map<String, ProFunArg> argMap = new HashMap<String, ProFunArg>();
+				for(ProFunArg arg: args) {
+					argMap.put(arg.getName(), arg);
+				}
+				
+				// 获取 表格和参数列表的 交集
+				List<ProField> validateMethods = new ArrayList<>();
+				columnSet.retainAll(argMap.keySet());
+				for(String ss: columnSet) {
+					ProFunArg arg = argMap.get(ss);
+					ProField mProField = new ProField();
+					mProField.setName(arg.getName());
+					mProField.setDataType(arg.getArgTypeName());
+					validateMethods.add(mProField);
+				}
+				
+				file.setValidateMethods(validateMethods);
+			}
+		}
+		
+		// 字段有哪些验证， 验证有哪些验证组
 		for(ProFile file : voList) {
 			
 			ProFunArgCriteria mProFunArgCriteria = new ProFunArgCriteria();
-			mProFunArgCriteria.createCriteria().andArgTypeIdEqualTo(file.getId());
+			mProFunArgCriteria.createCriteria()
+			.andArgTypeIdEqualTo(file.getId())
+			.andArgTypeEqualTo(FunArgType.vo.name());
 			List<ProFunArg> voArgs = funArgMapper.selectByExample(mProFunArgCriteria);
 			
 			// property, valid

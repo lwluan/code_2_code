@@ -1,4 +1,4 @@
-package com.cd2cd.security;
+package com.cd2cd.admin.security;
 
 import java.io.IOException;
 
@@ -18,8 +18,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.cd2cd.comm.ServiceCode;
-import com.cd2cd.util.JWTHelperUtil;
+import com.cd2cd.admin.comm.ServiceCode;
+import com.cd2cd.admin.util.JWTHelperUtil;
 
 /**
  * api 认证/授权验证
@@ -50,6 +50,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 				toAuthentication = true;
 			}
 		}
+		
+		LOG.info("toAuthentication=" + toAuthentication);
+		
         if (toAuthentication) {
         	authentication(request, response);
         }
@@ -75,6 +78,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         	try {
 	        	LoginUser mUserVo = jWTHelperUtil.verifyToken(authToken);
 	        	if (mUserVo != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+	        		
+	        		System.out.println("-----"+mUserVo.getAuthorities());
 	        		
 	        		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(mUserVo, null, mUserVo.getAuthorities());
 	                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
