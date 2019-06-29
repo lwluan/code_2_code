@@ -1,5 +1,7 @@
 package com.cd2cd.util;
 
+import static org.mybatis.generator.api.dom.OutputUtilities.calculateImports;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -30,6 +32,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.mybatis.generator.api.MyBatisGenerator;
+import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Interface;
@@ -85,7 +88,7 @@ public class ProjectGenUtil {
 	private static final String H2_DB_USER = "123456";
 	
 	private static Set<String> IGNORE_VO_GEN = Sets.newHashSet("BaseRes", "BaseReq");
-	private static Set<String> IGNORE_File = Sets.newHashSet(".DS_Store", ".project", ".settings");
+	private static Set<String> IGNORE_File = Sets.newHashSet(".DS_Store", ".project", ".settings", "target");
 	
 	private ProProject project;
 	String contextPath;			// 项目访问地址
@@ -523,7 +526,14 @@ public class ProjectGenUtil {
 			String primaryKeyColumn = null;
 			for(ProTableColumn c: columns) {
 				
-				_columnAndType.add(c.getName() + " " + c.getMysqlType());
+				/**
+				 * float(6,3) 会出错，直接生成时，为float 
+				 */
+				String mysqlType = c.getMysqlType();
+				if(mysqlType.toLowerCase().startsWith("float")) {
+					mysqlType = "float";
+				}
+				_columnAndType.add(c.getName() + " " + mysqlType);
 				if("PRI".equalsIgnoreCase(c.getKeyType())) {
 					primaryKeyColumn = c.getName();
 				}
@@ -584,6 +594,34 @@ public class ProjectGenUtil {
 			dataObj.put("javaClient", sqlMap);
 			dataObj.put("targetProject", localPath);
 			
+			
+			/**
+			 * 自动生成设置 primary key
+			 * 1、auto_increment
+			 * 2、单个 PRI
+			 * 3、多个不设置
+			 */
+			tables.stream().forEach(tab->{
+				List<ProTableColumn> columns = tab.getColumns();
+				String extraColumn = null;
+				String priColumn = null;
+				int priNum = 0;
+				for(ProTableColumn c: columns) {
+					if("auto_increment".equalsIgnoreCase(c.getExtra())) {
+						extraColumn = c.getName();
+						break;
+					} else if ("PRI".equalsIgnoreCase(c.getKeyType())){
+						priColumn = c.getName();
+						priNum ++;
+					}
+				}
+				if(null != extraColumn) {
+					tab.setIdentityPrimaryKey(extraColumn);
+				} else if(priNum == 1 && priColumn != null) {
+					tab.setIdentityPrimaryKey(priColumn);
+				}
+			});
+			
 			dataObj.put("tables", tables);
 			
 			mGenFileByFtl.fetchResourcesFromJar("gen_tables_template.xml.ftl", dataObj, bai);
@@ -607,6 +645,8 @@ public class ProjectGenUtil {
 	}
 
 	public void genController(ProProject proProject, List<ProFile> controllerList, Map<String, String> commValidMap) throws Exception {
+		
+		Map<Long, Method> methodMap = new HashMap<>();
 		
 		for(ProFile file : controllerList) {
 			
@@ -648,16 +688,24 @@ public class ProjectGenUtil {
 				importTypePath.put(importedType.substring(importedType.lastIndexOf(".")+1), importedType);
 			}
 			
-			
-			
+			methodMap.clear();
 			/**
 			 * 生成方法，参数，返回值
 			 **/
 			for(ProFun fun : file.getFuns()) {
 				Method m = new Method(fun.getFunName());
+				methodMap.put(fun.getId(), m);
+				
 				m.setVisibility(JavaVisibility.PUBLIC);
 				
 				String validGroupName = String.format("%s_%s", file.getName(), fun.getFunName());
+				
+				
+				
+				m.addJavaDocLine("/**");
+				m.addJavaDocLine(" * "+ CodeUtils.getFunIdenStr(fun.getId()+""));
+				m.addJavaDocLine(" * "+fun.getName());
+				m.addJavaDocLine(" * "+fun.getComment());
 				
 				/**
 				 * 方法注解
@@ -665,13 +713,14 @@ public class ProjectGenUtil {
 				m.addAnnotation("@ResponseBody");
 				m.addAnnotation("@RequestMapping(value=\""+fun.getReqPath()+"\", method=RequestMethod."+fun.getReqMethod()+")");
 				
-				
 				/**
 				 * 方法参数
 				 */
 				List<ProFunArg> args = fun.getArgs();
 				for(ProFunArg arg : args) {
 					Parameter mp = new Parameter(new FullyQualifiedJavaType(arg.getArgTypeName()), arg.getName());
+					
+					m.addJavaDocLine(" * @param "+arg.getName());
 					
 					/**
 					 * add (Valid RequestBody Validated) if arg type is Vo<br>
@@ -724,6 +773,8 @@ public class ProjectGenUtil {
 				 */
 				m.addBodyLine("// TODO ");
 				
+				// function end
+				m.addJavaDocLine("**/");
 				
 				/**
 				 * 方法返回值
@@ -742,13 +793,73 @@ public class ProjectGenUtil {
 			}
 			
 			
-			System.out.println(topClass.getFormattedContent());
-			// 生成文件
 			File genFile = new File(fileGenPath);
 			if( ! genFile.getParentFile().exists()) {
 				genFile.getParentFile().mkdirs();
 			}
-			IOUtils.write(topClass.getFormattedContent(), new FileOutputStream(new File(fileGenPath)), "utf-8");
+			
+			if( ! genFile.exists()) {
+				IOUtils.write(topClass.getFormattedContent(), new FileOutputStream(new File(fileGenPath)), "utf-8");
+			} else {
+				String classTxt = IOUtils.toString(new FileInputStream(genFile), "utf-8");
+
+				// 添加 import; 1先获取原来import,2再判断加入
+				Set<String> newImports = OutputUtilities.calculateImports(topClass.getImportedTypes());
+				classTxt = CodeUtils.updateClassImport(classTxt, newImports);
+				
+				// 更新类 root path
+				
+				
+				// 更新类注释
+				
+				
+				String preFunIden = null;
+				for(Long funId: methodMap.keySet()) {
+					
+					String iden = CodeUtils.getFunIdenStr(funId+"");
+					Method m = methodMap.get(funId);
+					if(classTxt.indexOf(iden) > -1) {
+						// update fun
+						String funHeader = CodeUtils.getFunHeaderByIdentify(classTxt, iden);
+						
+						m.getBodyLines().clear();
+						
+						String mStr = m.getFormattedContent(1, false, topClass);
+						mStr  = mStr.replace("abstract ", "");
+						mStr = mStr.substring(mStr.indexOf(iden) + iden.length());
+						
+						mStr = mStr.substring(0, mStr.length() -1) + " {\n";
+						classTxt = classTxt.replace(funHeader, mStr);
+					} else {
+						String mStr = m.getFormattedContent(1, false, topClass);
+						
+						// 类当中无方法存在时，直接添加到类的底部
+						if(preFunIden == null) {
+							int lastIndex = classTxt.lastIndexOf("}");
+							String sTmpStr = classTxt.substring(0, lastIndex);
+							String eTmpStr = "\n}";
+							
+							classTxt = sTmpStr + mStr + eTmpStr;
+						} else {
+							// add fun
+							String funHeader = CodeUtils.getFunHeaderByIdentify(classTxt, preFunIden);
+							
+							String sTmpStr = classTxt.substring(0, classTxt.indexOf(funHeader) + funHeader.length());
+							String eTmpStr = classTxt.substring(classTxt.indexOf(funHeader) + funHeader.length());
+							
+							int funEndIndex = CodeUtils.findFunEndIndex(eTmpStr) + 1;
+							String preFunBody = eTmpStr.substring(0, funEndIndex);
+							eTmpStr = eTmpStr.substring(funEndIndex, eTmpStr.length());
+							classTxt = sTmpStr + preFunBody + "\n\n" + mStr + eTmpStr;
+						}
+					}
+					
+					preFunIden = iden;
+				}
+				
+				// 回写内容
+				IOUtils.write(classTxt, new FileOutputStream(new File(fileGenPath)), "utf-8");
+			}
 		}
 	}
 	
@@ -1016,18 +1127,19 @@ public class ProjectGenUtil {
 			 * */
 			List<ProField> validateMethods = file.getValidateMethods();
 			for(ProField vm:validateMethods) {
-				Method getM = new Method("get" + StringUtil.firstUpCase(vm.getName()));
-				getM.setVisibility(JavaVisibility.PUBLIC);
-				FullyQualifiedJavaType type = new FullyQualifiedJavaType(vm.getDataType());
-				getM.setReturnType(type);
-				getM.addBodyLine("return super.get" + StringUtil.firstUpCase(vm.getName()) + "();");
-				
-				getM.addAnnotation("@Override");
 				Map<String, Set<String>> valids = file.getPropertyValid().get(vm.getName());
-				
-				System.out.println("field.getName()=" + vm.getName() + "|" + valids);
-				
 				if(null != valids) {
+					
+					Method getM = new Method("get" + StringUtil.getJavaTableName(vm.getName()));
+					getM.setVisibility(JavaVisibility.PUBLIC);
+					FullyQualifiedJavaType type = new FullyQualifiedJavaType(vm.getDataType());
+					getM.setReturnType(type);
+					getM.addBodyLine("return super.get" + StringUtil.getJavaTableName(vm.getName()) + "();");
+					
+					getM.addAnnotation("@Override");
+					
+					System.out.println("field.getName()=" + vm.getName() + "|" + valids);
+				
 					Set<String> keys = valids.keySet();
 					for(String v: keys) {
 						
@@ -1045,13 +1157,13 @@ public class ProjectGenUtil {
 						String vCPath = commValidMap.get(vName);
 						topClass.addImportedType(vCPath);
 					}
+					topClass.addMethod(getM);
 				}
-				topClass.addMethod(getM);
 			}
 			
-			File genFile = new File(childTargetPath);
+			File genFile = new File(fileTargetPath);
 			if( ! genFile.getParentFile().exists()) {
-				new File(childTargetPath).getParentFile().mkdirs();
+				new File(fileTargetPath).getParentFile().mkdirs();
 			}
 			
 			// inner valid class - innerValidClass

@@ -38,7 +38,11 @@
 		<#list tables as table>
 		
 			<table domainObjectName="${table.getJavaTableName()}" tableName="${table.name}" >
-				<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+			
+				<#if (table.identityPrimaryKey)?? >
+				<generatedKey column="${table.identityPrimaryKey}" sqlStatement="MySql" identity="true"/>
+				</#if>
+				<columnOverride column="_id" property="_id"></columnOverride>
 			</table>
 		
 		</#list>

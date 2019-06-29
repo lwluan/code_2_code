@@ -46,6 +46,11 @@ public class SuperProProject implements Serializable {
      */
     private String localPath;
 
+    /**
+     * 不生成vo
+     */
+    private String ignoreTables;
+
     private Date createTime;
 
     private Date updateTime;
@@ -172,6 +177,20 @@ public class SuperProProject implements Serializable {
         this.localPath = localPath;
     }
 
+    /**
+     * 不生成vo
+     */
+    public String getIgnoreTables() {
+        return ignoreTables;
+    }
+
+    /**
+     * 不生成vo
+     */
+    public void setIgnoreTables(String ignoreTables) {
+        this.ignoreTables = ignoreTables;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -203,6 +222,7 @@ public class SuperProProject implements Serializable {
         sb.append(", version=").append(version);
         sb.append(", contextPath=").append(contextPath);
         sb.append(", localPath=").append(localPath);
+        sb.append(", ignoreTables=").append(ignoreTables);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -231,6 +251,7 @@ public class SuperProProject implements Serializable {
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
             && (this.getContextPath() == null ? other.getContextPath() == null : this.getContextPath().equals(other.getContextPath()))
             && (this.getLocalPath() == null ? other.getLocalPath() == null : this.getLocalPath().equals(other.getLocalPath()))
+            && (this.getIgnoreTables() == null ? other.getIgnoreTables() == null : this.getIgnoreTables().equals(other.getIgnoreTables()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -248,6 +269,7 @@ public class SuperProProject implements Serializable {
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
         result = prime * result + ((getContextPath() == null) ? 0 : getContextPath().hashCode());
         result = prime * result + ((getLocalPath() == null) ? 0 : getLocalPath().hashCode());
+        result = prime * result + ((getIgnoreTables() == null) ? 0 : getIgnoreTables().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

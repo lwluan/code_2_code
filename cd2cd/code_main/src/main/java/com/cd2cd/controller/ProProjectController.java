@@ -157,7 +157,7 @@ public class ProProjectController extends BaseController {
 	}
 
 	@RequestMapping(value = "moduleInfo", method = RequestMethod.PUT)
-	public @ResponseBody BaseRes<String> modify(@Validated @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
+	public @ResponseBody BaseRes<String> modifyModuleInfo(@Validated @RequestBody ProModuleVo proModuleVo, BindingResult bindingResult) {
 
 		BaseRes<String> res = new BaseRes<String>();
 		ServiceCode serviceCode = proProjectService.modifyModule(proModuleVo);

@@ -30,7 +30,7 @@ public interface ProjectService {
 	 * @param projectId
 	 * @return
 	 */
-	BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId);
+	BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId, String from);
 
 	/**
 	 * 添加文件

@@ -765,6 +765,76 @@ public class ProProjectCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andIgnoreTablesIsNull() {
+            addCriterion("ignore_tables is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesIsNotNull() {
+            addCriterion("ignore_tables is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesEqualTo(String value) {
+            addCriterion("ignore_tables =", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesNotEqualTo(String value) {
+            addCriterion("ignore_tables <>", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesGreaterThan(String value) {
+            addCriterion("ignore_tables >", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesGreaterThanOrEqualTo(String value) {
+            addCriterion("ignore_tables >=", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesLessThan(String value) {
+            addCriterion("ignore_tables <", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesLessThanOrEqualTo(String value) {
+            addCriterion("ignore_tables <=", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesLike(String value) {
+            addCriterion("ignore_tables like", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesNotLike(String value) {
+            addCriterion("ignore_tables not like", value, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesIn(List<String> values) {
+            addCriterion("ignore_tables in", values, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesNotIn(List<String> values) {
+            addCriterion("ignore_tables not in", values, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesBetween(String value1, String value2) {
+            addCriterion("ignore_tables between", value1, value2, "ignoreTables");
+            return (Criteria) this;
+        }
+
+        public Criteria andIgnoreTablesNotBetween(String value1, String value2) {
+            addCriterion("ignore_tables not between", value1, value2, "ignoreTables");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;

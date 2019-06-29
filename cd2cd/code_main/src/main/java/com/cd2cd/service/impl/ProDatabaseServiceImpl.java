@@ -237,6 +237,7 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 				String _null = col.get("Null").toString(); // NO YES
 				String key = col.get("Key").toString(); // PRI
 				String _comment = col.get("Comment").toString();
+				String extra = col.get("Extra").toString();
 				String defaultValue = null;
 				if( null != col.get("Default") ) {
 					defaultValue = col.get("Default").toString();
@@ -248,6 +249,7 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 				
 				ProTableColumn mProTableColumn = new ProTableColumn();
 				mProTableColumn.setKeyType(key);
+				mProTableColumn.setExtra(extra);
 				mProTableColumn.setComment(_comment);
 				mProTableColumn.setDefaultValue(defaultValue);
 				mProTableColumn.setName(field);
@@ -265,7 +267,7 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 				List<ProTableColumn> proColumns = proTableColumnMapper.selectByExample(nProTableColumnCriteria);
 				if( proColumns.size() > 0 ) {
 					
-					
+					mProTableColumn.setId(proColumns.get(0).getId());
 					// update table columns
 					proTableColumnMapper.updateByPrimaryKeySelective(mProTableColumn);
 				} else {

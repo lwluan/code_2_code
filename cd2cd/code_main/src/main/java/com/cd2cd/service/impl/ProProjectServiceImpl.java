@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -276,6 +277,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 				List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
 
+				String ignoreTables = proProject.getIgnoreTables(); // 忽略生成表
+				tables = tables.stream().filter(table -> ignoreTables.indexOf("\"" + table.getId() + "\"") < 0).collect(Collectors.toList());
+				
 				/**
 				 * 暂时支持一个数据库 mapper/entity
 				 */
@@ -379,6 +383,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 			// 导入import
 			importTypeToFile(frt.getTypeIds(), file, projectGenUtil);
 			
+			List<ProField> validateMethods = new ArrayList<>();
+			file.setValidateMethods(validateMethods);
+			
 			// table validate
 			if( null != file.getSuperId()) {
 				// 添加table 需要验证的 方法 validateMethods
@@ -399,6 +406,10 @@ public class ProProjectServiceImpl implements ProProjectService {
 				.andArgTypeIdEqualTo(file.getId());
 				List<ProFunArg> args = funArgMapper.selectByExample(argCriteria);
 				
+				if(CollectionUtils.isEmpty(args)) {
+					continue;
+				}
+				
 				List<Long> pids = new ArrayList<>();
 				for(ProFunArg arg: args) {
 					pids.add(arg.getId());
@@ -412,9 +423,8 @@ public class ProProjectServiceImpl implements ProProjectService {
 				for(ProFunArg arg: args) {
 					argMap.put(arg.getName(), arg);
 				}
-				
+			
 				// 获取 表格和参数列表的 交集
-				List<ProField> validateMethods = new ArrayList<>();
 				columnSet.retainAll(argMap.keySet());
 				for(String ss: columnSet) {
 					ProFunArg arg = argMap.get(ss);
@@ -423,8 +433,6 @@ public class ProProjectServiceImpl implements ProProjectService {
 					mProField.setDataType(arg.getArgTypeName());
 					validateMethods.add(mProField);
 				}
-				
-				file.setValidateMethods(validateMethods);
 			}
 		}
 		
@@ -451,7 +459,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 				String validateGroupName = controller.getName() +"_" + fun.getFunName();
 				
 				ProFunArgCriteria funArgCriteria = new ProFunArgCriteria();
-				mProFunArgCriteria.createCriteria().andPidEqualTo(arg.getId()).andValidIsNotNull();
+				funArgCriteria.createCriteria()
+				.andPidEqualTo(arg.getId())
+				.andValidIsNotNull();
 				List<ProFunArg> childArgs = funArgMapper.selectByExample(funArgCriteria);
 				
 				childArgs.forEach(carg -> {

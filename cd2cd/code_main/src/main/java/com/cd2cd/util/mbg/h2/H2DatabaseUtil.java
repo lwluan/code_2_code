@@ -29,10 +29,6 @@ public class H2DatabaseUtil {
 	public void exeSchema(String s) throws SQLException {
 		Connection mConnection = getConnection();
 		Statement mStatement = mConnection.createStatement();
-		mStatement.execute("");
-		
-		//如果存在USER_INFO表就先删除USER_INFO表
-//		mStatement.execute("DROP TABLE IF EXISTS USER_INFO");
 		
 		//创建USER_INFO表
 		mStatement.execute(s);

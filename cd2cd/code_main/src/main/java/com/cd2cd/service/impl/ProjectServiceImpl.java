@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
@@ -42,6 +43,7 @@ import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.domain.gen.CommValidateCriteria;
 import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
+import com.cd2cd.domain.gen.ProFunArgCriteria;
 import com.cd2cd.domain.gen.ProFunCriteria;
 import com.cd2cd.domain.gen.ProModuleCriteria;
 import com.cd2cd.domain.gen.ProPageCriteria;
@@ -408,7 +410,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId) {
+	public BaseRes<List<ProTableVo>> fetchTableListByProjectHasDb(Long projectId, String from) {
 		
 		BaseRes<List<ProTableVo>> res = new BaseRes<List<ProTableVo>>();
 		// 1、获取所关联数据库
@@ -428,7 +430,16 @@ public class ProjectServiceImpl implements ProjectService {
 			List<ProTable> tables = proTableMapper.selectByExample(mProTableCriteria);
 			
 			if( tables.size() > 0 ) {
+				
 				List<ProTableVo> tabVos = BeanUtil.voConvertList(tables, ProTableVo.class);
+				if("vo".equalsIgnoreCase(from)) {
+					ProProject proProject = proProjectMapper.selectByPrimaryKey(projectId);
+					String ignoreTables = proProject.getIgnoreTables(); // 忽略生成表
+					
+					tabVos = tabVos.stream().filter(table -> ignoreTables.indexOf("\"" + table.getId() + "\"") < 0).collect(Collectors.toList());
+				}
+				
+				
 				res.setData(tabVos);
 			}
 		}
@@ -664,6 +675,13 @@ public class ProjectServiceImpl implements ProjectService {
 		
 		int effect = proFunMapper.deleteByPrimaryKey(funId);
 		
+		// 删除此方法的参数引用
+		ProFunArgCriteria funArgCriteria = new ProFunArgCriteria();
+		funArgCriteria.createCriteria()
+		.andFunIdEqualTo(funId);
+		
+		proFunArgMapper.deleteByExample(funArgCriteria);
+		
 		LOG.debug("effect={}", effect);
 		
 		BaseRes<String> res = new BaseRes<String>();
@@ -823,7 +841,12 @@ public class ProjectServiceImpl implements ProjectService {
 				int ei = javaType.indexOf("(");
 				javaType = javaType.substring(0, ei>-1?ei:javaType.length());
 				
-				int type = JdbcTypeNameTranslator.getJdbcType(javaType.toUpperCase());
+				// 需要转一下 org.mybatis.generator.internal.types.JdbcTypeNameTranslator
+				String javaTypeStr = javaType.toUpperCase();
+				if(javaTypeStr.equals("INT")) {
+					javaTypeStr = "INTEGER";
+				}
+				int type = JdbcTypeNameTranslator.getJdbcType(javaTypeStr);
 				IntrospectedColumn introspectedColumn = new IntrospectedColumn();
 				introspectedColumn.setJdbcType(type);
 				
