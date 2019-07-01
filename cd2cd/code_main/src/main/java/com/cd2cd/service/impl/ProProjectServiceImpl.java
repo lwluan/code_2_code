@@ -278,7 +278,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 				List<ProTable> tables = proTableMapper.selectTableAndColumnByDbId(Arrays.asList(database.getId()));
 
 				String ignoreTables = proProject.getIgnoreTables(); // 忽略生成表
-				tables = tables.stream().filter(table -> ignoreTables.indexOf("\"" + table.getId() + "\"") < 0).collect(Collectors.toList());
+				if(StringUtils.isNotEmpty(ignoreTables)) {
+					tables = tables.stream().filter(table -> ignoreTables.indexOf("\"" + table.getId() + "\"") < 0).collect(Collectors.toList());
+				}
 				
 				/**
 				 * 暂时支持一个数据库 mapper/entity

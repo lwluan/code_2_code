@@ -15,6 +15,10 @@ VALUES
 	(11,'201','205','角色列表','/sysRole/list','2017-12-18 22:42:00','2017-12-18 22:42:00'),
 	(12,'201','206','添加角色','/sysRole/add','2017-12-18 22:42:00','2017-12-18 22:42:00');
 
+INSERT INTO `sys_role` (`id`, `name`, `description`, `create_time`, `update_time`)
+VALUES
+	(1,'admin','超级管理员','2017-12-18 22:42:00','2017-12-18 22:42:00');
+
 INSERT INTO `sys_authority_role_rel` (`id`, `authorities_id`, `role_id`)
 VALUES
 	(1,'101',1),
@@ -29,12 +33,7 @@ VALUES
 	(10,'204',1),
 	(11,'205',1),
 	(12,'206',1);
-
-
-INSERT INTO `sys_role` (`id`, `name`, `description`, `create_time`, `update_time`)
-VALUES
-	(1,'admin','超级管理员','2017-12-18 22:42:00','2017-12-18 22:42:00');
-
+	
 INSERT INTO `sys_user` (`id`, `username`, `nickname`, `mobile`, `email`, `password`, `status`, `create_time`, `update_time`)
 VALUES
 	(1,'admin','超级管理员','','','0e53d4d4d07a7b43ff40c91db2b1f4da','enable','2017-12-18 22:42:00','2017-12-18 22:42:00');

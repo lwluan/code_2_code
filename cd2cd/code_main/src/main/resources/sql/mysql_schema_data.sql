@@ -504,6 +504,17 @@ VALUES
 	(4, 2, 'currPage', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:53:13', '2018-06-23 17:53:13'),
 	(5, 2, 'pageSize', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:53:22', '2018-06-23 17:53:22');
 
+INSERT INTO `comm_validate` (`id`, `name`, `class_path`, `comment`, `args`, `pro_id`)
+VALUES
+	(1, 'NotNull', 'javax.validation.constraints.NotNull', '不可为空', NULL, NULL),
+	(2, 'Mobile', 'javax.validation.constraints.Mobile', '手机', NULL, NULL),
+	(3, 'Email', 'javax.validation.constraints.Email', '电子邮箱', NULL, NULL),
+	(4, 'IdCard', 'javax.validation.constraints.IdCard', '身份证号', NULL, NULL),
+	(5, 'Max', 'javax.validation.constraints.Max', '最大', '[\"value:Integer\"]', NULL),
+	(6, 'Min', 'javax.validation.constraints.Min', '最小', '[\"value:Integer\"]', NULL),
+	(7, 'Range', 'javax.validation.constraints.Range', '区间', '[\"max:Integer\", \"min:Integer\"]', NULL),
+	(8, 'Valid', 'javax.validation.Valid', '是否验证', NULL, NULL);
+
 
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

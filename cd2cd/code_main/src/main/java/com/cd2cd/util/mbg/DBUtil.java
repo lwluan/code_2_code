@@ -46,7 +46,6 @@ public class DBUtil {
 				String cName = rsmd.getColumnLabel(i+1);
 				
 				columns[i] = cName;
-				System.out.println("cName=" + cName);
 			}
 			
 			
@@ -58,8 +57,6 @@ public class DBUtil {
 				}
 				tabData.add(row);
 			}
-			
-			System.out.println(tabData);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();

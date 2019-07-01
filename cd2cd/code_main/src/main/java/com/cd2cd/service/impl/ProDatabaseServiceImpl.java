@@ -202,7 +202,9 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 			
 			// 判断表在项目的数据库是否存在
 			ProTableCriteria mProTableCriteria = new ProTableCriteria();
-			mProTableCriteria.createCriteria().andNameEqualTo(tabName);
+			mProTableCriteria.createCriteria()
+			.andNameEqualTo(tabName)
+			.andDatabaseIdEqualTo(databaseId);
 			List<ProTable> proTab = proTableMapper.selectByExample(mProTableCriteria);
 			ProTable mProTable = null;
 			if( proTab.size() > 0 ) {
