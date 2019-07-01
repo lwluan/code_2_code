@@ -216,9 +216,16 @@ public class ProProjectServiceImpl implements ProProjectService {
 	}
 
 	@Override
-	public BaseRes<String> genProject(Long id) {
-
+	public BaseRes<String> genProject(ProProjectVo proProjectVo) {
+		
+		Long id = proProjectVo.getId();
 		ProProject proProject = proProjectMapper.selectByPrimaryKey(id);
+		
+		// 使用本传入地址生成 
+		if(StringUtils.isNotEmpty(proProjectVo.getLocalPath())) {
+			proProject.setLocalPath(proProjectVo.getLocalPath());
+		}
+		
 		BaseRes<String> res = new BaseRes<String>();
 
 		try {

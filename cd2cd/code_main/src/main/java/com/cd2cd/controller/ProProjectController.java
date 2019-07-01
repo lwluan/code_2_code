@@ -96,8 +96,8 @@ public class ProProjectController extends BaseController {
 	@RequestMapping(value = "genProject", method = RequestMethod.POST)
 	public @ResponseBody BaseRes<String> genProject(@Validated @RequestBody ProProjectVo proProjectVo, BindingResult bindingResult) {
 
-		proProjectService.modify(proProjectVo);
-		BaseRes<String> res = proProjectService.genProject(proProjectVo.getId());
+		//proProjectService.modify(proProjectVo);
+		BaseRes<String> res = proProjectService.genProject(proProjectVo);
 
 		return res;
 	}

@@ -20,7 +20,7 @@ public interface ProProjectService {
 
 	ServiceCode modify(ProProjectVo proProjectVo);
 
-	BaseRes<String> genProject(Long id);
+	BaseRes<String> genProject(ProProjectVo projectVo);
 
 	BaseRes<DataPageWrapper<ProModuleVo>> moduleList(Integer currPage, Integer pageSize, ProModuleVo proModuleVo);
 
