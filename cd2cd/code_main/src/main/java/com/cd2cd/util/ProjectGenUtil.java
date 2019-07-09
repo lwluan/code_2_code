@@ -663,7 +663,9 @@ public class ProjectGenUtil {
 			FullyQualifiedJavaType controllerType = new FullyQualifiedJavaType(fileClassPath);
 			TopLevelClass topClass = new TopLevelClass(controllerType);
 			topClass.setVisibility(JavaVisibility.PUBLIC);
-			topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+			if(StringUtils.isNotBlank(file.getComment())) {
+				topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+			}
 			
 			topClass.addAnnotation("@Controller");
 			if(StringUtils.isNotBlank(file.getReqPath())) {
@@ -1038,8 +1040,9 @@ public class ProjectGenUtil {
 			FullyQualifiedJavaType fileType = new FullyQualifiedJavaType(fileClassPath);
 			TopLevelClass topClass = new TopLevelClass(fileType);
 			topClass.setVisibility(JavaVisibility.PUBLIC);
-			topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
-			
+			if(StringUtils.isNotBlank(file.getComment())) {
+				topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+			}
 			/**
 			 * 导入vo import
 			 */
