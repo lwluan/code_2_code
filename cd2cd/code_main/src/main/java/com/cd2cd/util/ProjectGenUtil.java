@@ -1,7 +1,5 @@
 package com.cd2cd.util;
 
-import static org.mybatis.generator.api.dom.OutputUtilities.calculateImports;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,7 +33,6 @@ import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.Field;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
@@ -78,6 +75,7 @@ import com.cd2cd.domain.ProProject;
 import com.cd2cd.domain.ProTable;
 import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.util.mbg.h2.H2DatabaseUtil;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.collect.Sets;
 
 public class ProjectGenUtil {
@@ -668,7 +666,9 @@ public class ProjectGenUtil {
 			topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
 			
 			topClass.addAnnotation("@Controller");
-			topClass.addAnnotation("@RequestMapping(\""+file.getReqPath()+"\")");
+			if(StringUtils.isNotBlank(file.getReqPath())) {
+				topClass.addAnnotation("@RequestMapping(\""+file.getReqPath()+"\")");
+			}
 			
 			/**
 			 *  import class
@@ -735,10 +735,11 @@ public class ProjectGenUtil {
 							mp.addAnnotation(String.format("@Validated(%s.class)", validGroupName));
 							// com.aaa.test.vo.TestVo.Controller_fun.class
 							String vgPath = importTypePath.get(arg.getArgTypeName());
-							vgPath = vgPath.substring(0, vgPath.lastIndexOf(".")) + ".gen.Super" + arg.getArgTypeName(); 
-							
-							vgPath = String.format("%s.%s", vgPath, validGroupName);
-							topClass.addImportedType(vgPath);
+							if(StringUtils.isNotEmpty(vgPath)) {
+								vgPath = vgPath.substring(0, vgPath.lastIndexOf(".")) + ".gen.Super" + arg.getArgTypeName(); 
+								vgPath = String.format("%s.%s", vgPath, validGroupName);
+								topClass.addImportedType(vgPath);
+							}
 						}
 					} else if(FunArgType.base.name().equals(arg.getArgType())
 							&& StringUtils.isNotEmpty(arg.getValid())) {
@@ -1024,7 +1025,6 @@ public class ProjectGenUtil {
 					
 					childTargetPath = fileGenPath + "/" + module.getName() + "/vo/" + file.getName() + ".java";
 					childClassPath = filePkg + "." + module.getName() + ".vo." + file.getName();
-					
 				}
 			}
 			
@@ -1050,7 +1050,6 @@ public class ProjectGenUtil {
 			/**
 			 * set super class
 			 */
-			System.out.println("file.getSuperName()=" + file.getSuperName());
 			if(StringUtils.isNotBlank(file.getSuperName())) {
 				String superClass = StringUtil.getJavaTableName(file.getSuperName());
 				topClass.addImportedType(filePkg + ".domain." +superClass);
@@ -1072,12 +1071,14 @@ public class ProjectGenUtil {
 				f.setVisibility(JavaVisibility.PRIVATE);
 				f.setName(field.getName());
 				
+				if(StringUtils.isNotEmpty(field.getComment())) {
+					f.addJavaDocLine("/**" +field.getComment() + " */");
+				}
+				
 				String typeStr = CodeUtils.typeByCollectionType(field.getTypePath(), field.getCollectionType());
 				
 				// set valid
 				Map<String, Set<String>> valids = file.getPropertyValid().get(field.getName());
-				
-				System.out.println("field.getName()=" + field.getName() + "|" + valids);
 				
 				if(null != valids) {
 					Set<String> keys = valids.keySet();
@@ -1124,7 +1125,7 @@ public class ProjectGenUtil {
 			
 			/**
 			 * 设置get 方法使用于 table的验证使用
-			 * */
+			 **/
 			List<ProField> validateMethods = file.getValidateMethods();
 			for(ProField vm:validateMethods) {
 				Map<String, Set<String>> valids = file.getPropertyValid().get(vm.getName());
@@ -1137,8 +1138,6 @@ public class ProjectGenUtil {
 					getM.addBodyLine("return super.get" + StringUtil.getJavaTableName(vm.getName()) + "();");
 					
 					getM.addAnnotation("@Override");
-					
-					System.out.println("field.getName()=" + vm.getName() + "|" + valids);
 				
 					Set<String> keys = valids.keySet();
 					for(String v: keys) {
@@ -1176,10 +1175,23 @@ public class ProjectGenUtil {
 			File childClass = new File(childTargetPath);
 			if( ! childClass.exists()) {
 				// inner extend
-				FullyQualifiedJavaType childType = new FullyQualifiedJavaType(childClassPath);
+				String t = "";
+				if("yes".equalsIgnoreCase(file.getParadigm())) {
+					t += "<T>";
+				}
+				
+				// 
+				FullyQualifiedJavaType childType = new FullyQualifiedJavaType(childClassPath + t);
+				
 				TopLevelClass childTypeClass = new TopLevelClass(childType);
 				childTypeClass.addImportedType(fileClassPath);
-				childTypeClass.setSuperClass("Super" + file.getName());
+				childTypeClass.addImportedType(JsonInclude.class.getName());
+				
+				childTypeClass.addAnnotation("@JsonInclude(JsonInclude.Include.NON_NULL)");
+				
+				// 判断是否为T
+				childTypeClass.setSuperClass("Super" + file.getName() + t);
+				
 				childTypeClass.setVisibility(JavaVisibility.PUBLIC);
 				childTypeClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
 				IOUtils.write(childTypeClass.getFormattedContent(), new FileOutputStream(childClass), "utf-8");

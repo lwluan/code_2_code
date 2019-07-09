@@ -247,8 +247,6 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 
 				allColumns.add(field);
 				
-				// TODO key uniq pri uml
-				
 				ProTableColumn mProTableColumn = new ProTableColumn();
 				mProTableColumn.setKeyType(key);
 				mProTableColumn.setExtra(extra);
@@ -259,7 +257,6 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 				mProTableColumn.setAllowNull(_null);
 				mProTableColumn.setTableId(tableId);
 				mProTableColumn.setUpdateTime(new Date());
-				
 				
 				ProTableColumnCriteria nProTableColumnCriteria = new ProTableColumnCriteria();
 				nProTableColumnCriteria.createCriteria()

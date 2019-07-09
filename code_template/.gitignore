@@ -1,0 +1,8 @@
+.project
+.settings
+code_template_main/target
+code_template_main/.settings
+code_template_main/.project
+code_template_parent/.project
+code_template_main/logs
+code_template_main/.classpath

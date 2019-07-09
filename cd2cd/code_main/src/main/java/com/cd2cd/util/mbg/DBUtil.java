@@ -92,7 +92,6 @@ public class DBUtil {
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 		// List<Map<String, Object>> list = 
 //		exeQuerySql("show table status;", "localhost", 3306, "root", "root", "test");
 		

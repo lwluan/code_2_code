@@ -229,7 +229,6 @@ public class MybatisServicePlugin extends PluginAdapter {
 			interface1.addMethod(method);
 		}
 
-		// TODO 列表不查大字段
 		if(introspectedTable.hasBLOBColumns()) {
 			method = getOtherInteger("selectByExample", introspectedTable, tableName, 3);
 			method.setName("selectByExampleWithoutBLOBs");
@@ -284,7 +283,6 @@ public class MybatisServicePlugin extends PluginAdapter {
 			topLevelClass.addMethod(getOtherInsertboolean("insertSelective", introspectedTable, tableName));
 		}
 		
-		// TODO 列表不查大字段
 		if(introspectedTable.hasBLOBColumns()) {
 			Method method = getOtherInteger("selectByExample", introspectedTable, tableName, 3);
 			method.setName("selectByExampleWithoutBLOBs");
