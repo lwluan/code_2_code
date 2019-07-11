@@ -48,6 +48,7 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,7 +58,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.cd2cd.dom.java.CodeUtils;
 import com.cd2cd.dom.java.FileIdsAndType;
@@ -720,20 +720,22 @@ public class ProjectGenUtil {
 				 */
 				List<ProFunArg> args = fun.getArgs();
 				for(ProFunArg arg : args) {
-					Parameter mp = new Parameter(new FullyQualifiedJavaType(arg.getArgTypeName()), arg.getName());
 					
-					m.addJavaDocLine(" * @param "+arg.getName());
+					String paramName = arg.getName();
+					paramName = paramName.replace("{", "").replace("}", "");
+					Parameter mp = new Parameter(new FullyQualifiedJavaType(arg.getArgTypeName()), paramName);
+					
+					m.addJavaDocLine(" * @param "+paramName);
 					
 					/**
 					 * add (Valid RequestBody Validated) if arg type is Vo<br>
 					 * base Valid if arg type of base
 					 */
-					if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
-						mp.addAnnotation("@RequestBody");
-					}
-					
 					if(FunArgType.vo.name().equals(arg.getArgType())) {
 						if(checkVoHasValid(arg)) {
+							if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
+								mp.addAnnotation("@RequestBody");
+							}
 							mp.addAnnotation(String.format("@Validated(%s.class)", validGroupName));
 							// com.aaa.test.vo.TestVo.Controller_fun.class
 							String vgPath = importTypePath.get(arg.getArgTypeName());
@@ -744,8 +746,18 @@ public class ProjectGenUtil {
 							}
 						}
 					} else if(FunArgType.base.name().equals(arg.getArgType())
-							&& StringUtils.isNotEmpty(arg.getValid())) {
+							// && StringUtils.isNotEmpty(arg.getValid())
+							) {
 						
+						/**
+						 * rest full直持 例: /aap/{id} @PathVariable("id") String id
+						 */
+						if(arg.getName().startsWith("{")) {
+							mp.addAnnotation(String.format("@PathVariable(\"%s\")", paramName));
+							topClass.addImportedType(PathVariable.class.getName());
+						}
+						
+						/** TODO 无法在controller fun 参数在验证
 						// 单独验证
 						JSONArray arr = JSONArray.parseArray(arg.getValid());
 						
@@ -756,6 +768,7 @@ public class ProjectGenUtil {
 							String vCPath = commValidMap.get(vName);
 							topClass.addImportedType(vCPath);
 						}
+						**/
 					}
 					
 					m.addParameter(mp);
