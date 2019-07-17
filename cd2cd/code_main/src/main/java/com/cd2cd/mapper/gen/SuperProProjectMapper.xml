@@ -12,6 +12,9 @@
     <result column="context_path" jdbcType="VARCHAR" property="contextPath" />
     <result column="local_path" jdbcType="VARCHAR" property="localPath" />
     <result column="ignore_tables" jdbcType="VARCHAR" property="ignoreTables" />
+    <result column="git_url" jdbcType="VARCHAR" property="gitUrl" />
+    <result column="git_account" jdbcType="VARCHAR" property="gitAccount" />
+    <result column="git_password" jdbcType="VARCHAR" property="gitPassword" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -75,7 +78,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, name, description, group_id, artifact_id, package_type, version, context_path, 
-    local_path, ignore_tables, create_time, update_time
+    local_path, ignore_tables, git_url, git_account, git_password, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProProjectCriteria" resultMap="BaseResultMap">
     select
@@ -117,10 +120,12 @@
     insert into pro_project (name, description, group_id, 
       artifact_id, package_type, version, 
       context_path, local_path, ignore_tables, 
+      git_url, git_account, git_password, 
       create_time, update_time)
     values (#{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{groupId,jdbcType=VARCHAR}, 
       #{artifactId,jdbcType=VARCHAR}, #{packageType,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, 
       #{contextPath,jdbcType=VARCHAR}, #{localPath,jdbcType=VARCHAR}, #{ignoreTables,jdbcType=VARCHAR}, 
+      #{gitUrl,jdbcType=VARCHAR}, #{gitAccount,jdbcType=VARCHAR}, #{gitPassword,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProProject">
@@ -156,6 +161,15 @@
       <if test="ignoreTables != null">
         ignore_tables,
       </if>
+      <if test="gitUrl != null">
+        git_url,
+      </if>
+      <if test="gitAccount != null">
+        git_account,
+      </if>
+      <if test="gitPassword != null">
+        git_password,
+      </if>
       <if test="createTime != null">
         create_time,
       </if>
@@ -190,6 +204,15 @@
       </if>
       <if test="ignoreTables != null">
         #{ignoreTables,jdbcType=VARCHAR},
+      </if>
+      <if test="gitUrl != null">
+        #{gitUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gitAccount != null">
+        #{gitAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="gitPassword != null">
+        #{gitPassword,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -238,6 +261,15 @@
       <if test="record.ignoreTables != null">
         ignore_tables = #{record.ignoreTables,jdbcType=VARCHAR},
       </if>
+      <if test="record.gitUrl != null">
+        git_url = #{record.gitUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gitAccount != null">
+        git_account = #{record.gitAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gitPassword != null">
+        git_password = #{record.gitPassword,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -261,6 +293,9 @@
       context_path = #{record.contextPath,jdbcType=VARCHAR},
       local_path = #{record.localPath,jdbcType=VARCHAR},
       ignore_tables = #{record.ignoreTables,jdbcType=VARCHAR},
+      git_url = #{record.gitUrl,jdbcType=VARCHAR},
+      git_account = #{record.gitAccount,jdbcType=VARCHAR},
+      git_password = #{record.gitPassword,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -297,6 +332,15 @@
       <if test="ignoreTables != null">
         ignore_tables = #{ignoreTables,jdbcType=VARCHAR},
       </if>
+      <if test="gitUrl != null">
+        git_url = #{gitUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="gitAccount != null">
+        git_account = #{gitAccount,jdbcType=VARCHAR},
+      </if>
+      <if test="gitPassword != null">
+        git_password = #{gitPassword,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -317,6 +361,9 @@
       context_path = #{contextPath,jdbcType=VARCHAR},
       local_path = #{localPath,jdbcType=VARCHAR},
       ignore_tables = #{ignoreTables,jdbcType=VARCHAR},
+      git_url = #{gitUrl,jdbcType=VARCHAR},
+      git_account = #{gitAccount,jdbcType=VARCHAR},
+      git_password = #{gitPassword,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

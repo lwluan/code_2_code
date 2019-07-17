@@ -1,4 +1,4 @@
-package com.cd2cd.vo.validator.mobile;
+package javax.validator.constraints;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

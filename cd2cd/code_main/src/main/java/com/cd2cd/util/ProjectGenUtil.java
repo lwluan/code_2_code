@@ -29,6 +29,12 @@ import javax.xml.transform.stream.StreamResult;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
+import org.eclipse.jgit.api.CloneCommand;
+import org.eclipse.jgit.api.Git;
+import org.eclipse.jgit.api.errors.GitAPIException;
+import org.eclipse.jgit.api.errors.InvalidRemoteException;
+import org.eclipse.jgit.api.errors.TransportException;
+import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.dom.OutputUtilities;
 import org.mybatis.generator.api.dom.java.Field;
@@ -732,10 +738,10 @@ public class ProjectGenUtil {
 					 * base Valid if arg type of base
 					 */
 					if(FunArgType.vo.name().equals(arg.getArgType())) {
+						if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
+							mp.addAnnotation("@RequestBody");
+						}
 						if(checkVoHasValid(arg)) {
-							if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
-								mp.addAnnotation("@RequestBody");
-							}
 							mp.addAnnotation(String.format("@Validated(%s.class)", validGroupName));
 							// com.aaa.test.vo.TestVo.Controller_fun.class
 							String vgPath = importTypePath.get(arg.getArgTypeName());
@@ -936,31 +942,29 @@ public class ProjectGenUtil {
 	}
 	
 	public static void main(String[] args) {
-		FullyQualifiedJavaType fjt = new FullyQualifiedJavaType("com.cd2cd.controller.UserController");
-		TopLevelClass topClass = new TopLevelClass(fjt);
-		topClass.setVisibility(JavaVisibility.PUBLIC);
-		topClass.addFileCommentLine("/** \n 文件注释 \n @author leiwuluan \n @time 2019-04-07 \n **/");
 		
-		topClass.addAnnotation("@Controller");
-		topClass.addAnnotation("@RequestMapping(\"user\")");
+		// https://gitee.com/lwlgit/open_crm.git
+		String remotePath = "https://gitee.com/lwlgit/open_crm.git";
+		String proPath = "/Users/lwl/Desktop/open_crm";
 		
-		topClass.addImportedType("org.springframework.web.bind.annotation.*");
-		
-		Method m = new Method("getUserInfo");
-		m.setVisibility(JavaVisibility.PUBLIC);
-		m.setReturnType(new FullyQualifiedJavaType("BaseRes<User>"));
-		m.addBodyLine("//TODO");
-		
-		Parameter mp = new Parameter(new FullyQualifiedJavaType("UserInfo"), "userInfo");
-		mp.addAnnotation("@ResquestBody");
-		mp.addAnnotation("@Valid");
-		m.addParameter(mp);
-		
-		m.addAnnotation("@ResponseBody");
-		m.addAnnotation("@RequestMapping(\"userInfo\")");
-		
-		topClass.addMethod(m);
-		System.out.println(topClass.getFormattedContent());
+		UsernamePasswordCredentialsProvider usernamePasswordCredentialsProvider =new
+                UsernamePasswordCredentialsProvider("lwlgit","git123456");
+
+        //克隆代码库命令
+        CloneCommand cloneCommand = Git.cloneRepository();
+
+		try {
+			Git git = cloneCommand.setURI(remotePath) // 设置远程URI
+					.setBranch("master") // 设置clone下来的分支
+					.setDirectory(new File(proPath)) // 设置下载存放路径
+					.setCredentialsProvider(usernamePasswordCredentialsProvider) // 设置权限验证
+					.call();
+			
+	        System.out.print(git.tag());
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -1155,6 +1159,11 @@ public class ProjectGenUtil {
 					
 					getM.addAnnotation("@Override");
 				
+					// import type
+					if(vm.getDataType().indexOf(".") > -1) {
+						topClass.addImportedType(vm.getDataType());
+					}
+					
 					Set<String> keys = valids.keySet();
 					for(String v: keys) {
 						
@@ -1251,4 +1260,5 @@ public class ProjectGenUtil {
 		}
 		return fit;
 	}
+	
 }

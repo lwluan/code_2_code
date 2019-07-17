@@ -835,6 +835,216 @@ public class ProProjectCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andGitUrlIsNull() {
+            addCriterion("git_url is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlIsNotNull() {
+            addCriterion("git_url is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlEqualTo(String value) {
+            addCriterion("git_url =", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlNotEqualTo(String value) {
+            addCriterion("git_url <>", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlGreaterThan(String value) {
+            addCriterion("git_url >", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlGreaterThanOrEqualTo(String value) {
+            addCriterion("git_url >=", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlLessThan(String value) {
+            addCriterion("git_url <", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlLessThanOrEqualTo(String value) {
+            addCriterion("git_url <=", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlLike(String value) {
+            addCriterion("git_url like", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlNotLike(String value) {
+            addCriterion("git_url not like", value, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlIn(List<String> values) {
+            addCriterion("git_url in", values, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlNotIn(List<String> values) {
+            addCriterion("git_url not in", values, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlBetween(String value1, String value2) {
+            addCriterion("git_url between", value1, value2, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitUrlNotBetween(String value1, String value2) {
+            addCriterion("git_url not between", value1, value2, "gitUrl");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountIsNull() {
+            addCriterion("git_account is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountIsNotNull() {
+            addCriterion("git_account is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountEqualTo(String value) {
+            addCriterion("git_account =", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountNotEqualTo(String value) {
+            addCriterion("git_account <>", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountGreaterThan(String value) {
+            addCriterion("git_account >", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountGreaterThanOrEqualTo(String value) {
+            addCriterion("git_account >=", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountLessThan(String value) {
+            addCriterion("git_account <", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountLessThanOrEqualTo(String value) {
+            addCriterion("git_account <=", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountLike(String value) {
+            addCriterion("git_account like", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountNotLike(String value) {
+            addCriterion("git_account not like", value, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountIn(List<String> values) {
+            addCriterion("git_account in", values, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountNotIn(List<String> values) {
+            addCriterion("git_account not in", values, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountBetween(String value1, String value2) {
+            addCriterion("git_account between", value1, value2, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitAccountNotBetween(String value1, String value2) {
+            addCriterion("git_account not between", value1, value2, "gitAccount");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordIsNull() {
+            addCriterion("git_password is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordIsNotNull() {
+            addCriterion("git_password is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordEqualTo(String value) {
+            addCriterion("git_password =", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordNotEqualTo(String value) {
+            addCriterion("git_password <>", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordGreaterThan(String value) {
+            addCriterion("git_password >", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordGreaterThanOrEqualTo(String value) {
+            addCriterion("git_password >=", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordLessThan(String value) {
+            addCriterion("git_password <", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordLessThanOrEqualTo(String value) {
+            addCriterion("git_password <=", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordLike(String value) {
+            addCriterion("git_password like", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordNotLike(String value) {
+            addCriterion("git_password not like", value, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordIn(List<String> values) {
+            addCriterion("git_password in", values, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordNotIn(List<String> values) {
+            addCriterion("git_password not in", values, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordBetween(String value1, String value2) {
+            addCriterion("git_password between", value1, value2, "gitPassword");
+            return (Criteria) this;
+        }
+
+        public Criteria andGitPasswordNotBetween(String value1, String value2) {
+            addCriterion("git_password not between", value1, value2, "gitPassword");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;

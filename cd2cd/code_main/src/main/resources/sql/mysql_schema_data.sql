@@ -235,10 +235,14 @@ CREATE TABLE `pro_project` (
   `version` varchar(30) NOT NULL DEFAULT '' COMMENT '项目版本',
   `context_path` varchar(50) NOT NULL DEFAULT '' COMMENT '访问路径',
   `local_path` varchar(300) DEFAULT NULL COMMENT '本地路径，用于本地开发使用',
+  `ignore_tables` varchar(500) DEFAULT NULL COMMENT '不生成vo',
+  `git_url` varchar(150) DEFAULT NULL COMMENT 'git仓库',
+  `git_account` varchar(30) DEFAULT NULL COMMENT 'git账号',
+  `git_password` varchar(20) DEFAULT NULL COMMENT 'git密码',
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='项目表';
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8 COMMENT='项目表';
 
 
 

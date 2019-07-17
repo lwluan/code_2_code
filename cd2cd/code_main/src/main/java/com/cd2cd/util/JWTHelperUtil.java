@@ -40,14 +40,14 @@ public class JWTHelperUtil {
 			expiresAt.add(Calendar.SECOND, expires_secs);
 			String userStr = new ObjectMapper().writeValueAsString(userVo);
 			
-			LOG.info("userStr={}", userStr);
+//			LOG.info("userStr={}", userStr);
 			
 			String token = JWT.create()
 					.withClaim(USER_INFO_KEY, userStr)
 					.withExpiresAt(expiresAt.getTime())
 					.sign(algorithm);
 			
-			LOG.info("userStr={}, token={}", userStr, token);
+//			LOG.info("userStr={}, token={}", userStr, token);
 			
 			return token;
 		} catch (JWTVerificationException exception) {
@@ -60,7 +60,7 @@ public class JWTHelperUtil {
 	public LoginUser verifyToken(String token) {
 		try {
 			
-			LOG.info("token={}", token);
+//			LOG.info("token={}", token);
 			
 			Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
 			JWTVerifier verifier = JWT.require(algorithm).build(); // Reusable
@@ -69,7 +69,7 @@ public class JWTHelperUtil {
 			String userStr = jwt.getClaim(USER_INFO_KEY).asString();
  
 			
-			LOG.info("userStr={}, token={}, ExpiresAt={}", userStr, token, jwt.getExpiresAt());
+//			LOG.info("userStr={}, token={}, ExpiresAt={}", userStr, token, jwt.getExpiresAt());
 			
 			LoginUser userInfo = JSONObject.parseObject(userStr, LoginUser.class);
 			return userInfo;

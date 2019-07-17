@@ -1,4 +1,4 @@
-package com.cd2cd.vo.validator.mobile;
+package javax.validator.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;

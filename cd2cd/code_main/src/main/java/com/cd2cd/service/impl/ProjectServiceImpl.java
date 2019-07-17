@@ -15,7 +15,6 @@ import org.mybatis.generator.api.IntrospectedColumn;
 import org.mybatis.generator.api.JavaTypeResolver;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl;
-import org.mybatis.generator.internal.types.JdbcTypeNameTranslator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +62,7 @@ import com.cd2cd.mapper.ProTableColumnMapper;
 import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.util.BeanUtil;
+import com.cd2cd.util.ObjectTypeUtil;
 import com.cd2cd.util.ProjectModuleTypeEnum;
 import com.cd2cd.util.mbg.Constants;
 import com.cd2cd.vo.BaseRes;
@@ -837,22 +837,14 @@ public class ProjectServiceImpl implements ProjectService {
 				ProTableColumn mProTableColumn = proTableColumnMapper.selectByPrimaryKey(proFunArg.getFieldId());
 				proFunArg.setName(mProTableColumn.getName());
 
-				String javaType = mProTableColumn.getMysqlType();
-				int ei = javaType.indexOf("(");
-				javaType = javaType.substring(0, ei>-1?ei:javaType.length());
-				
-				// 需要转一下 org.mybatis.generator.internal.types.JdbcTypeNameTranslator
-				String javaTypeStr = javaType.toUpperCase();
-				if(javaTypeStr.equals("INT")) {
-					javaTypeStr = "INTEGER";
-				}
-				int type = JdbcTypeNameTranslator.getJdbcType(javaTypeStr);
-				IntrospectedColumn introspectedColumn = new IntrospectedColumn();
-				introspectedColumn.setJdbcType(type);
+				// DECIMAL 3
+				IntrospectedColumn introspectedColumn = ObjectTypeUtil.getIntrospectedColumn(mProTableColumn.getMysqlType());
 				
 				JavaTypeResolver javaTypeResolver = new JavaTypeResolverDefaultImpl();
 				FullyQualifiedJavaType fullyQualifiedJavaType = javaTypeResolver.calculateJavaType(introspectedColumn);
-				proFunArg.setArgTypeName(fullyQualifiedJavaType.getShortName());
+				proFunArg.setArgTypeName(fullyQualifiedJavaType.getFullyQualifiedName());
+
+				LOG.info("type={}, num={},  ss={}", fullyQualifiedJavaType.getShortName(), javaTypeResolver.calculateJdbcTypeName(introspectedColumn));
 				
 				proFunArg.setArgType(TypeEnum.FunArgType.base.name());
 				proFunArg.setCollectionType(TypeEnum.CollectionType.single.name());
@@ -864,7 +856,7 @@ public class ProjectServiceImpl implements ProjectService {
 		proFunArg.setCreateTime(new Date());
 		proFunArg.setUpdateTime(new Date());
 		proFunArgMapper.insertSelective(proFunArg);
-		return new BaseRes<String>(ServiceCode.SUCCESS, "ok");
+		return new BaseRes<>(ServiceCode.SUCCESS, "ok");
 	}
 
 	@Override
