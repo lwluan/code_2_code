@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `pro_page_act` (
   PRIMARY KEY (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS `pro_project` (
+CREATE TABLE `pro_project` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '项目名称',
   `description` varchar(200) NOT NULL DEFAULT '' COMMENT '项目介绍',
@@ -136,10 +136,16 @@ CREATE TABLE IF NOT EXISTS `pro_project` (
   `version` varchar(30) NOT NULL DEFAULT '' COMMENT '项目版本',
   `context_path` varchar(50) NOT NULL DEFAULT '' COMMENT '访问路径',
   `local_path` varchar(300) DEFAULT NULL COMMENT '本地路径，用于本地开发使用',
+  `ignore_tables` varchar(500) DEFAULT NULL COMMENT '不生成vo',
+  `git_url` varchar(150) DEFAULT NULL,
+  `git_account` varchar(30) DEFAULT NULL,
+  `git_password` varchar(20) DEFAULT NULL,
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
 );
+
+
 
 CREATE TABLE IF NOT EXISTS `pro_project_database_rel` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,

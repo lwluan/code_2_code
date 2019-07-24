@@ -725,6 +725,7 @@ public class ProjectGenUtil {
 				 * 方法参数
 				 */
 				List<ProFunArg> args = fun.getArgs();
+				boolean isPostAndReqBody = false;
 				for(ProFunArg arg : args) {
 					
 					String paramName = arg.getName();
@@ -740,6 +741,7 @@ public class ProjectGenUtil {
 					if(FunArgType.vo.name().equals(arg.getArgType())) {
 						if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
 							mp.addAnnotation("@RequestBody");
+							isPostAndReqBody = true;
 						}
 						if(checkVoHasValid(arg)) {
 							mp.addAnnotation(String.format("@Validated(%s.class)", validGroupName));
@@ -763,7 +765,7 @@ public class ProjectGenUtil {
 							topClass.addImportedType(PathVariable.class.getName());
 						}
 						
-						/** TODO 无法在controller fun 参数在验证
+						/** TODO 无法在controller fun 参数在验证, 添加拦截器验证，验证方法上
 						// 单独验证
 						JSONArray arr = JSONArray.parseArray(arg.getValid());
 						
@@ -783,7 +785,7 @@ public class ProjectGenUtil {
 				/**
 				 * 需要数据验证时，添加 BindingResult bindingResult
 				 */
-				if(args.size() > 0) {
+				if(args.size() > 0 && isPostAndReqBody) {
 					Parameter mp = new Parameter(new FullyQualifiedJavaType(BindingResult.class.getName()), "bindingResult");
 					m.addParameter(mp);
 					topClass.addImportedType(BindingResult.class.getName());
