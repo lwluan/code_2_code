@@ -173,6 +173,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 		ProProject proProject = BeanUtil.voConvert(proProjectVo, ProProject.class);
 		proProject.setCreateTime(new Date());
 		proProject.setUpdateTime(new Date());
+		proProject.setIgnoreTables("");
 
 		proProjectMapper.insertSelective(proProject);
 

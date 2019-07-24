@@ -1,4 +1,4 @@
-package javax.validator.constraints;
+package javax.validation.constraints;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;

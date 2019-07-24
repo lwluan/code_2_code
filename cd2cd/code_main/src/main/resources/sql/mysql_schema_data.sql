@@ -28,6 +28,7 @@ DROP TABLE IF EXISTS `comm_validate`;
 CREATE TABLE `comm_validate` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL COMMENT '验证名：max,min,notnull',
+  `class_path` varchar(100) DEFAULT NULL COMMENT '类路径',  
   `comment` varchar(200) DEFAULT NULL COMMENT '验证说明： 不可为空',
   `args` varchar(300) DEFAULT NULL COMMENT '验证参数：["type:int","name:String"]',
   `pro_id` bigint(11) DEFAULT NULL COMMENT '项目ID； 值为0时为对所有项目公开使用',

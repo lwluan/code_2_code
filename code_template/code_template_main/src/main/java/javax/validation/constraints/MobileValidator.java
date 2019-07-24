@@ -1,4 +1,4 @@
-package javax.validator.constraints;
+package javax.validation.constraints;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
