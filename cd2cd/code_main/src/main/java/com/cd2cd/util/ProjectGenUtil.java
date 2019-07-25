@@ -92,7 +92,7 @@ public class ProjectGenUtil {
 	private static final String H2_DB_USER = "123456";
 	
 	private static Set<String> IGNORE_VO_GEN = Sets.newHashSet("BaseRes", "BaseReq");
-	private static Set<String> IGNORE_File = Sets.newHashSet(".DS_Store", ".project", ".settings", "target");
+	private static Set<String> IGNORE_File = Sets.newHashSet(".DS_Store", ".project", ".settings", "target", "node_modules");
 	
 	private ProProject project;
 	String contextPath;			// 项目访问地址
@@ -131,6 +131,8 @@ public class ProjectGenUtil {
 		String _path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "../../../../" + code_path;
 		_path = _path.replace("file:", "");
 		String tpPath = getRealPath(_path);
+		
+		LOG.info("_path={}, tpPath={}", _path, tpPath);
 
 		// 1、项目复制
 		File src = new File(tpPath);
@@ -139,6 +141,7 @@ public class ProjectGenUtil {
 			copyFolder(src, dest);
 		}
 		// 2、项目替换
+		LOG.info("replaceProject ...");
 		replaceProject();
 	}
 
@@ -207,8 +210,11 @@ public class ProjectGenUtil {
 		String importSrc = "import com.cd2cd.admin.";
 		String importDesc = "import " + groupId + "." + artifactIdName + ".";
 
+		LOG.info("files-size={}", files.size());
 		for (File f : files) {
 
+			LOG.info("f-name={}", f.getAbsoluteFile());
+			
 			if (f.getPath().endsWith(".java")) {
 				String content = IOUtils.toString(new FileInputStream(f), "utf-8");
 				content = content.replaceAll(packageSrc, packageDesc).replaceAll(importSrc, importDesc);
@@ -243,9 +249,13 @@ public class ProjectGenUtil {
 		}
 	}
 	
-	public void listAllFile(String filePath, List<File> files) {
+	private void listAllFile(String filePath, List<File> files) {
 		File file = new File(filePath);
 
+		// 不替目录下的文件
+		if(file.getName().equalsIgnoreCase("node_modules") || file.getName().equalsIgnoreCase("target")) {
+			return;
+		}
 		File[] files2 = file.listFiles(new FileFilter() {
 			public boolean accept(File file) {
 				if (file.isDirectory())
@@ -465,6 +475,8 @@ public class ProjectGenUtil {
 	 */
 	private void copyFolder(File src, File dest) throws IOException {
 		
+		LOG.info("copyFolder src={}, dest={}", src.getAbsoluteFile(), dest.getAbsoluteFile());
+		
 		if(IGNORE_File.contains(src.getName())) {
 			LOG.info("ignore file [{}]", src.getName());
 			return;
@@ -494,6 +506,7 @@ public class ProjectGenUtil {
 	 * @return
 	 */
 	private String getRealPath(String path) {
+		LOG.info("path={}", path);
 		int n = path.indexOf("../");
 		if (n > -1) {
 			String eStr = path.substring(n + 3, path.length());

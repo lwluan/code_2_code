@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.alibaba.fastjson.JSONObject;
+
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -220,7 +222,11 @@ public class ProProjectServiceImpl implements ProProjectService {
 	public BaseRes<String> genProject(ProProjectVo proProjectVo) {
 		
 		Long id = proProjectVo.getId();
+		
+		LOG.info("id={}", id);
 		ProProject proProject = proProjectMapper.selectByPrimaryKey(id);
+		
+		LOG.info("proProject={}", JSONObject.toJSONString(proProject));
 		
 		// 使用本传入地址生成 
 		if(StringUtils.isNotEmpty(proProjectVo.getLocalPath())) {
@@ -238,21 +244,25 @@ public class ProProjectServiceImpl implements ProProjectService {
 			 * 初始被创建项目
 			 */
 			projectGenUtil.genProjectBase();
+			LOG.info("projectGenUtil.genProjectBase() ...");
 			
 			/**
 			 * 生成 domain
 			 */
 			genDomain(projectGenUtil, proProject);
+			LOG.info("genDomain(projectGenUtil, proProject) ...");
 			
 			/**
 			 * 生成Controller 控制器 
 			 */
 			genController(projectGenUtil, proProject, commValidMap);
+			LOG.info("genController(projectGenUtil, proProject, commValidMap) ...");
 			
 			/**
 			 * 生成 vo 类
 			 */
 			getVo(projectGenUtil, proProject, commValidMap);
+			LOG.info("getVo(projectGenUtil, proProject, commValidMap) ...");
 			
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} catch (Exception e) {

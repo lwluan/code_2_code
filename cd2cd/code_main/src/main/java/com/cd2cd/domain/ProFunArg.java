@@ -10,16 +10,18 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class ProFunArg extends SuperProFunArg implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	private String fieldType; // table, vo
+
 	/** 结点类型 */
 	private String nodeType;
-	
+
 	/** VO成员变量做为参数时使用 */
 	private Long fieldId;
-	
+
 	public ProFunArg() {
 		super();
 	}
-	
+
 	public ProFunArg(String nodeType) {
 		super();
 		this.nodeType = nodeType;
@@ -28,7 +30,7 @@ public class ProFunArg extends SuperProFunArg implements Serializable {
 	private List<ProFunArg> children;
 
 	public List<ProFunArg> getChildren() {
-		if(null == children || children.size() == 0) {
+		if (null == children || children.size() == 0) {
 			return null;
 		}
 		return children;
@@ -37,7 +39,7 @@ public class ProFunArg extends SuperProFunArg implements Serializable {
 	public void setChildren(List<ProFunArg> children) {
 		this.children = children;
 	}
-	
+
 	public String getNodeType() {
 		return nodeType;
 	}
@@ -52,6 +54,14 @@ public class ProFunArg extends SuperProFunArg implements Serializable {
 
 	public void setFieldId(Long fieldId) {
 		this.fieldId = fieldId;
+	}
+
+	public String getFieldType() {
+		return fieldType;
+	}
+
+	public void setFieldType(String fieldType) {
+		this.fieldType = fieldType;
 	}
 
 	@Override

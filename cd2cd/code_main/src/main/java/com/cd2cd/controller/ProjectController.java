@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.domain.CommValidate;
 import com.cd2cd.domain.ProFunArg;
@@ -237,6 +238,7 @@ public class ProjectController extends BaseController {
 	public BaseRes<String> addFunArg( 
 			@Validated({add.class}) @RequestBody
 			ProFunArgVo proFunArg, BindingResult bindingResult) {
+		LOG.info("proFunArg={}", JSONObject.toJSONString(proFunArg));
 		return projectService.addFunArg(proFunArg);
 	}
 	
