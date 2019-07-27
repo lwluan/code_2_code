@@ -12,6 +12,8 @@ import org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -39,6 +41,8 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
+		
+		LOG.info("method={}", request.getMethod());
 		
 		String header = request.getHeader("Authorization");
 		boolean toAuthentication = false;
