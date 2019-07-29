@@ -20,16 +20,16 @@ public class DatabaseInitDataUtil {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DatabaseInitDataUtil.class);
 	
-	@Value("${spring.datasource.driver-class-name}")
+	@Value("${spring.datasource.driver-class-name:}")
 	private String driverClassName;
 	
-	@Value("${spring.datasource.url}")
+	@Value("${spring.datasource.url:}")
 	private String url;
 	
-	@Value("${spring.datasource.username}")
+	@Value("${spring.datasource.username:}")
 	private String username;
 	
-	@Value("${spring.datasource.password}")
+	@Value("${spring.datasource.password:}")
 	private String password;
 	
 	public void initDatabase() throws SQLException, FileNotFoundException, IOException {

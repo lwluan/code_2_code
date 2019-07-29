@@ -99,7 +99,7 @@ public class ProjectGenUtil {
 	String artifactId;			// test_main
 	String artifactIdName;		// artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
 	String groupId;				// 包名 com.test
-	String name;				// 项目，中文名称
+	String name;				// 项目; crm-admin英文名称
 	String packageType;  		// 包结构类型：standard、module
 	String version;				// 项目版本号
 	String description;			// 项目描述
@@ -119,7 +119,7 @@ public class ProjectGenUtil {
 		localPath = project.getLocalPath();
 		artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
 		
-		basePkgname = groupId + "." + artifactId.replaceAll("-", "_");;
+		basePkgname = groupId + "." + artifactId.replaceAll("-", "_");
 	}
 
 	public void genProjectBase() throws Exception {
