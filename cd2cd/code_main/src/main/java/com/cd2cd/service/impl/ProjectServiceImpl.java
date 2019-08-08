@@ -194,7 +194,7 @@ public class ProjectServiceImpl implements ProjectService {
 			// query file list, the same controller\service\vo\dmain\mapper\page
 			ProFileCriteria mProFileCriteria = new ProFileCriteria();
 			ProFileCriteria.Criteria mCriteria = mProFileCriteria.createCriteria();
-			if (moduleId != null && moduleId > 0) {
+			if (null != moduleId && moduleId > 0) {
 				mCriteria.andProjectIdEqualTo(projectId);
 				mCriteria.andModuleIdEqualTo(moduleId);
 			} else {
@@ -208,6 +208,8 @@ public class ProjectServiceImpl implements ProjectService {
 
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);
 
+			LOG.info("proFiles-size={}", proFiles.size());
+			
 			Integer modulePid = pId;
 
 			// package -_ file
@@ -236,6 +238,9 @@ public class ProjectServiceImpl implements ProjectService {
 				}
 
 				controllerNode = newJson(treeId, modulePid, _module, "controller", "package");
+				
+				LOG.info("_module={}", _module);
+				
 				serviceNode = newJson(treeId, modulePid, _module, "service", "package");
 				mapperNode = newJson(treeId, modulePid, _module, "mapper", "package");
 				voNode = newJson(treeId, modulePid, _module, "vo", "package");
@@ -257,7 +262,8 @@ public class ProjectServiceImpl implements ProjectService {
 			for (ProFile file : proFiles) {
 
 				// module name within in package name
-
+				LOG.info("fileName={}", file.getName());
+				
 				String fileType = file.getFileType();
 				String classType = file.getClassType();
 				JSONObject temp = null;
@@ -365,6 +371,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 			for (ProFile file : proFiles) {
 
+				System.out.println("fileName=" + file.getName());
 				// module name within in package name
 
 				String fileType = file.getFileType();

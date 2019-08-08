@@ -34,8 +34,6 @@ public class MultiDataSource extends MultiDataSourceAdapter {
 
 		String tenantId = TenantThreadLocal.getTenantId();
 		
-		log.info("tenantId={}", tenantId);
-		
 		DataSource dataSource = dsMap.get(tenantId);
 		if (dataSource != null) {
 			return dataSource.getConnection();

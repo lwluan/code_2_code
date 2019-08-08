@@ -31,9 +31,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.InvalidRemoteException;
-import org.eclipse.jgit.api.errors.TransportException;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.mybatis.generator.api.MyBatisGenerator;
 import org.mybatis.generator.api.dom.OutputUtilities;
@@ -752,7 +749,9 @@ public class ProjectGenUtil {
 					 * base Valid if arg type of base
 					 */
 					if(FunArgType.vo.name().equals(arg.getArgType())) {
-						if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod())) {
+						if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod()) || 
+								HttpMethod.PUT.name().equalsIgnoreCase(fun.getReqMethod()) || 
+								HttpMethod.DELETE.name().equalsIgnoreCase(fun.getReqMethod())) {
 							mp.addAnnotation("@RequestBody");
 							isPostAndReqBody = true;
 						}
@@ -1108,6 +1107,11 @@ public class ProjectGenUtil {
 				
 				if(StringUtils.isNotEmpty(field.getComment())) {
 					f.addJavaDocLine("/**" +field.getComment() + " */");
+				}
+				
+				// DataType is Date import java.util.date
+				if("Date".equals(field.getTypePath())) {
+					topClass.addImportedType("java.util.Date");
 				}
 				
 				String typeStr = CodeUtils.typeByCollectionType(field.getTypePath(), field.getCollectionType());

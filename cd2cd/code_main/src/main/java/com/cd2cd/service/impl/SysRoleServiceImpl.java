@@ -41,7 +41,10 @@ public class SysRoleServiceImpl implements SysRoleService {
 	public BaseRes<DataPageWrapper<SysRoleVo>> list(Integer currPage,
 			Integer pageSize, SysRoleVo sysUserVo) {
 		
-		BaseRes<DataPageWrapper<SysRoleVo>> res = BeanUtil.genDataPageRes(currPage, pageSize);
+		BaseRes<DataPageWrapper<SysRoleVo>> res = new BaseRes<>();
+		res.setData(new DataPageWrapper<SysRoleVo>());
+		res.getData().setCurrPage(currPage);
+		res.getData().setPageSize(pageSize);
 		
 		SysRoleCriteria example = new SysRoleCriteria();
 		int mysqlLength = pageSize;

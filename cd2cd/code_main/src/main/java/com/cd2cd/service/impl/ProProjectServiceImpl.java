@@ -13,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.alibaba.fastjson.JSONObject;
-
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
@@ -110,7 +109,10 @@ public class ProProjectServiceImpl implements ProProjectService {
 	@Override
 	public BaseRes<DataPageWrapper<ProProjectVo>> list(Integer currPage, Integer pageSize, ProProjectVo proProjectVo) {
 
-		BaseRes<DataPageWrapper<ProProjectVo>> res = BeanUtil.genDataPageRes(currPage, pageSize);
+		BaseRes<DataPageWrapper<ProProjectVo>> res = new BaseRes<>();
+		res.setData(new DataPageWrapper<ProProjectVo>());
+		res.getData().setCurrPage(currPage);
+		res.getData().setPageSize(pageSize);
 
 		ProProjectCriteria example = new ProProjectCriteria();
 		int mysqlLength = pageSize;
@@ -534,7 +536,10 @@ public class ProProjectServiceImpl implements ProProjectService {
 	@Override
 	public BaseRes<DataPageWrapper<ProModuleVo>> moduleList(Integer currPage, Integer pageSize, ProModuleVo proModuleVo) {
 
-		BaseRes<DataPageWrapper<ProModuleVo>> res = BeanUtil.genDataPageRes(currPage, pageSize);
+		BaseRes<DataPageWrapper<ProModuleVo>> res = new BaseRes<>();
+		res.setData(new DataPageWrapper<ProModuleVo>());
+		res.getData().setCurrPage(currPage);
+		res.getData().setPageSize(pageSize);
 
 		ProModuleCriteria example = new ProModuleCriteria();
 		int mysqlLength = pageSize;

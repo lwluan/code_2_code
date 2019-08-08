@@ -42,7 +42,10 @@ public class SysUserServiceImpl implements SysUserService {
 	public BaseRes<DataPageWrapper<SysUserVo>> list(
 			Integer currPage, Integer pageSize, SysUserVo sysUserVo) {
 		
-		BaseRes<DataPageWrapper<SysUserVo>> res = BeanUtil.genDataPageRes(currPage, pageSize);
+		BaseRes<DataPageWrapper<SysUserVo>> res = new BaseRes<>();
+		res.setData(new DataPageWrapper<SysUserVo>());
+		res.getData().setCurrPage(currPage);
+		res.getData().setPageSize(pageSize);
 		
 		SysUserCriteria example = new SysUserCriteria();
 		int mysqlLength = pageSize;
