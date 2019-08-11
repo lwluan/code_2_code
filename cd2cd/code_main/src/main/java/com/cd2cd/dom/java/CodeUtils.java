@@ -16,7 +16,7 @@ public class CodeUtils {
 		} else if(CollectionType.map.name().equalsIgnoreCase(collectionType)) {
 			return type = "Map<String, " + type + ">";
 		} else if(CollectionType.set.name().equalsIgnoreCase(collectionType)) {
-			return type = "Set<String, " + type + ">";
+			return type = "Set<" + type + ">";
 		}
 		return type;
 	}
