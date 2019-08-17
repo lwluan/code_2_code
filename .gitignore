@@ -41,3 +41,42 @@ code_template/code_template_parent/.settings
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# dependencies
+**/node_modules
+# roadhog-api-doc ignore
+template_web/src/utils/request-temp.js
+template_web/_roadhog-api-doc
+**/.umi
+# production
+template_web/dist
+template_web/.vscode
+
+# misc
+template_web/.DS_Store
+template_web/npm-debug.log*
+template_web/yarn-error.log
+
+template_web/coverage
+template_web/.idea
+template_web/yarn.lock
+template_web/package-lock.json
+template_web/*bak
+template_web/.vscode
+
+# visual studio code
+template_web/.history
+template_web/*.log
+template_web/functions/*
+template_web/lambda/mock/index.js
+template_web/.temp/**
+
+# umi
+template_web/**/.umi
+template_web/.umi-production
+
+# screenshot
+template_web/screenshot
+template_web/.firebase
+
+
