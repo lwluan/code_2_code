@@ -4,10 +4,11 @@ cd2cd/code_main/.settings
 cd2cd/code_main/logs
 cd2cd/code_main/h2db
 cd2cd/code_main/auto_code.mv.db
+cd2cd/code_main/src/main/resources/application.properties
 cd2cd/code_main/auto_code.trace.db
 cd2cd/code_parent/.project
 cd2cd/code_parent/.settings
-cd2cd/code_main/src/main/resources/application.properties
+
 
 code_template/.project
 code_template/.settings

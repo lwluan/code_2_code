@@ -517,7 +517,7 @@ VALUES
 	(4, 'IdCard', 'javax.validation.constraints.IdCard', '身份证号', NULL, NULL),
 	(5, 'Max', 'javax.validation.constraints.Max', '最大', '[\"value:Integer\"]', NULL),
 	(6, 'Min', 'javax.validation.constraints.Min', '最小', '[\"value:Integer\"]', NULL),
-	(7, 'Range', 'javax.validation.constraints.Range', '区间', '[\"max:Integer\", \"min:Integer\"]', NULL),
+	(7, 'Range', 'org.hibernate.validator.constraints.Range', '区间', '[\"max:Integer\", \"min:Integer\"]', NULL),
 	(8, 'Valid', 'javax.validation.Valid', '是否验证', NULL, NULL);
 
 

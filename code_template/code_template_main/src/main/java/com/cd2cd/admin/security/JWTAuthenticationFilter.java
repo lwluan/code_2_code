@@ -28,7 +28,7 @@ import com.cd2cd.admin.util.JWTHelperUtil;
 @Component
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+	private static final Logger log = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 	
 	@Resource
 	private JWTHelperUtil jWTHelperUtil;
@@ -40,39 +40,23 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 		
-		String header = request.getHeader("Authorization");
-		boolean toAuthentication = false;
-		if (header != null && header.startsWith("Bearer ")) {
-			toAuthentication = true;
-		} else {
-			String token = request.getParameter("token");
-			if(StringUtils.isNotEmpty(token)) {
-				toAuthentication = true;
-			}
+		boolean dontAuthentication = request.getServletPath().startsWith(ApplicationSecurity.DONT_AUTHENTICATION_PROFIX);
+		log.info("dontAuthentication={}", dontAuthentication);
+		if (! dontAuthentication) {
+			authentication(request, response);
 		}
-		
-		LOG.info("toAuthentication=" + toAuthentication);
-		
-        if (toAuthentication) {
-        	authentication(request, response);
-        }
-        
-        chain.doFilter(request, response);
+		chain.doFilter(request, response);
 	}
 	
 	private void authentication(HttpServletRequest request, HttpServletResponse response) {
 		
         String authHeader = request.getHeader("Authorization");
-        String token = request.getParameter("token");
         String tokenHead = "Bearer ";
-        if(StringUtils.isBlank(authHeader) && StringUtils.isBlank(token)) {
+        if(StringUtils.isBlank(authHeader)) {
         	return;
-        } else if(StringUtils.isBlank(authHeader)) {
-        	authHeader = token;
-        	tokenHead = "";
         }
         
-        if (authHeader != null && authHeader.startsWith(tokenHead)) {
+        if (authHeader.startsWith(tokenHead)) {
         	String authToken = authHeader.substring(tokenHead.length());
         	
         	try {

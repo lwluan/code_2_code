@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -278,11 +279,13 @@ public class ProDatabaseServiceImpl implements ProDatabaseService {
 			}
 			
 			// delete other columns
-			ProTableColumnCriteria delProTableColumnCriteria = new ProTableColumnCriteria();
-			delProTableColumnCriteria.createCriteria()
-			.andNameNotIn(allColumns)
-			.andTableIdEqualTo(tableId);
-			proTableColumnMapper.deleteByExample(delProTableColumnCriteria);
+			if(CollectionUtils.isNotEmpty(allColumns)) {
+				ProTableColumnCriteria delProTableColumnCriteria = new ProTableColumnCriteria();
+				delProTableColumnCriteria.createCriteria()
+				.andNameNotIn(allColumns)
+				.andTableIdEqualTo(tableId);
+				proTableColumnMapper.deleteByExample(delProTableColumnCriteria);
+			}
 		}
 		return true;
 	}

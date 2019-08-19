@@ -1,6 +1,7 @@
 package com.cd2cd.admin.security;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -21,6 +22,7 @@ import com.cd2cd.admin.component.EntryPointUnauthorizedHandler;
 import com.cd2cd.admin.component.RestAccessDeniedHandler;
 import com.cd2cd.admin.domain.SysAuthority;
 import com.cd2cd.admin.mapper.SysAuthorityMapper;
+import com.google.common.collect.Sets;
 
 
 /**
@@ -30,7 +32,10 @@ import com.cd2cd.admin.mapper.SysAuthorityMapper;
 @Configuration
 public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
-	public static final String LOGIN_PATH = "/api/login";
+	public static final String DONT_AUTHENTICATION_PROFIX = "/comm";
+	private static final Set<String> PERMIT_ALL_URL = Sets.newHashSet(
+		"/admin/**", DONT_AUTHENTICATION_PROFIX+"/**"
+	);
 	private static Logger logger = LoggerFactory.getLogger(ApplicationSecurity.class);
 
 	@Autowired
@@ -63,8 +68,7 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
 		.authorizeRequests()
 		.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-		.antMatchers(LOGIN_PATH).permitAll()
-		.antMatchers("/static/**", "/index.html", "/manifest.json", "/favicon.ico").permitAll()
+		.antMatchers(PERMIT_ALL_URL.toArray(new String[]{})).permitAll()
 		.anyRequest().authenticated()
 		.and().headers().cacheControl();
 
