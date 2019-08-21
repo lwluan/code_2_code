@@ -13,17 +13,11 @@ public class DataPageWrapper<T> {
 	/** 列表数据 */
 	private List<T> rows;
 
-	/** 总页数 */
-	private Integer totalPage;
-
 	/** 总条数 */
-	private Long totalCount;
+	private Long total;
 
 	/** 当前页码 */
-	private Integer currPage;
-
-	/** 限制可访问总页数 */
-	private Integer limitPage;
+	private Integer current;
 
 	/** 每页显示记录条数 */
 	private Integer pageSize;
@@ -36,39 +30,20 @@ public class DataPageWrapper<T> {
 		this.rows = rows;
 	}
 
-	public Integer getTotalPage() {
-		if( null == totalPage && totalCount != null && pageSize != null ) {
-			return (int) (totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1);
-		}
-		return totalPage;
+	public Long getTotal() {
+		return total;
 	}
 
-	public void setTotalPage(Integer totalPage) {
-		this.totalPage = totalPage;
+	public void setTotal(Long total) {
+		this.total = total;
 	}
 
-	public Long getTotalCount() {
-		return totalCount;
+	public Integer getCurrent() {
+		return current;
 	}
 
-	public void setTotalCount(Long totalCount) {
-		this.totalCount = totalCount;
-	}
-
-	public Integer getCurrPage() {
-		return currPage;
-	}
-
-	public void setCurrPage(Integer currPage) {
-		this.currPage = currPage;
-	}
-
-	public Integer getLimitPage() {
-		return limitPage;
-	}
-
-	public void setLimitPage(Integer limitPage) {
-		this.limitPage = limitPage;
+	public void setCurrent(Integer current) {
+		this.current = current;
 	}
 
 	public Integer getPageSize() {

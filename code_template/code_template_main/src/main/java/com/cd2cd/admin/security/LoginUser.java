@@ -13,30 +13,27 @@ public class LoginUser extends User {
 
 	private static final long serialVersionUID = 1L;
 
-	public LoginUser(String username, String password, boolean enabled,
-			boolean accountNonExpired, boolean credentialsNonExpired,
-			boolean accountNonLocked,
-			Collection<? extends GrantedAuthority> authorities) {
-		super(username, password, enabled, accountNonExpired,
-				credentialsNonExpired, accountNonLocked, authorities);
+	private Integer id;
+	private List<String> authIds;
+
+	public LoginUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+		super(username, password, authorities);
 	}
 
-	private List<Integer> roleIds;
-
-	public List<Integer> getRoleIds() {
-		return roleIds;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setRoleIds(List<Integer> roleIds) {
-		this.roleIds = roleIds;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	@Override
-	public String toString() {
-		return "LoginUser [roleIds=" + roleIds + ", getAuthorities()=" + getAuthorities() + ", getPassword()=" + getPassword()
-				+ ", getUsername()=" + getUsername() + ", isEnabled()=" + isEnabled() + ", isAccountNonExpired()=" + isAccountNonExpired()
-				+ ", isAccountNonLocked()=" + isAccountNonLocked() + ", isCredentialsNonExpired()=" + isCredentialsNonExpired()
-				+ ", hashCode()=" + hashCode() + ", toString()=" + super.toString() + ", getClass()=" + getClass() + "]";
+	public List<String> getAuthIds() {
+		return authIds;
 	}
-	
+
+	public void setAuthIds(List<String> authIds) {
+		this.authIds = authIds;
+	}
+
 }

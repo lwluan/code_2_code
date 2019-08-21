@@ -1,5 +1,6 @@
 package com.cd2cd.admin.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cd2cd.admin.comm.ServiceCode;
-import com.cd2cd.admin.domain.SysRole;
 import com.cd2cd.admin.domain.SysUser;
 import com.cd2cd.admin.domain.SysUserRoleRel;
 import com.cd2cd.admin.domain.gen.SysUserCriteria;
@@ -17,13 +17,11 @@ import com.cd2cd.admin.domain.gen.SysUserRoleRelCriteria;
 import com.cd2cd.admin.mapper.SysRoleMapper;
 import com.cd2cd.admin.mapper.SysUserMapper;
 import com.cd2cd.admin.mapper.SysUserRoleRelMapper;
-import com.cd2cd.admin.security.Md5PasswordEncoder;
 import com.cd2cd.admin.service.SysUserService;
 import com.cd2cd.admin.util.BeanUtil;
+import com.cd2cd.admin.util.CommUtils;
 import com.cd2cd.admin.vo.BaseRes;
 import com.cd2cd.admin.vo.DataPageWrapper;
-import com.cd2cd.admin.vo.ObjDataWrapper;
-import com.cd2cd.admin.vo.SysRoleVo;
 import com.cd2cd.admin.vo.SysUserVo;
 
 @Service
@@ -37,104 +35,6 @@ public class SysUserServiceImpl implements SysUserService {
 	
 	@Autowired
 	private SysUserRoleRelMapper sysUserRoleRelMapper;
-	
-	@Override
-	public BaseRes<DataPageWrapper<SysUserVo>> list(
-			Integer currPage, Integer pageSize, SysUserVo sysUserVo) {
-		
-		BaseRes<DataPageWrapper<SysUserVo>> res = new BaseRes<>();
-		res.setData(new DataPageWrapper<SysUserVo>());
-		res.getData().setCurrPage(currPage);
-		res.getData().setPageSize(pageSize);
-		
-		SysUserCriteria example = new SysUserCriteria();
-		int mysqlLength = pageSize;
-		int mysqlOffset = (currPage - 1) * mysqlLength;
-		
-		example.setMysqlLength(mysqlLength);
-		example.setMysqlOffset(mysqlOffset);
-		
-		Criteria mCriteria = example.createCriteria();
-		if( StringUtils.isNotEmpty(sysUserVo.getUsername()) ) {
-			mCriteria.andUsernameLike(sysUserVo.getUsername() + "%");
-		}
-		if( StringUtils.isNotEmpty(sysUserVo.getStatus()) ) {
-			mCriteria.andStatusEqualTo(sysUserVo.getStatus());
-		}
-		
-		long totalCount = sysUserMapper.countByExample(example);
-		res.getData().setTotalCount(totalCount);
-		if( totalCount > 0 ) {
-			List<SysUser> sysUserList = sysUserMapper.selectByExample(example);
-			List<SysUserVo> rows = BeanUtil.voConvertList(sysUserList, SysUserVo.class);
-			res.getData().setRows(rows);
-		} 
-		return res;
-	}
-
-	@Override
-	public ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object> detail(Integer userId) {
-		
-		ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object> objDataWrap = new ObjDataWrapper<SysUserVo, List<SysRoleVo>, Object>();
-		
-		SysUser mSysUser = sysUserMapper.selectByPrimaryKey(userId);
-		if( null == mSysUser ) {
-			mSysUser = new SysUser();
-		}
-		mSysUser.setPassword(null);
-		List<SysRole> sysRoles = sysRoleMapper.querySysUserRoles(userId);
-		
-		SysUserVo data01 = new SysUserVo();
-		if( mSysUser != null ) {
-			data01 = BeanUtil.voConvert(mSysUser, SysUserVo.class);
-		}
-		List<SysRoleVo> data02 = BeanUtil.voConvertList(sysRoles, SysRoleVo.class); 
-		objDataWrap.setData1(data01);
-		objDataWrap.setData2(data02);
-		
-		return objDataWrap;
-	}
-
-	@Override
-	public boolean del(Integer userId) {
-		int affected = sysUserMapper.deleteByPrimaryKey(userId);
-		return (affected > 0 ? true : false);
-	}
-
-	@Override
-	public ServiceCode add(SysUserVo sysUserVo) {
-		
-		SysUser sysUser = BeanUtil.voConvert(sysUserVo, SysUser.class);
-		sysUser.setCreateTime(new Date());
-		sysUser.setUpdateTime(new Date());
-		
-		// 密码加密处理
-		String password = Md5PasswordEncoder.md5Encode(sysUser.getPassword());
-		sysUser.setPassword(password);
-		
-		sysUserMapper.insertSelective(sysUser);
-		updateUserRoles(sysUserVo.getRoles(), sysUser.getId());
-		
-		return ServiceCode.SUCCESS;
-	}
-
-	@Override
-	public ServiceCode modify(SysUserVo sysUserVo) {
-		
-		SysUser sysUser = BeanUtil.voConvert(sysUserVo, SysUser.class);
-		sysUser.setUpdateTime(new Date());
-		
-		if( StringUtils.isNotEmpty(sysUser.getPassword()) ) {
-			// 密码加密处理
-			String password = Md5PasswordEncoder.md5Encode(sysUser.getPassword());
-			sysUser.setPassword(password);
-		}
-		
-		sysUserMapper.updateByPrimaryKeySelective(sysUser);
-		updateUserRoles(sysUserVo.getRoles(), sysUserVo.getId());
-		
-		return ServiceCode.SUCCESS;
-	}
 	
 	/**
 	 * 处理角色关联
@@ -153,6 +53,99 @@ public class SysUserServiceImpl implements SysUserService {
 			record.setUserId(userId);
 			sysUserRoleRelMapper.insertSelective(record);
 		}
+	}
+
+	@Override
+	public BaseRes<DataPageWrapper<SysUser>> entityPage(SysUserVo sysUserVo) {
+		BaseRes<DataPageWrapper<SysUser>> res = new BaseRes<>(ServiceCode.SUCCESS);
+		res.setData(new DataPageWrapper<SysUser>());
+		
+		Integer current = sysUserVo.getCurrent();
+		current = current == null ? 1 : current;
+		Integer pageSize = sysUserVo.getPageSize();
+		pageSize = pageSize == null ? 12 : pageSize;
+		
+		res.getData().setCurrent(current);
+		res.getData().setPageSize(pageSize);
+		
+		int mysqlLength = pageSize;
+		int mysqlOffset = (current - 1) * mysqlLength;
+		
+		SysUserCriteria example = new SysUserCriteria();
+		example.setMysqlLength(mysqlLength);
+		example.setMysqlOffset(mysqlOffset);
+		
+		Criteria mCriteria = example.createCriteria();
+		if( StringUtils.isNotEmpty(sysUserVo.getUsername()) ) {
+			mCriteria.andUsernameLike(sysUserVo.getUsername() + "%");
+		}
+		if( StringUtils.isNotEmpty(sysUserVo.getStatus()) ) {
+			mCriteria.andStatusEqualTo(sysUserVo.getStatus());
+		}
+		
+		long total = sysUserMapper.countByExample(example);
+		res.getData().setTotal(total);
+		if( total > 0 ) {
+			List<SysUser> list = sysUserMapper.selectByExample(example);
+			List<SysUser> rows = BeanUtil.voConvertListIgnore(list, SysUser.class, "password");
+			res.getData().setRows(rows);
+		} 
+		return res;
+	}
+
+	@Override
+	public BaseRes<SysUser> entityInfo(Integer id) {
+		
+		BaseRes<SysUser> res = new BaseRes<>(ServiceCode.SUCCESS);
+		SysUser mSysUser = sysUserMapper.selectByPrimaryKey(id);
+		mSysUser.setPassword(null);
+		
+		List<Integer> roles = new ArrayList<>();
+		
+		SysUserRoleRelCriteria criteria = new SysUserRoleRelCriteria();
+		criteria.createCriteria()
+		.andUserIdEqualTo(id);
+		List<SysUserRoleRel> userRoles = sysUserRoleRelMapper.selectByExample(criteria);
+		for(SysUserRoleRel uRole :userRoles) {
+			roles.add(uRole.getRoleId());
+		}
+		mSysUser.setRoles(roles);
+		res.setData(mSysUser);
+		return res;
+	}
+
+	@Override
+	public BaseRes<String> deleteEntity(Integer id) {
+		sysUserMapper.deleteByPrimaryKey(id);
+		return new BaseRes<>(ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> addEntityInfo(SysUserVo sysUserVo) {
+		sysUserVo.setCreateTime(new Date());
+		sysUserVo.setUpdateTime(new Date());
+		
+		String password = CommUtils.md5Encode(sysUserVo.getUsername()+sysUserVo.getPassword());
+		sysUserVo.setPassword(password);
+		
+		return new BaseRes<>(ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> modifyEntityInfo(SysUserVo sysUserVo) {
+		
+		sysUserVo.setUpdateTime(new Date());
+		
+		String password = sysUserVo.getPassword();
+		if(StringUtils.isNotBlank(password)) {
+			password = CommUtils.md5Encode(sysUserVo.getUsername()+password);
+			sysUserVo.setPassword(password);
+		}
+		
+		sysUserMapper.updateByPrimaryKeySelective(sysUserVo);
+		updateUserRoles(sysUserVo.getRoles(), sysUserVo.getId());
+		
+		return new BaseRes<>(ServiceCode.SUCCESS);
 	}
 
 }

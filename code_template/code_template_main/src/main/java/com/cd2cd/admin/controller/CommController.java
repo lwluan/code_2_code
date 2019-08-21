@@ -1,46 +1,84 @@
 package com.cd2cd.admin.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cd2cd.admin.comm.ServiceCode;
+import com.cd2cd.admin.domain.SysUser;
+import com.cd2cd.admin.domain.gen.SysUserCriteria;
+import com.cd2cd.admin.mapper.SysUserMapper;
 import com.cd2cd.admin.security.LoginUser;
-import com.cd2cd.admin.security.Md5PasswordEncoder;
-import com.cd2cd.admin.security.MyUserDetailsService;
 import com.cd2cd.admin.service.SysAuthorityService;
+import com.cd2cd.admin.util.CommUtils;
 import com.cd2cd.admin.util.JWTHelperUtil;
 import com.cd2cd.admin.vo.BaseRes;
+import com.cd2cd.admin.vo.LoginResVo;
+import com.cd2cd.admin.vo.SysUserVo;
+import com.cd2cd.admin.vo.SysUserVo.AdminLogin;
 
 @RestController
 @RequestMapping("comm")
 public class CommController {
 
+	private Logger log = LoggerFactory.getLogger(CommController.class);
+
 	@Resource
 	private SysAuthorityService sysAuthorityService;
-	
-	@Resource
-	private MyUserDetailsService myUserDetailsService;
-	
+
+	@Autowired
+	private SysUserMapper sysUserMapper;
+
 	@Resource
 	private JWTHelperUtil jWTHelperUtil;
-	
-	@RequestMapping(value = "admin/login", method = RequestMethod.POST)
-	public BaseRes<String> userLogin(String username, String password) {
-		BaseRes<String> res = new BaseRes<String>();
-		
-		LoginUser loginUser = myUserDetailsService.loadUserByUsername(username);
-		password = Md5PasswordEncoder.md5Encode(password);
-		if( loginUser.getPassword().equals(password) ) {
-			String token = jWTHelperUtil.getToken(loginUser);
-			res.setData(token);
+
+	/**
+	 * 管理员登录
+	 * @param sysUserVo
+	 * @param bindingResult
+	 * @return
+	 */
+	@PostMapping("admin/login")
+	public BaseRes<LoginResVo> adminLogin(@Validated(AdminLogin.class) @RequestBody SysUserVo sysUserVo, BindingResult bindingResult) {
+
+		BaseRes<LoginResVo> res = new BaseRes<>();
+
+		String username = sysUserVo.getUsername();
+		String password = sysUserVo.getPassword();
+
+		password = CommUtils.md5Encode(username+password);
+
+		SysUserCriteria suCriteria = new SysUserCriteria();
+		suCriteria.createCriteria().andUsernameEqualTo(username).andPasswordEqualTo(password).andStatusEqualTo("enable");
+		List<SysUser> users = sysUserMapper.selectByExample(suCriteria);
+
+		if (!CollectionUtils.isEmpty(users)) {
+			SysUser sUser = users.get(0);
+			SysUserVo sysUser = new SysUserVo();
+			sysUser.setId(sUser.getId());
+			sysUser.setUsername(sUser.getUsername());
+			String token = jWTHelperUtil.getToken(sysUser);
+			
+			LoginUser loginUser = jWTHelperUtil.verifyAdminToken(token);
+			List<String> authIds = loginUser.getAuthIds();
+			
+			log.info("username={}, token={}", username, token);
+			LoginResVo loginRes = new LoginResVo(token, authIds);
+			res.setData(loginRes);
 			res.setServiceCode(ServiceCode.SUCCESS);
-		} else {
-			res.setServiceCode(ServiceCode.LOGIN_ERROR);
+			return res;
 		}
-		
-		return res;
+		return new BaseRes<>(ServiceCode.LOGIN_ERROR);
 	}
 }

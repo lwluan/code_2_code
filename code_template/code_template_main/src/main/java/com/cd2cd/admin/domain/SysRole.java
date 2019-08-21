@@ -1,19 +1,21 @@
 package com.cd2cd.admin.domain;
 
-import com.cd2cd.admin.domain.gen.SuperSysRole;
 import java.io.Serializable;
+import java.util.List;
+
+import com.cd2cd.admin.domain.gen.SuperSysRole;
 
 public class SysRole extends SuperSysRole implements Serializable {
 	private static final long serialVersionUID = 1L;
+	
+	private List<String> authIds;
 
-	private Integer hasRole;
-
-	public Integer getHasRole() {
-		return hasRole;
+	public List<String> getAuthIds() {
+		return authIds;
 	}
 
-	public void setHasRole(Integer hasRole) {
-		this.hasRole = hasRole;
+	public void setAuthIds(List<String> authIds) {
+		this.authIds = authIds;
 	}
 
 }

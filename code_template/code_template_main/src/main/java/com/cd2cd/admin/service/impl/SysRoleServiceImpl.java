@@ -1,5 +1,6 @@
 package com.cd2cd.admin.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cd2cd.admin.comm.ServiceCode;
-import com.cd2cd.admin.domain.SysAuthority;
 import com.cd2cd.admin.domain.SysAuthorityRoleRel;
 import com.cd2cd.admin.domain.SysRole;
 import com.cd2cd.admin.domain.gen.SysAuthorityRoleRelCriteria;
@@ -21,8 +21,6 @@ import com.cd2cd.admin.service.SysRoleService;
 import com.cd2cd.admin.util.BeanUtil;
 import com.cd2cd.admin.vo.BaseRes;
 import com.cd2cd.admin.vo.DataPageWrapper;
-import com.cd2cd.admin.vo.ObjDataWrapper;
-import com.cd2cd.admin.vo.SysAuthorityVo;
 import com.cd2cd.admin.vo.SysRoleVo;
 
 @Service
@@ -36,85 +34,6 @@ public class SysRoleServiceImpl implements SysRoleService {
 	
 	@Autowired
 	private SysAuthorityRoleRelMapper sysAuthorityRoleRelMapper;
-	
-	@Override
-	public BaseRes<DataPageWrapper<SysRoleVo>> list(Integer currPage,
-			Integer pageSize, SysRoleVo sysUserVo) {
-		
-		BaseRes<DataPageWrapper<SysRoleVo>> res = new BaseRes<>();
-		res.setData(new DataPageWrapper<SysRoleVo>());
-		res.getData().setCurrPage(currPage);
-		res.getData().setPageSize(pageSize);
-		
-		SysRoleCriteria example = new SysRoleCriteria();
-		int mysqlLength = pageSize;
-		int mysqlOffset = (currPage - 1) * mysqlLength;
-		
-		example.setMysqlLength(mysqlLength);
-		example.setMysqlOffset(mysqlOffset);
-		
-		Criteria mCriteria = example.createCriteria();
-		if( StringUtils.isNotEmpty(sysUserVo.getName()) ) {
-			mCriteria.andNameLike(sysUserVo.getName() + "%");
-		}
-		
-		long totalCount = sysRoleMapper.countByExample(example);
-		res.getData().setTotalCount(totalCount);
-		if( totalCount > 0 ) {
-			List<SysRole> sysUserList = sysRoleMapper.selectByExample(example);
-			List<SysRoleVo> rows = BeanUtil.voConvertList(sysUserList, SysRoleVo.class);
-			res.getData().setRows(rows);
-		} 
-		return res;
-	}
-
-	@Override
-	public ObjDataWrapper<SysRoleVo, List<SysAuthorityVo>, Object> detail(
-			Integer id) {
-		ObjDataWrapper<SysRoleVo, List<SysAuthorityVo>, Object> objDataWrap = new ObjDataWrapper<SysRoleVo, List<SysAuthorityVo>, Object>();
-		
-		SysRole mSysRole = sysRoleMapper.selectByPrimaryKey(id);
-		List<SysAuthority> sysRoles = sysAuthorityMapper.querySysRoleAuthorities(id);
-		
-		SysRoleVo data01 = new SysRoleVo();
-		if( null != mSysRole ) {
-			data01 = BeanUtil.voConvert(mSysRole, SysRoleVo.class);
-		}
-		List<SysAuthorityVo> data02 = BeanUtil.voConvertList(sysRoles, SysAuthorityVo.class); 
-		objDataWrap.setData1(data01);
-		objDataWrap.setData2(data02);
-		
-		return objDataWrap;
-	}
-
-	@Override
-	public boolean del(Integer userId) {
-		int affected = sysRoleMapper.deleteByPrimaryKey(userId);
-		return (affected > 0 ? true : false);
-	}
-
-	@Override
-	public ServiceCode add(SysRoleVo sysRoleVo) {
-		
-		SysRole sysRole = BeanUtil.voConvert(sysRoleVo, SysRole.class);
-		sysRole.setCreateTime(new Date());
-		sysRole.setUpdateTime(new Date());
-		sysRoleMapper.insertSelective(sysRole);
-		updateRoleAuthorities(sysRoleVo.getAuthIds(), sysRole.getId());
-		
-		return ServiceCode.SUCCESS;
-	}
-
-	@Override
-	public ServiceCode modify(SysRoleVo sysRoleVo) {
-		
-		SysRole sysRole = BeanUtil.voConvert(sysRoleVo, SysRole.class);
-		sysRole.setUpdateTime(new Date());
-		sysRoleMapper.updateByPrimaryKeySelective(sysRole);
-		updateRoleAuthorities(sysRoleVo.getAuthIds(), sysRole.getId());
-		
-		return ServiceCode.SUCCESS;
-	}
 
 	/**
 	 * 处理权限关联
@@ -133,6 +52,85 @@ public class SysRoleServiceImpl implements SysRoleService {
 			record.setAuthoritiesId(authId);
 			sysAuthorityRoleRelMapper.insertSelective(record);
 		}
+	}
+
+	@Override
+	public BaseRes<DataPageWrapper<SysRole>> entityPage(SysRoleVo sysUserVo) {
+		BaseRes<DataPageWrapper<SysRole>> res = new BaseRes<>(ServiceCode.SUCCESS);
+		res.setData(new DataPageWrapper<SysRole>());
+		
+		Integer current = sysUserVo.getCurrent();
+		current = current == null ? 1 : current;
+		Integer pageSize = sysUserVo.getPageSize();
+		pageSize = pageSize == null ? 12 : pageSize;
+		
+		res.getData().setCurrent(current);
+		res.getData().setPageSize(pageSize);
+		
+		int mysqlLength = pageSize;
+		int mysqlOffset = (current - 1) * mysqlLength;
+		
+		SysRoleCriteria example = new SysRoleCriteria();
+		example.setMysqlLength(mysqlLength);
+		example.setMysqlOffset(mysqlOffset);
+		
+		Criteria mCriteria = example.createCriteria();
+		if( StringUtils.isNotEmpty(sysUserVo.getName()) ) {
+			mCriteria.andNameLike(sysUserVo.getName() + "%");
+		}
+		
+		long total = sysRoleMapper.countByExample(example);
+		res.getData().setTotal(total);
+		if( total > 0 ) {
+			List<SysRole> list = sysRoleMapper.selectByExample(example);
+			List<SysRole> rows = BeanUtil.voConvertListIgnore(list, SysRole.class, "password");
+			res.getData().setRows(rows);
+		} 
+		return res;
+	}
+
+	@Override
+	public BaseRes<SysRole> entityInfo(Integer id) {
+		
+		BaseRes<SysRole> res = new BaseRes<>(ServiceCode.SUCCESS);
+		SysRole mSysRole = sysRoleMapper.selectByPrimaryKey(id);
+		
+		SysAuthorityRoleRelCriteria criteria = new SysAuthorityRoleRelCriteria();
+		criteria.createCriteria()
+		.andRoleIdEqualTo(id);
+		List<SysAuthorityRoleRel> authoritys = sysAuthorityRoleRelMapper.selectByExample(criteria);
+		
+		List<String> authIds = new ArrayList<>();
+		for(SysAuthorityRoleRel auth :authoritys) {
+			authIds.add(auth.getAuthoritiesId());
+		}
+		mSysRole.setAuthIds(authIds);
+		res.setData(mSysRole);
+		return res;
+	}
+
+	@Override
+	public BaseRes<String> deleteEntity(Integer id) {
+		sysRoleMapper.deleteByPrimaryKey(id);
+		return new BaseRes<>(ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> addEntityInfo(SysRoleVo sysUserVo) {
+		sysUserVo.setCreateTime(new Date());
+		sysUserVo.setUpdateTime(new Date());
+		
+		updateRoleAuthorities(sysUserVo.getAuthIds(), sysUserVo.getId());
+		return new BaseRes<>(ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> modifyEntityInfo(SysRoleVo sysUserVo) {
+		
+		sysUserVo.setUpdateTime(new Date());
+		sysRoleMapper.updateByPrimaryKeySelective(sysUserVo);
+		updateRoleAuthorities(sysUserVo.getAuthIds(), sysUserVo.getId());
+		return new BaseRes<>(ServiceCode.SUCCESS);
 	}
 
 }

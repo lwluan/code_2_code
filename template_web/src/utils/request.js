@@ -4,6 +4,9 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import { getAccessToken } from '@/utils/localStoreUtil';
+import Constants from '@/utils/constants';
+
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
   201: '新建或修改数据成功。',
@@ -35,6 +38,11 @@ const errorHandler = error => {
       message: `请求错误 ${status}: ${url}`,
       description: errorText,
     });
+  } else if (!response) {
+    notification.error({
+      description: '您的网络发生异常，无法连接服务器',
+      message: '网络异常',
+    });
   }
 
   return response;
@@ -48,4 +56,30 @@ const request = extend({
   // 默认错误处理
   credentials: 'include', // 默认请求是否带上cookie
 });
+
+request.interceptors.request.use((url, options) => {
+  const myHeaders = { ...options };
+  if (url.indexOf(`${Constants.SERVICE_ROOT}/comm`) !== 0) {
+    const loginObj = getAccessToken();
+    if (loginObj) {
+      myHeaders.headers.Authorization = `Bearer ${loginObj.token}`;
+    }
+  }
+  // 添加租户信息  params d
+  return {
+    url: `${url}`,
+    options: { ...myHeaders, interceptors: true },
+  };
+});
+
+request.interceptors.response.use(async (response, options) => {
+  const data = await response.clone().json()
+  if (data && data.code && data.code !== 10000) {
+    notification.error({
+      message: `${data.msg}`,
+    });
+  }
+  return response;
+});
+
 export default request;

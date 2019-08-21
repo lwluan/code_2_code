@@ -33,9 +33,6 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	@Resource
 	private JWTHelperUtil jWTHelperUtil;
 	
-	@Resource
-	private MyUserDetailsService userDetailsService;
-	
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
@@ -60,26 +57,22 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         	String authToken = authHeader.substring(tokenHead.length());
         	
         	try {
-	        	LoginUser mUserVo = jWTHelperUtil.verifyToken(authToken);
-	        	if (mUserVo != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+	        	LoginUser mUserVo = jWTHelperUtil.verifyAdminToken(authToken);
 	        		
-	        		System.out.println("-----"+mUserVo.getAuthorities());
-	        		
-	        		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(mUserVo, null, mUserVo.getAuthorities());
-	                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-	                SecurityContextHolder.getContext().setAuthentication(authentication);
-	        	}
+        		UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(mUserVo, null, mUserVo.getAuthorities());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContextHolder.getContext().setAuthentication(authentication);
 	            
         	} catch(Exception e) {
-        		e.printStackTrace();
+        		log.error("error={}", e.getMessage(), e);
         		JSONObject jsonObj = new JSONObject();
     			try {
 					jsonObj.put("code", ServiceCode.TOKEN_INVALID.code);
 	    			jsonObj.put("msg", ServiceCode.TOKEN_INVALID.msg);
-	        		response.setContentType("text/json");
+	        		response.setContentType("application/json;UTF-8");
 	        		response.getWriter().println(jsonObj.toString());
     			} catch (Exception e1) {
-					e1.printStackTrace();
+    				log.error("error={}", e1.getMessage(), e1);
 				}
         	}
         }

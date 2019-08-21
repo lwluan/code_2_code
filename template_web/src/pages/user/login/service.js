@@ -1,7 +1,8 @@
 import request from '@/utils/request';
+import Constants from '@/utils/constants';
 
 export async function fakeAccountLogin(params) {
-  return request('/api/login/account', {
+  return request(`${Constants.SERVICE_ROOT}/comm/admin/login`, {
     method: 'POST',
     data: params,
   });
