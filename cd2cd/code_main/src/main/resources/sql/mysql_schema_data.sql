@@ -496,13 +496,18 @@ UNLOCK TABLES;
 INSERT INTO `pro_file` (`id`, `project_id`, `module_id`, `super_id`, `name`, `comment`, `req_path`, `file_type`, `paradigm`, `class_type`, `create_time`, `update_time`)
 VALUES
 	(1, NULL, NULL, 0, 'BaseRes', '接口返回数据', NULL, 'vo', 'yes', 'class', '2018-05-17 15:21:08', '2018-05-17 15:21:08'),
-	(2, NULL, NULL, 0, 'BaseReq', '用户请求数据', NULL, 'vo', 'yes', 'class', '2018-05-17 15:23:19', '2018-05-17 15:23:19');
+	(2, NULL, NULL, 0, 'BaseReq', '用户请求数据', NULL, 'vo', 'yes', 'class', '2018-05-17 15:23:19', '2018-05-17 15:23:19'),
+	(3, NULL, NULL, 0, 'PageData', '分页数据', NULL, 'vo', 'yes', 'class', '2018-05-17 15:23:19', '2018-05-17 15:23:19');
 
 INSERT INTO `pro_field` (`id`, `file_id`, `name`, `data_type`, `type_path`, `type_key`, `collection_type`, `comment`, `create_time`, `update_time`)
 VALUES
 	(1, 1, 'data', 'T', 'T', 'T', 'single', NULL, '2018-05-26 16:03:05', '2018-05-26 16:03:05'),
 	(2, 1, 'msg', 'base', 'String', 'String', 'single', '消息', '2018-06-23 17:54:24', '2018-06-23 17:54:24'),
-	(3, 1, 'code', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:54:31', '2018-06-23 17:54:31');
+	(3, 1, 'code', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:54:31', '2018-06-23 17:54:31'),
+	(4, 3, 'current', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:54:31', '2018-06-23 17:54:31'),
+	(5, 3, 'pageSize', 'base', 'Integer', 'Integer', 'single', NULL, '2018-06-23 17:54:31', '2018-06-23 17:54:31'),
+	(6, 3, 'total', 'base', 'Long', 'Long', 'single', NULL, '2018-06-23 17:54:31', '2018-06-23 17:54:31'),
+	(7, 3, 'rows', 'T', 'T', 'T', 'single', NULL, '2018-06-23 17:54:31', '2018-06-23 17:54:31');
 
 INSERT INTO `pro_field` (`id`, `file_id`, `name`, `data_type`, `type_path`, `type_key`, `collection_type`, `comment`, `create_time`, `update_time`)
 VALUES

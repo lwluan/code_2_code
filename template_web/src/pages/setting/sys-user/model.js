@@ -43,8 +43,6 @@ export default {
     },
 
     * updateEntity({ payload, callback }, { call }) {
-
-      // add or update
       let response;
       if (payload.id) {
         response = yield call(updateEntityApi, payload);

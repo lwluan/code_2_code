@@ -18,7 +18,7 @@ import com.cd2cd.util.DatabaseInitDataUtil;
 @RestController
 @SpringBootApplication
 public class AppMainStarter {
-	private static Logger LOG = LoggerFactory.getLogger(AppMainStarter.class);
+	private static Logger log = LoggerFactory.getLogger(AppMainStarter.class);
 	
 	@Autowired
 	DatabaseInitDataUtil databaseInitDataUtil;
@@ -29,7 +29,7 @@ public class AppMainStarter {
     }
 	
 	public static void main(String[] args) {
-		LOG.info("App to Start ...");
+		log.info("App to Start ...");
 		SpringApplication.run(AppMainStarter.class, args);
 		
 	}

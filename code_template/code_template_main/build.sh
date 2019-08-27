@@ -14,7 +14,7 @@ if [ ! -f "$start_file" ]; then
 fi 
 
 # cp -rf /home/$LOGNAME/build/code_template/src/main/resources/config/application.properties /home/$LOGNAME/project/
-cp -rf /home/$LOGNAME/build/code_template/code_template_main/src/main/resources/log4j2.xml /home/$LOGNAME/project/
+cp -rf /home/$LOGNAME/build/code_template/code_template_main/src/main/resources/logback.xml /home/$LOGNAME/project/
 
 mvn dependency:copy-dependencies -DoutputDirectory=lib -DincludeScope=compile
 cp /home/$LOGNAME/build/code_template/code_template_main/lib/*.jar /home/$LOGNAME/project/lib/

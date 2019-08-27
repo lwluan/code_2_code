@@ -185,11 +185,13 @@ class TableList extends Component {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
 
-      this.setState({
-        formValues: fieldsValue,
-        current: 1,
-      });
+      const values = {
+        ...fieldsValue,
+        createTime: fieldsValue.createTime && fieldsValue.createTime.valueOf(),
+      };
 
+      this.state.formValues = values;
+      this.state.current = 1;
       this.handleReloadTableList();
     });
   };
@@ -219,16 +221,9 @@ class TableList extends Component {
     }
   };
 
-  handleUpdateModalVisible = (flag, record) => {
-    this.setState({
-      updateModalVisible: !!flag,
-      stepFormValues: record || {},
-    });
-  };
 
   handleEntityUpdate = fieldsValue => {
-
-    const { dispatch, [entityNameSpace]:{ entityInfoObj } } = this.props;
+    const { dispatch, [entityNameSpace]: { entityInfoObj } } = this.props;
 
     let formData = fieldsValue;
     if (entityInfoObj.id) {
@@ -274,17 +269,17 @@ class TableList extends Component {
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="账号名称">
-              {getFieldDecorator('username')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('username')(<Input placeholder="昵称/账号/手机号/邮箱" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="">全部</Option>
                   <Option value="enable">启用</Option>
-                  <Option value="disable">闭用</Option>
-                </Select>
-              )}
+                  <Option value="disable">禁用</Option>
+                </Select>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -308,47 +303,25 @@ class TableList extends Component {
   renderAdvancedForm() {
     const {
       form: { getFieldDecorator },
+      [entityNameSpace]: { roleList },
     } = this.props;
+
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
             <FormItem label="账号名称">
-              {getFieldDecorator('username')(<Input placeholder="请输入" />)}
+              {getFieldDecorator('username')(<Input placeholder="昵称/账号/手机号/邮箱" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <FormItem label="使用状态">
               {getFieldDecorator('status')(
                 <Select placeholder="请选择" style={{ width: '100%' }}>
+                  <Option value="">全部</Option>
                   <Option value="enable">启用</Option>
                   <Option value="disable">禁用</Option>
-                </Select>
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="角色权限">
-              {getFieldDecorator('roles')(<InputNumber style={{ width: '100%' }} />)}
-            </FormItem>
-          </Col>
-        </Row>
-        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
-          <Col md={8} sm={24}>
-            <FormItem label="创建日期">
-              {getFieldDecorator('createTime')(
-                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />
-              )}
-            </FormItem>
-          </Col>
-          <Col md={8} sm={24}>
-            <FormItem label="使用状态">
-              {getFieldDecorator('status3')(
-                <Select placeholder="请选择" style={{ width: '100%' }}>
-                  <Option value="0">关闭</Option>
-                  <Option value="1">运行中</Option>
-                </Select>
-              )}
+                </Select>)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
@@ -363,6 +336,29 @@ class TableList extends Component {
                 展开 <Icon type="down" />
               </a>
             </span>
+          </Col>
+        </Row>
+        <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
+          <Col md={8} sm={24}>
+            <FormItem label="创建日期">
+              {getFieldDecorator('createTime')(
+                <DatePicker style={{ width: '100%' }} placeholder="请输入更新日期" />)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            <FormItem label="角色">
+              {getFieldDecorator('roles')(
+                <Select
+                  mode="multiple"
+                  placeholder="请选择角色"
+                  style={{ width: '100%' }}
+                >
+                  {roleList.map(v => <Option key={v.id} value={v.id}> {v.name} </Option>)}
+                </Select>)}
+            </FormItem>
+          </Col>
+          <Col md={8} sm={24}>
+            {' '}
           </Col>
         </Row>
       </Form>
@@ -413,6 +409,7 @@ class TableList extends Component {
               )}
             </div>
             <StandardTable
+              rowKey="id"
               selectedRows={selectedRows}
               loading={loading}
               data={entityPageResult}

@@ -41,7 +41,7 @@
 		<appender-ref ref="file" />
 	</root>
 
-	<logger name="com.yishang.loan_api" level="debug" additivity="true" />
+	<logger name="com.cd2cd.admin" level="debug" additivity="true" />
 	<logger name="org.springframework.web" level="info" additivity="true" />
 	<logger name="org.apache.ibatis" level="info" additivity="true" />
 	<logger name="org.springframework.boot" level="info" additivity="true" />

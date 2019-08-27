@@ -18,7 +18,7 @@ start(){
                 -Xmn340M \
                 -XX:MaxDirectMemorySize=64m"
 
-		nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar lib/code_template_main.jar --spring.config.location=application.properties --logging.config=log4j2.xml $* > /dev/null 2>&1 &
+		nohup $JAVA_HOME/bin/java $JAVA_OPTS -jar lib/code_template_main.jar --spring.config.location=application.properties --logging.config=logback.xml $* > /dev/null 2>&1 &
 		
         echo $! > $PROJECT_HOME/logs/AppMainStarter.pid
 

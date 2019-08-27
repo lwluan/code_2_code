@@ -5,9 +5,12 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cd2cd.admin.comm.ServiceCode;
 import com.cd2cd.admin.domain.SysUser;
 import com.cd2cd.admin.domain.SysUserRoleRel;
@@ -27,6 +30,8 @@ import com.cd2cd.admin.vo.SysUserVo;
 @Service
 public class SysUserServiceImpl implements SysUserService {
 
+	private Logger log = LoggerFactory.getLogger(SysUserServiceImpl.class);
+	
 	@Autowired
 	private SysUserMapper sysUserMapper;
 	
@@ -57,6 +62,7 @@ public class SysUserServiceImpl implements SysUserService {
 
 	@Override
 	public BaseRes<DataPageWrapper<SysUser>> entityPage(SysUserVo sysUserVo) {
+		log.info("sysUserVo={}", JSONObject.toJSONString(sysUserVo));
 		BaseRes<DataPageWrapper<SysUser>> res = new BaseRes<>(ServiceCode.SUCCESS);
 		res.setData(new DataPageWrapper<SysUser>());
 		
