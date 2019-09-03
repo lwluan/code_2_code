@@ -4,8 +4,6 @@ import java.util.Calendar;
 
 import javax.annotation.Resource;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import com.auth0.jwt.JWT;
@@ -22,7 +20,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
 public class JWTHelperUtil {
-	private static final Logger log = LoggerFactory.getLogger(JWTHelperUtil.class);
 
 	private String JWT_SECRET = "wx_app_api_099888";
 	private int expires_secs = 60 * 60 * 24 * 7; // 7天有效期
@@ -70,6 +67,22 @@ public class JWTHelperUtil {
 			JWTVerifier verifier = JWT.require(algorithm).build(); 
 			verifier.verify(token);
 			LoginUser adminUser = dataCacheDao.getAdminLoginCacheData(token);
+
+			return adminUser;
+		} catch (JWTVerificationException exception) {
+			throw new ServiceBusinessException(ServiceCode.TOKEN_INVALID, exception.getMessage());
+		} catch (Exception e) {
+			throw new ServiceBusinessException(ServiceCode.TOKEN_INVALID, e.getMessage());
+		}
+	}
+	
+	public LoginUser verifyApiToken(String token) {
+
+		try {
+			Algorithm algorithm = Algorithm.HMAC256(JWT_SECRET);
+			JWTVerifier verifier = JWT.require(algorithm).build(); 
+			verifier.verify(token);
+			LoginUser adminUser = dataCacheDao.getApiLoginCacheData(token);
 
 			return adminUser;
 		} catch (JWTVerificationException exception) {

@@ -22,22 +22,17 @@ import moment from 'moment';
 import EntityInfoForm from './components/EntityInfoForm';
 import StandardTable from '../../list/table-list/components/StandardTable';
 import styles from '../../list/table-list/style.less';
-import { ADMIN_NAME } from '../../../utils/constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
 
-const statusMap = { enable: 'success', disable: 'error' };
-const status = { enable: '启用', disable: '禁用' };
+const entityNameSpace = 'sysRole';
 
-const entityNameSpace = 'sysUser';
-
-/* eslint react/no-multi-comp:0 */
-@connect(({ sysUser, loading }) => ({
-  sysUser,
-  loading: loading.models.sysUser,
+@connect(({ sysRole, loading }) => ({
+  sysRole,
+  loading: loading.models.sysRole,
 }))
-class SysUser extends Component {
+class SysRole extends Component {
   state = {
     modalVisible: false,
     expandForm: false,
@@ -51,47 +46,19 @@ class SysUser extends Component {
 
   columns = [
     {
-      title: '昵称',
-      dataIndex: 'nickname',
-    },
-    {
-      title: '账号',
-      dataIndex: 'username',
-    },
-    {
-      title: '手机号',
-      dataIndex: 'mobile',
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      filters: [
-        {
-          text: status.enable,
-          value: 'enable',
-        },
-        {
-          text: status.disable,
-          value: 'disable',
-        },
-      ],
-      render(val) {
-        return <Badge status={statusMap[val]} text={status[val]} />;
-      },
+      title: '角色名称',
+      dataIndex: 'name',
+      render: text => <span>{text}</span>,
     },
     {
       title: '创建时间',
-      dataIndex: 'createTime',
+      dataIndex: 'create_date',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
     {
       title: '更新时间',
-      dataIndex: 'updatedTime',
+      dataIndex: 'update_date',
       sorter: true,
       render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
     },
@@ -101,19 +68,26 @@ class SysUser extends Component {
         <Fragment>
           <a onClick={this.handleEntityFormModalVisible.bind(this, true, record.id)}>修改</a>
           <Divider type="vertical" />
-          {ADMIN_NAME !== record.username ? <a onClick={this.handleRemoveEntity.bind(this, record)}>删除</a> : ''}
+          <a onClick={this.handleRemoveEntity.bind(this, record)}>删除</a>
         </Fragment>
       ),
     },
   ];
 
+  EntityInfoForm;
+
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: `${entityNameSpace}/queryAllRoleList`,
-    });
     this.handleReloadTableList();
   }
+
+  componentDidUpdate = () => {
+    if (this.EntityInfoForm) {
+      const {
+        [entityNameSpace]: { entityInfoObj },
+      } = this.props;
+      this.EntityInfoForm.locadRoleData(entityInfoObj);
+    }
+  };
 
   handleReloadTableList = () => {
     const { dispatch } = this.props;
@@ -164,6 +138,7 @@ class SysUser extends Component {
   };
 
   handleMenuClick = e => {
+    const { dispatch } = this.props;
     const { selectedRows } = this.state;
     if (!selectedRows) return;
 
@@ -208,7 +183,7 @@ class SysUser extends Component {
     if (flag === true) {
       const { dispatch } = this.props;
       dispatch({
-        type: `${entityNameSpace}/queryAllRoleList`,
+        type: `${entityNameSpace}/queryAllAuthoritys`,
       });
 
       if (entityId) {
@@ -307,7 +282,6 @@ class SysUser extends Component {
   renderAdvancedForm() {
     const {
       form: { getFieldDecorator },
-      [entityNameSpace]: { roleList },
     } = this.props;
 
     return (
@@ -350,16 +324,7 @@ class SysUser extends Component {
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
-            <FormItem label="角色">
-              {getFieldDecorator('roles')(
-                <Select
-                  mode="multiple"
-                  placeholder="请选择角色"
-                  style={{ width: '100%' }}
-                >
-                  {roleList.map(v => <Option key={v.id} value={v.id}> {v.name} </Option>)}
-                </Select>)}
-            </FormItem>
+
           </Col>
           <Col md={8} sm={24}>
             {' '}
@@ -376,7 +341,7 @@ class SysUser extends Component {
 
   render() {
     const {
-      [entityNameSpace]: { entityPageResult, entityInfoObj, roleList },
+      [entityNameSpace]: { entityPageResult, entityInfoObj, authoritys },
       loading,
     } = this.props;
     const { selectedRows, modalVisible } = this.state;
@@ -390,7 +355,7 @@ class SysUser extends Component {
       handleEntityUpdate: this.handleEntityUpdate,
       handleEntityFormModalVisible: this.handleEntityFormModalVisible,
       entityInfoObj,
-      roleList,
+      authoritys,
     };
     return (
       <PageHeaderWrapper>
@@ -423,10 +388,12 @@ class SysUser extends Component {
             />
           </div>
         </Card>
-        <EntityInfoForm {...parentMethods} modalVisible={modalVisible} />
+        <EntityInfoForm onRef={ele => {
+          this.EntityInfoForm = ele;
+        }} {...parentMethods} modalVisible={modalVisible} />
       </PageHeaderWrapper>
     );
   }
 }
 
-export default Form.create()(SysUser);
+export default Form.create()(SysRole);

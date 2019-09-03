@@ -117,7 +117,7 @@ export default {
                 {
                   name: 'sys-role',
                   path: '/setting/sys-role',
-                 // component: './setting/sys-role',
+                  component: './setting/sys-role',
                 },
               ],
             },

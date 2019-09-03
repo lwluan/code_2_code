@@ -91,7 +91,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     			try {
 					jsonObj.put("code", ServiceCode.TOKEN_INVALID.code);
 	    			jsonObj.put("msg", ServiceCode.TOKEN_INVALID.msg);
-	        		response.setContentType("text/json");
+	    			response.setContentType("text/html;charset=utf-8");
 	        		response.getWriter().println(jsonObj.toString());
     			} catch (Exception e1) {
 					e1.printStackTrace();

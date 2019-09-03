@@ -26,6 +26,7 @@ const Model = {
         const params = getPageQuery();
         let { redirect } = params;
 
+        console.info(redirect);
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
 
@@ -53,13 +54,15 @@ const Model = {
     changeLoginStatus(state, { payload }) {
 
       let status = 'error';
-      let auths = ['admin'];
+
+      let auths = [];
       if (payload.code === 10000) {
         status = 'ok';
         auths = payload.data.authIds;
       }
+      auths.push('admin');
       setAuthority(auths);
-      return { ...state, status: status, type: payload.type };
+      return { ...state, status, type: payload.type };
     },
   },
 };

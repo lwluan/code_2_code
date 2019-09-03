@@ -26,9 +26,10 @@ import com.cd2cd.admin.util.JWTHelperUtil;
  */
 
 @Component
-public class JWTAuthenticationFilter extends OncePerRequestFilter {
+public class JWTAdminAuthenticationFilter extends OncePerRequestFilter {
 
-	private static final Logger log = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
+	public static final String AUTHENTICATE_URL = "/adapi";
+	private static final Logger log = LoggerFactory.getLogger(JWTAdminAuthenticationFilter.class);
 	
 	@Resource
 	private JWTHelperUtil jWTHelperUtil;
@@ -37,9 +38,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException,
 			ServletException {
 		
-		boolean dontAuthentication = request.getServletPath().startsWith(ApplicationSecurity.DONT_AUTHENTICATION_PROFIX);
-		log.info("dontAuthentication={}", dontAuthentication);
-		if (! dontAuthentication) {
+		boolean authentication = request.getServletPath().startsWith(AUTHENTICATE_URL);
+		log.info("authentication={}", authentication);
+		if (authentication) {
 			authentication(request, response);
 		}
 		chain.doFilter(request, response);
@@ -69,7 +70,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     			try {
 					jsonObj.put("code", ServiceCode.TOKEN_INVALID.code);
 	    			jsonObj.put("msg", ServiceCode.TOKEN_INVALID.msg);
-	        		response.setContentType("application/json;UTF-8");
+	    			response.setContentType("text/html;charset=utf-8");
 	        		response.getWriter().println(jsonObj.toString());
     			} catch (Exception e1) {
     				log.error("error={}", e1.getMessage(), e1);

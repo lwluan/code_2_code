@@ -1,16 +1,15 @@
 import { notification } from 'antd';
-import { queryPageListApi, addEntityApi, detailEntityApi, updateEntityApi, removeEntityApi } from './service';
-import { queryPageListApi as queryPageRoleList } from '../sys-role/service';
+import { queryPageListApi, addEntityApi, detailEntityApi, updateEntityApi, removeEntityApi, queryAllAuthoritysApi } from './service';
 
 export default {
-  namespace: 'sysUser',
+  namespace: 'sysRole',
   state: {
     entityPageResult: {
       list: [],
       pagination: { total: 12, pageSize: 1, current: 1 },
     },
     entityInfoObj: {},
-    roleList: [], // 添加页面角色列表
+    authoritys: [], // 添加页面角色列表
   },
 
   effects: {
@@ -68,15 +67,11 @@ export default {
       }
     },
 
-    * queryAllRoleList(_, { call, put }) {
-      const response = yield call(queryPageRoleList, {
-        currPage: 1,
-        pageSize: 100,
-        status: 'enable',
-      });
+    * queryAllAuthoritys(_, { call, put }) {
+      const response = yield call(queryAllAuthoritysApi);
       yield put({
-        type: 'changeRoleList',
-        payload: { roleList: response.data.rows },
+        type: 'changeAuthoritysList',
+        payload: { authoritys: response.data },
       });
     },
   },
@@ -88,10 +83,10 @@ export default {
         entityPageResult: payload.entityPageResult,
       };
     },
-    changeRoleList(state, { payload }) {
+    changeAuthoritysList(state, { payload }) {
       return {
         ...state,
-        roleList: payload.roleList,
+        authoritys: payload.authoritys,
       };
     },
     changeDetailEntity(state, { payload }) {

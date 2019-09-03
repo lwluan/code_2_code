@@ -1,5 +1,7 @@
 package com.cd2cd.admin.controller;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.validation.BindingResult;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cd2cd.admin.domain.SysAuthority;
 import com.cd2cd.admin.domain.SysRole;
 import com.cd2cd.admin.service.SysRoleService;
 import com.cd2cd.admin.vo.BaseRes;
@@ -61,4 +64,8 @@ public class SysRoleController extends BaseController {
 		return sysRoleService.modifyEntityInfo(sysUserVo);
 	}
 	
+	@GetMapping("queryAllAuthoritys")
+	public BaseRes<List<SysAuthority>> queryAllAuthoritys() {
+		return sysRoleService.queryAllAuthoritys();
+	}
 }

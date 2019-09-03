@@ -14,6 +14,7 @@ public class LoginUser extends User {
 	private static final long serialVersionUID = 1L;
 
 	private Integer id;
+	private String type; // admin/custome
 	private List<String> authIds;
 
 	public LoginUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
@@ -34,6 +35,14 @@ public class LoginUser extends User {
 
 	public void setAuthIds(List<String> authIds) {
 		this.authIds = authIds;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

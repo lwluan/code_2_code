@@ -6,6 +6,7 @@ import {
   Modal,
   Radio,
 } from 'antd';
+import { ADMIN_NAME } from '../../../../utils/constants';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -66,6 +67,7 @@ const EntityInfoForm = props => {
         })(<Input placeholder="请输入邮箱" />)}
       </FormItem>
 
+      {ADMIN_NAME !== entityInfoObj.username ? (
       <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="状态">
         {form.getFieldDecorator('status', {
           initialValue: entityInfoObj.status,
@@ -75,9 +77,10 @@ const EntityInfoForm = props => {
             <Radio value="disable">禁用</Radio>
             <Radio value="enable">启用</Radio>
           </Radio.Group>)}
-      </FormItem>
+      </FormItem>) : ''}
 
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角色">
+      {ADMIN_NAME !== entityInfoObj.username ? (
+        <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="角色">
         {form.getFieldDecorator('roles', {
           initialValue: entityInfoObj.roles,
           rules: [{ required: true, message: '请选择角色！' }],
@@ -92,8 +95,7 @@ const EntityInfoForm = props => {
           >
             {roleList.map(v => <Option key={v.id} value={v.id}> {v.name} </Option>)}
           </Select>)}
-      </FormItem>
-
+      </FormItem>) : ''}
 
     </Modal>
   );

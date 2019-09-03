@@ -14,5 +14,9 @@ public interface DataCacheDao {
 	
 	LoginUser getAdminLoginCacheData(String key);
 
+	LoginUser getApiLoginCacheData(String key);
+	
 	void setLoginCacheData(String key, LoginUser value);
+	
+	
 }

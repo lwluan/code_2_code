@@ -48,6 +48,8 @@ public class SysUserServiceImpl implements SysUserService {
 	 */
 	private void updateUserRoles(List<Integer> roles, Integer userId) {
 		
+		if(null == roles) return;
+		
 		SysUserRoleRelCriteria example = new SysUserRoleRelCriteria();
 		example.createCriteria().andUserIdEqualTo(userId);
 		sysUserRoleRelMapper.deleteByExample(example);

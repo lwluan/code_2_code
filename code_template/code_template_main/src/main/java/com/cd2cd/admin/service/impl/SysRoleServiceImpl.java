@@ -7,8 +7,10 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import com.cd2cd.admin.comm.ServiceCode;
+import com.cd2cd.admin.domain.SysAuthority;
 import com.cd2cd.admin.domain.SysAuthorityRoleRel;
 import com.cd2cd.admin.domain.SysRole;
 import com.cd2cd.admin.domain.gen.SysAuthorityRoleRelCriteria;
@@ -130,6 +132,16 @@ public class SysRoleServiceImpl implements SysRoleService {
 		sysUserVo.setUpdateTime(new Date());
 		sysRoleMapper.updateByPrimaryKeySelective(sysUserVo);
 		updateRoleAuthorities(sysUserVo.getAuthIds(), sysUserVo.getId());
+		return new BaseRes<>(ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<List<SysAuthority>> queryAllAuthoritys() {
+		List<SysAuthority> auths = sysAuthorityMapper.selectByExample(null);
+		if( ! CollectionUtils.isEmpty(auths)) {
+			auths = BeanUtil.voConvertListHasIn(auths, SysAuthority.class, "pid", "guid", "name");
+			return new BaseRes<>(auths, ServiceCode.SUCCESS);
+		}
 		return new BaseRes<>(ServiceCode.SUCCESS);
 	}
 

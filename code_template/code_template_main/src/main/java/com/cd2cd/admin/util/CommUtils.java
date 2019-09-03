@@ -2,6 +2,12 @@ package com.cd2cd.admin.util;
 
 import java.security.MessageDigest;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
 public class CommUtils {
 
 	public static String md5Encode(String password) {
@@ -28,6 +34,16 @@ public class CommUtils {
         }
         return hexValue.toString();
     }
+	
+	public static HttpServletRequest getRequest() {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		return request;
+	}
+	
+	public static HttpServletResponse getResponse() {
+        HttpServletResponse response=((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getResponse();
+        return response;
+	}
 	
 	public static void main(String[] args) {
 		System.out.println(md5Encode("admin111111"));

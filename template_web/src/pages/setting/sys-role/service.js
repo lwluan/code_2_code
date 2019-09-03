@@ -37,3 +37,7 @@ export async function removeEntityApi(params) {
     },
   });
 }
+
+export async function queryAllAuthoritysApi() {
+  return request(`${Constants.SERVICE_ROOT}/adapi/${serviceName}/queryAllAuthoritys`);
+}

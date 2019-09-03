@@ -34,7 +34,10 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 
 	public static final String DONT_AUTHENTICATION_PROFIX = "/comm";
 	private static final Set<String> PERMIT_ALL_URL = Sets.newHashSet(
-		"/admin/**", DONT_AUTHENTICATION_PROFIX+"/**"
+		"/admin/**", 
+		DONT_AUTHENTICATION_PROFIX+"/**",
+		JWTAdminAuthenticationFilter.AUTHENTICATE_URL + "/**",
+		JWTApiAuthenticationFilter.AUTHENTICATE_URL + "/**"
 	);
 	private static Logger logger = LoggerFactory.getLogger(ApplicationSecurity.class);
 
@@ -42,7 +45,10 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 	private SysAuthorityMapper sysAuthorityMapper;
 
 	@Resource
-	private JWTAuthenticationFilter jWTAuthenticationFilter;
+	private JWTAdminAuthenticationFilter jWTAdminAuthenticationFilter;
+	
+	@Resource
+	private JWTApiAuthenticationFilter jWTApiAuthenticationFilter;
 
 	@Resource
 	private EntryPointUnauthorizedHandler entryPointUnauthorizedHandler;
@@ -72,7 +78,8 @@ public class ApplicationSecurity extends WebSecurityConfigurerAdapter {
 		.anyRequest().authenticated()
 		.and().headers().cacheControl();
 
-		http.addFilterBefore(jWTAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jWTAdminAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jWTApiAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 		
 		http.exceptionHandling()
 		.authenticationEntryPoint(entryPointUnauthorizedHandler)
