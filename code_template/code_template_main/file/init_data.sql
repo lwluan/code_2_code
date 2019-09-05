@@ -8,24 +8,18 @@
 
 INSERT INTO `sys_authority` (`pid`, `guid`, `name`, `url`, `create_time`, `update_time`)
 VALUES
-	(NULL, '101', '用户管理', '/sysUser/index', now(), now()),
-	('101', '102', '查看用户', '/sysUser/detail', now(), now()),
-	('101', '103', '修改用户', '/sysUser/modify', now(), now()),
-	('101', '104', '删除用户', '/sysUser/del', now(), now()),
-	('101', '105', '用户列表', '/sysUser/list', now(), now()),
-	('101', '106', '添加用户', '/sysUser/add', now(), now()),
-	(NULL, '201', '角色管理', '/sysRole/index', now(), now()),
-	('201', '202', '修改角色', '/sysRole/modify', now(), now()),
-	('201', '203', '查看角色', '/sysRole/detail', now(), now()),
-	('201', '204', '删除角色', '/sysRole/del', now(), now()),
-	('201', '205', '角色列表', '/sysRole/list', now(), now()),
-	('201', '206', '添加角色', '/sysRole/add', now(), now()),
-	(NULL, '301', '租户管理', '/zpTenant/index', now(), now()),
-	('301', '302', '添加租户', '/zpTenant/add', now(), now()),
-	('301', '303', '租户详情', '/zpTenant/detail', now(), now()),
-	('301', '304', '修改租户', '/zpTenant/modify', now(), now()),
-	('301', '305', '租户列表', '/zpTenant/list', now(), now()),
-	('301', '306', '删除租户', '/zpTenant/del', now(), now());
+	(NULL, '101', '用户管理', '/adapi/sysUser/index', now(), now()),
+	('101', '102', '查看用户', '/adapi/sysUser/detail', now(), now()),
+	('101', '103', '修改用户', '/adapi/sysUser/modify', now(), now()),
+	('101', '104', '删除用户', '/adapi/sysUser/del', now(), now()),
+	('101', '105', '用户列表', '/adapi/sysUser/list', now(), now()),
+	('101', '106', '添加用户', '/adapi/sysUser/add', now(), now()),
+	(NULL, '201', '角色管理', '/adapi/sysRole/index', now(), now()),
+	('201', '202', '修改角色', '/adapi/sysRole/modify', now(), now()),
+	('201', '203', '查看角色', '/adapi/sysRole/detail', now(), now()),
+	('201', '204', '删除角色', '/adapi/sysRole/del', now(), now()),
+	('201', '205', '角色列表', '/adapi/sysRole/list', now(), now()),
+	('201', '206', '添加角色', '/adapi/sysRole/add', now(), now());
 
 --
 -- 初始管理员用户数据
