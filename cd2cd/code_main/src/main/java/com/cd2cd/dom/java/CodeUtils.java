@@ -9,7 +9,7 @@ import org.apache.commons.io.IOUtils;
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 
 public class CodeUtils {
-
+	private static String _n = System.getProperty("line.separator");
 	public static String typeByCollectionType(String type, String collectionType) {
 		if(CollectionType.list.name().equalsIgnoreCase(collectionType)) {
 			return type = "List<" + type + ">";
@@ -57,7 +57,7 @@ public class CodeUtils {
 	
 	public static String updateClassImport(String classTxt, Set<String> newImports) {
 		
-		String[] lines = classTxt.split("\n");
+		String[] lines = classTxt.split(_n);
 		
 		Set<String> imports = new TreeSet<>();
 		String sImport = null;
@@ -82,7 +82,7 @@ public class CodeUtils {
 		String csStr = classTxt.substring(0, classTxt.indexOf(sImport));
 		String ceStr = classTxt.substring(classTxt.indexOf(eImport) + eImport.length(), classTxt.length());
 		
-		return csStr + String.join("\n", imports) +ceStr;
+		return csStr + String.join(_n, imports) +ceStr;
 	}
 	
 	public static void main(String[] args) throws Exception {

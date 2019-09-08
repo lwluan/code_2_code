@@ -87,9 +87,10 @@ public class ProjectGenUtil {
 	private static final String H2_DB_PATH = "./h2db";
 	private static final String H2_DB_PASSWORD = "h2";
 	private static final String H2_DB_USER = "123456";
+	private static String NEW_LINE = System.getProperty("line.separator");
 	
 	private static Set<String> IGNORE_VO_GEN = Sets.newHashSet("BaseRes", "BaseReq");
-	private static Set<String> IGNORE_File = Sets.newHashSet(".DS_Store", ".project", ".settings", "target", "node_modules");
+	private static Set<String> _n = Sets.newHashSet(".DS_Store", ".project", ".settings", "target", "node_modules");
 	
 	private ProProject project;
 	String contextPath;			// 项目访问地址
@@ -230,7 +231,7 @@ public class ProjectGenUtil {
 						line = "server.context-path=" + contextPath;
 					}
 					content.append(line);
-					content.append("\r\n");
+					content.append(NEW_LINE);
 				}
 				IOUtils.write(content.toString(), new FileOutputStream(f), "utf-8");
 			} else if (f.getPath().endsWith("Mapper.xml")) {
@@ -474,7 +475,7 @@ public class ProjectGenUtil {
 		
 		LOG.info("copyFolder src={}, dest={}", src.getAbsoluteFile(), dest.getAbsoluteFile());
 		
-		if(IGNORE_File.contains(src.getName())) {
+		if(_n.contains(src.getName())) {
 			LOG.info("ignore file [{}]", src.getName());
 			return;
 		}
@@ -680,7 +681,7 @@ public class ProjectGenUtil {
 			TopLevelClass topClass = new TopLevelClass(controllerType);
 			topClass.setVisibility(JavaVisibility.PUBLIC);
 			if(StringUtils.isNotBlank(file.getComment())) {
-				topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+				topClass.addFileCommentLine("/** "+NEW_LINE + file.getComment() + NEW_LINE+" **/");
 			}
 			
 			topClass.addAnnotation("@Controller");
@@ -700,7 +701,7 @@ public class ProjectGenUtil {
 			
 			
 			LOG.info("file.getImportTypes()={}", String.join(",", file.getImportTypes()));
-			Map<String, String> importTypePath = new HashMap<String, String>();
+			Map<String, String> importTypePath = new HashMap<>();
 			for(String importedType : file.getImportTypes()) {
 				topClass.addImportedType(importedType);
 				importTypePath.put(importedType.substring(importedType.lastIndexOf(".")+1), importedType);
@@ -864,7 +865,7 @@ public class ProjectGenUtil {
 						mStr  = mStr.replace("abstract ", "");
 						mStr = mStr.substring(mStr.indexOf(iden) + iden.length());
 						
-						mStr = mStr.substring(0, mStr.length() -1) + " {\n";
+						mStr = mStr.substring(0, mStr.length() -1) + " {" + NEW_LINE;
 						classTxt = classTxt.replace(funHeader, mStr);
 					} else {
 						String mStr = m.getFormattedContent(1, false, topClass);
@@ -873,7 +874,7 @@ public class ProjectGenUtil {
 						if(preFunIden == null) {
 							int lastIndex = classTxt.lastIndexOf("}");
 							String sTmpStr = classTxt.substring(0, lastIndex);
-							String eTmpStr = "\n}";
+							String eTmpStr = NEW_LINE+"}";
 							
 							classTxt = sTmpStr + mStr + eTmpStr;
 						} else {
@@ -886,7 +887,7 @@ public class ProjectGenUtil {
 							int funEndIndex = CodeUtils.findFunEndIndex(eTmpStr) + 1;
 							String preFunBody = eTmpStr.substring(0, funEndIndex);
 							eTmpStr = eTmpStr.substring(funEndIndex, eTmpStr.length());
-							classTxt = sTmpStr + preFunBody + "\n\n" + mStr + eTmpStr;
+							classTxt = sTmpStr + preFunBody + NEW_LINE + mStr + eTmpStr;
 						}
 					}
 					
@@ -1072,7 +1073,7 @@ public class ProjectGenUtil {
 			TopLevelClass topClass = new TopLevelClass(fileType);
 			topClass.setVisibility(JavaVisibility.PUBLIC);
 			if(StringUtils.isNotBlank(file.getComment())) {
-				topClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+				topClass.addFileCommentLine("/** "+NEW_LINE + file.getComment() + NEW_LINE+" **/");
 			}
 			/**
 			 * 导入vo import
@@ -1212,7 +1213,7 @@ public class ProjectGenUtil {
 			// inner valid class - innerValidClass
 			String inStr = getValidInnerClass(innerValidClass);
 			String clStr = topClass.getFormattedContent();
-			clStr = clStr.substring(0, clStr.lastIndexOf("}")) + "\n" + inStr + "\n}";
+			clStr = clStr.substring(0, clStr.lastIndexOf("}")) + NEW_LINE + inStr + NEW_LINE+"}";
 			
 			IOUtils.write(clStr, new FileOutputStream(new File(fileTargetPath)), "utf-8");
 			
@@ -1237,7 +1238,7 @@ public class ProjectGenUtil {
 				childTypeClass.setSuperClass("Super" + file.getName() + t);
 				
 				childTypeClass.setVisibility(JavaVisibility.PUBLIC);
-				childTypeClass.addFileCommentLine("/** \n" + file.getComment() + "\n **/");
+				childTypeClass.addFileCommentLine("/** "+NEW_LINE + file.getComment() + NEW_LINE+" **/");
 				IOUtils.write(childTypeClass.getFormattedContent(), new FileOutputStream(childClass), "utf-8");
 			}
 		}
@@ -1246,7 +1247,7 @@ public class ProjectGenUtil {
 	private String getValidInnerClass(Set<String> innerValidClass) {
 		StringBuilder ins = new StringBuilder();
 		for(String iC: innerValidClass) {
-			ins.append(String.format("\tpublic interface %s{} \n", iC));
+			ins.append(String.format("\tpublic interface %s{} "+NEW_LINE, iC));
 		}
 		return ins.toString();
 	}
