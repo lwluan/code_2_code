@@ -26,7 +26,6 @@ const Model = {
         const params = getPageQuery();
         let { redirect } = params;
 
-        console.info(redirect);
         if (redirect) {
           const redirectUrlParams = new URL(redirect);
 

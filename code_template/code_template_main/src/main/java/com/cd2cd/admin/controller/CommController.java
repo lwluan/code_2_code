@@ -1,6 +1,7 @@
 package com.cd2cd.admin.controller;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -21,8 +22,8 @@ import com.cd2cd.admin.domain.gen.SysUserCriteria;
 import com.cd2cd.admin.mapper.SysUserMapper;
 import com.cd2cd.admin.security.LoginUser;
 import com.cd2cd.admin.service.SysAuthorityService;
-import com.cd2cd.admin.util.CommUtils;
 import com.cd2cd.admin.util.JWTHelperUtil;
+import com.cd2cd.admin.util.Constants.LoginUserType;
 import com.cd2cd.admin.vo.BaseRes;
 import com.cd2cd.admin.vo.LoginResVo;
 import com.cd2cd.admin.vo.SysUserVo;
@@ -57,10 +58,11 @@ public class CommController {
 		String username = sysUserVo.getUsername();
 		String password = sysUserVo.getPassword();
 
-		password = CommUtils.md5Encode(username+password);
-
 		SysUserCriteria suCriteria = new SysUserCriteria();
-		suCriteria.createCriteria().andUsernameEqualTo(username).andPasswordEqualTo(password).andStatusEqualTo("enable");
+		suCriteria.createCriteria()
+		.andUsernameEqualTo(username)
+		.andPasswordEqualTo(password)
+		.andStatusEqualTo("enable");
 		List<SysUser> users = sysUserMapper.selectByExample(suCriteria);
 
 		if (!CollectionUtils.isEmpty(users)) {
@@ -68,10 +70,14 @@ public class CommController {
 			SysUserVo sysUser = new SysUserVo();
 			sysUser.setId(sUser.getId());
 			sysUser.setUsername(sUser.getUsername());
+			sysUser.setType(LoginUserType.admin.name());
+			
 			String token = jWTHelperUtil.getToken(sysUser);
 			
+			log.info("token={}", token);
+			
 			LoginUser loginUser = jWTHelperUtil.verifyAdminToken(token);
-			List<String> authIds = loginUser.getAuthIds();
+			Set<String> authIds = loginUser.getAuthIds();
 			
 			log.info("username={}, token={}", username, token);
 			LoginResVo loginRes = new LoginResVo(token, authIds);

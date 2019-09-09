@@ -1,7 +1,7 @@
 package com.cd2cd.admin.security;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Set;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -15,7 +15,7 @@ public class LoginUser extends User {
 
 	private Integer id;
 	private String type; // admin/custome
-	private List<String> authIds;
+	private Set<String> authIds;
 
 	public LoginUser(String username, String password, Collection<? extends GrantedAuthority> authorities) {
 		super(username, password, authorities);
@@ -29,11 +29,11 @@ public class LoginUser extends User {
 		this.id = id;
 	}
 
-	public List<String> getAuthIds() {
+	public Set<String> getAuthIds() {
 		return authIds;
 	}
 
-	public void setAuthIds(List<String> authIds) {
+	public void setAuthIds(Set<String> authIds) {
 		this.authIds = authIds;
 	}
 

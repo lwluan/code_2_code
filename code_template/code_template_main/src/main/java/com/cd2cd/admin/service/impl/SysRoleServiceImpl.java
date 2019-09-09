@@ -22,7 +22,7 @@ import com.cd2cd.admin.mapper.SysRoleMapper;
 import com.cd2cd.admin.service.SysRoleService;
 import com.cd2cd.admin.util.BeanUtil;
 import com.cd2cd.admin.vo.BaseRes;
-import com.cd2cd.admin.vo.DataPageWrapper;
+import com.cd2cd.admin.vo.PageData;
 import com.cd2cd.admin.vo.SysRoleVo;
 
 @Service
@@ -57,9 +57,9 @@ public class SysRoleServiceImpl implements SysRoleService {
 	}
 
 	@Override
-	public BaseRes<DataPageWrapper<SysRole>> entityPage(SysRoleVo sysUserVo) {
-		BaseRes<DataPageWrapper<SysRole>> res = new BaseRes<>(ServiceCode.SUCCESS);
-		res.setData(new DataPageWrapper<SysRole>());
+	public BaseRes<PageData<SysRole>> entityPage(SysRoleVo sysUserVo) {
+		BaseRes<PageData<SysRole>> res = new BaseRes<>(ServiceCode.SUCCESS);
+		res.setData(new PageData<SysRole>());
 		
 		Integer current = sysUserVo.getCurrent();
 		current = current == null ? 1 : current;

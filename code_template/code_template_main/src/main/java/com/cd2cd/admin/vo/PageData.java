@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
  * 公共数据分页包装对象
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class DataPageWrapper<T> {
+public class PageData<T> {
 
 	/** 列表数据 */
 	private List<T> rows;

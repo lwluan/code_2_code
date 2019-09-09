@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 public class SysUserVo extends SysUser {
 	private static final long serialVersionUID = 1L;
 
+	private String type; //  admin,customer
 	private Integer current;
 	private Integer pageSize;
 
@@ -39,6 +40,15 @@ public class SysUserVo extends SysUser {
 	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
+	
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
 
 	public static interface DeleteEntity {}
 	public static interface AddEntityInfo {}

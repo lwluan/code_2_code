@@ -1,14 +1,15 @@
 package com.cd2cd.admin.vo;
 
-import java.util.List;
+import java.util.Set;
 
 public class LoginResVo {
 	
 	private String token;
-	private List<String> authIds;
+	private String type;
+	private Set<String> authIds;
 
 	public LoginResVo() {}
-	public LoginResVo(String token, List<String> authIds) {
+	public LoginResVo(String token, Set<String> authIds) {
 		super();
 		this.token = token;
 		this.authIds = authIds;
@@ -22,12 +23,18 @@ public class LoginResVo {
 		this.token = token;
 	}
 
-	public List<String> getAuthIds() {
+	public Set<String> getAuthIds() {
 		return authIds;
 	}
 
-	public void setAuthIds(List<String> authIds) {
+	public void setAuthIds(Set<String> authIds) {
 		this.authIds = authIds;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
 	}
 
 }

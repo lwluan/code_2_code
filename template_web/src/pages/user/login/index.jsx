@@ -5,6 +5,7 @@ import Link from 'umi/link';
 import { connect } from 'dva';
 import LoginComponents from './components/Login';
 import styles from './style.less';
+import { md5 } from '../../../utils/encryptUtil';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
 
@@ -31,6 +32,7 @@ class Login extends Component {
 
     if (!err) {
       const { dispatch } = this.props;
+      values.password = md5(`${values.username}${values.password}`);
       dispatch({
         type: 'userLogin/login',
         payload: { ...values, type },

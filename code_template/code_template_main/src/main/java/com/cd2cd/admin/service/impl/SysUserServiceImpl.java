@@ -24,7 +24,7 @@ import com.cd2cd.admin.service.SysUserService;
 import com.cd2cd.admin.util.BeanUtil;
 import com.cd2cd.admin.util.CommUtils;
 import com.cd2cd.admin.vo.BaseRes;
-import com.cd2cd.admin.vo.DataPageWrapper;
+import com.cd2cd.admin.vo.PageData;
 import com.cd2cd.admin.vo.SysUserVo;
 
 @Service
@@ -63,10 +63,10 @@ public class SysUserServiceImpl implements SysUserService {
 	}
 
 	@Override
-	public BaseRes<DataPageWrapper<SysUser>> entityPage(SysUserVo sysUserVo) {
+	public BaseRes<PageData<SysUser>> entityPage(SysUserVo sysUserVo) {
 		log.info("sysUserVo={}", JSONObject.toJSONString(sysUserVo));
-		BaseRes<DataPageWrapper<SysUser>> res = new BaseRes<>(ServiceCode.SUCCESS);
-		res.setData(new DataPageWrapper<SysUser>());
+		BaseRes<PageData<SysUser>> res = new BaseRes<>(ServiceCode.SUCCESS);
+		res.setData(new PageData<SysUser>());
 		
 		Integer current = sysUserVo.getCurrent();
 		current = current == null ? 1 : current;
@@ -135,7 +135,7 @@ public class SysUserServiceImpl implements SysUserService {
 		
 		String password = CommUtils.md5Encode(sysUserVo.getUsername()+sysUserVo.getPassword());
 		sysUserVo.setPassword(password);
-		
+		sysUserMapper.insertSelective(sysUserVo);
 		return new BaseRes<>(ServiceCode.SUCCESS);
 	}
 

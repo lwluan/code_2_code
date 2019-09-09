@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cd2cd.admin.domain.SysUser;
 import com.cd2cd.admin.service.SysUserService;
 import com.cd2cd.admin.vo.BaseRes;
-import com.cd2cd.admin.vo.DataPageWrapper;
+import com.cd2cd.admin.vo.PageData;
 import com.cd2cd.admin.vo.SysUserVo;
 import com.cd2cd.admin.vo.SysUserVo.AddEntityInfo;
 import com.cd2cd.admin.vo.SysUserVo.DeleteEntity;
@@ -30,7 +30,7 @@ public class SysUserController extends BaseController {
 	private SysUserService sysUserService;
 
 	@GetMapping("entityPage")
-	public BaseRes<DataPageWrapper<SysUser>> entityPage(SysUserVo sysUserVo) {
+	public BaseRes<PageData<SysUser>> entityPage(SysUserVo sysUserVo) {
 		return sysUserService.entityPage(sysUserVo);
 	}
 	

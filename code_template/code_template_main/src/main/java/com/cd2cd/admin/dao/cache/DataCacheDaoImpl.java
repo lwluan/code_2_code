@@ -87,6 +87,8 @@ public class DataCacheDaoImpl implements DataCacheDao {
 			}/** else if(LoginUserType.api.name().equals(type)) {
 				
 			} **/
+			
+			loginUser.setType(type);
 		}
 		return loginUser;
 	}
@@ -115,6 +117,7 @@ public class DataCacheDaoImpl implements DataCacheDao {
 		
 		LoginUser loginUser = new LoginUser(username, "-", authorities);
 		loginUser.setId(userId);
+		loginUser.setAuthIds(roles);
 					
 		setLoginCacheData(token, loginUser);
 		return loginUser;

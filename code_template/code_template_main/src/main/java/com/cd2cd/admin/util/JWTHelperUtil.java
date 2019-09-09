@@ -72,6 +72,7 @@ public class JWTHelperUtil {
 		} catch (JWTVerificationException exception) {
 			throw new ServiceBusinessException(ServiceCode.TOKEN_INVALID, exception.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new ServiceBusinessException(ServiceCode.TOKEN_INVALID, e.getMessage());
 		}
 	}
