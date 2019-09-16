@@ -32,6 +32,7 @@ public class GlobalExceptionHandler {
 		
 		BaseRes<String> res = new BaseRes<String>();
 		res.setServiceCode(e.getServiceCode());
+		res.setMsg(e.getMessage());
         return new ResponseEntity<Object>(res, e.getHttpStatus());
     }
 	
