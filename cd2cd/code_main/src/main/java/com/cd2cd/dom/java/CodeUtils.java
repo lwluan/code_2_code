@@ -9,7 +9,7 @@ import org.apache.commons.io.IOUtils;
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 
 public class CodeUtils {
-	private static String _n = System.getProperty("line.separator");
+	public static String _n = System.getProperty("line.separator");
 	public static String typeByCollectionType(String type, String collectionType) {
 		if(CollectionType.list.name().equalsIgnoreCase(collectionType)) {
 			return type = "List<" + type + ">";

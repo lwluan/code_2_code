@@ -901,9 +901,11 @@ public class ProjectGenUtil {
 	}
 	
 	/** 生成 Service
+	 * @throws IOException 
+	 * @throws FileNotFoundException 
 	 * 
 	 */
-	public void genService(ProProject project, List<ProFile> controllerList) {
+	public void genService(ProProject project, List<ProFile> controllerList) throws FileNotFoundException, IOException {
 	
 		/**
 		 * 需要生成 接口文件和实现文件

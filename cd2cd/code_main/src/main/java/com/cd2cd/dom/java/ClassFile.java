@@ -33,7 +33,7 @@ public class ClassFile {
 		} else { // 模块化
 			fgp = String.format("%s/%s/%s", fileGenPath, this.moduleName, pkgName);
 		}
-		return fgp;
+		return fgp.replaceAll("//", "/");
 	}
 	
 	public String getFileGenPath() {
