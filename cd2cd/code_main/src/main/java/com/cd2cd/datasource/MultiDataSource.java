@@ -1,9 +1,7 @@
 package com.cd2cd.datasource;
 
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component("dataSource")
-public class MultiDataSource implements DataSource {
+public class MultiDataSource extends MultiDataSourceAdapter {
 
 	private static final Logger log = LoggerFactory.getLogger(MultiDataSource.class);
 
@@ -33,16 +31,12 @@ public class MultiDataSource implements DataSource {
 	protected Map<String, DataSource> dsMap = new HashMap<>();
 
 	public Connection getConnection() throws SQLException {
-		DataSource dataSource = getDataSource();
-		return dataSource.getConnection();
-	}
-	
-	private DataSource getDataSource() {
+
 		String tenantId = TenantThreadLocal.getTenantId();
-		log.info("tenantId={}", tenantId);
+		
 		DataSource dataSource = dsMap.get(tenantId);
 		if (dataSource != null) {
-			return dataSource;
+			return dataSource.getConnection();
 		} else {
 			try {
 				dataSource = (DataSource) Class.forName(dataSourceType).newInstance();
@@ -67,7 +61,7 @@ public class MultiDataSource implements DataSource {
 			}
 
 			dsMap.put(tenantId, dataSource);
-			return dataSource;
+			return dataSource.getConnection();
 		}
 	}
 
@@ -109,55 +103,6 @@ public class MultiDataSource implements DataSource {
 
 	public void setPassword(String password) {
 		this.password = password;
-	}
-
-	@Override
-	public PrintWriter getLogWriter() throws SQLException {
-		String tenantId = TenantThreadLocal.getTenantId();
-		DataSource dataSource = dsMap.get(tenantId);
-		return dataSource.getLogWriter();
-	}
-
-	@Override
-	public void setLogWriter(PrintWriter out) throws SQLException {
-		DataSource dataSource = getDataSource();
-		dataSource.setLogWriter(out);
-	}
-
-	@Override
-	public void setLoginTimeout(int seconds) throws SQLException {
-		DataSource dataSource = getDataSource();
-		dataSource.setLoginTimeout(seconds);
-	}
-
-	@Override
-	public int getLoginTimeout() throws SQLException {
-		DataSource dataSource = getDataSource();
-		return dataSource.getLoginTimeout();
-	}
-
-	@Override
-	public java.util.logging.Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		DataSource dataSource = getDataSource();
-		return dataSource.getParentLogger();
-	}
-
-	@Override
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		DataSource dataSource = getDataSource();
-		return dataSource.unwrap(iface);
-	}
-
-	@Override
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		DataSource dataSource = getDataSource();
-		return dataSource.isWrapperFor(iface);
-	}
-
-	@Override
-	public Connection getConnection(String username, String password) throws SQLException {
-		DataSource dataSource = getDataSource();
-		return dataSource.getConnection(username, password);
 	}
 
 }
