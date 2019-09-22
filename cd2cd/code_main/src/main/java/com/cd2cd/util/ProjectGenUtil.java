@@ -65,6 +65,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.cd2cd.dom.java.ClassFile;
 import com.cd2cd.dom.java.CodeUtils;
 import com.cd2cd.dom.java.FileIdsAndType;
+import com.cd2cd.dom.java.GenServiceHelper;
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 import com.cd2cd.dom.java.TypeEnum.FieldDataType;
 import com.cd2cd.dom.java.TypeEnum.FunArgType;
@@ -918,10 +919,10 @@ public class ProjectGenUtil {
 			String packageType = project.getPackageType();
 			String pkgName = "service";
 			String className = file.getName();
-			ClassFile mClassFile = new ClassFile(fgp, fcp, moduleName, packageType, pkgName, className);
+			ClassFile classFile = new ClassFile(fgp, fcp, moduleName, packageType, pkgName, className);
 			
-			String fileGenPath = mClassFile.getFileGenPath();
-			TopLevelClass topClass = mClassFile.getType();
+			GenServiceHelper mGenServiceHelper = new GenServiceHelper(classFile, file);
+			mGenServiceHelper.genCode();
 			
 		}
 		
