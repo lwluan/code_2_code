@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
-@MapperScan(basePackages = "com.yishang.loan_api.mapper", 
+@MapperScan(basePackages = "com.cd2cd.mapper", 
 sqlSessionTemplateRef  = "sqlSessionTemplate")
 public class MysqlDatasource {
 	
@@ -33,7 +33,7 @@ public class MysqlDatasource {
     @Primary
     public SqlSessionFactory sqlSessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
-        bean.setTypeAliasesPackage("com.yishang.loan_api.domain");
+        bean.setTypeAliasesPackage("com.cd2cd.domain");
         bean.setDataSource(dataSource);
         
         // 设置多数据库支持
