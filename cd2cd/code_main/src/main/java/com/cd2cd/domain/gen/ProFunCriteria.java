@@ -1015,6 +1015,76 @@ public class ProFunCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andGenServiceIsNull() {
+            addCriterion("gen_service is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceIsNotNull() {
+            addCriterion("gen_service is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceEqualTo(String value) {
+            addCriterion("gen_service =", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceNotEqualTo(String value) {
+            addCriterion("gen_service <>", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceGreaterThan(String value) {
+            addCriterion("gen_service >", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceGreaterThanOrEqualTo(String value) {
+            addCriterion("gen_service >=", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceLessThan(String value) {
+            addCriterion("gen_service <", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceLessThanOrEqualTo(String value) {
+            addCriterion("gen_service <=", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceLike(String value) {
+            addCriterion("gen_service like", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceNotLike(String value) {
+            addCriterion("gen_service not like", value, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceIn(List<String> values) {
+            addCriterion("gen_service in", values, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceNotIn(List<String> values) {
+            addCriterion("gen_service not in", values, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceBetween(String value1, String value2) {
+            addCriterion("gen_service between", value1, value2, "genService");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenServiceNotBetween(String value1, String value2) {
+            addCriterion("gen_service not between", value1, value2, "genService");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;

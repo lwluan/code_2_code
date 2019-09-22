@@ -255,9 +255,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 			LOG.info("genDomain(projectGenUtil, proProject) ...");
 			
 			/**
-			 * 生成Controller 控制器 
+			 * 生成Controller 控制器 和 Service
 			 */
-			genController(projectGenUtil, proProject, commValidMap);
+			genControllerAndService(projectGenUtil, proProject, commValidMap);
 			LOG.info("genController(projectGenUtil, proProject, commValidMap) ...");
 			
 			/**
@@ -326,7 +326,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 		return map;
 	}
 	
-	private void genController(ProjectGenUtil projectGenUtil, ProProject proProject, Map<String, String> commValidMap) throws Exception {
+	private void genControllerAndService(ProjectGenUtil projectGenUtil, ProProject proProject, Map<String, String> commValidMap) throws Exception {
 		ProFileCriteria mProFileCriteria = new ProFileCriteria();
 		mProFileCriteria.createCriteria()
 		.andFileTypeEqualTo(FileTypeEnum.controller.name())
@@ -379,6 +379,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 			file.setFuns(funs);
 		}
 		projectGenUtil.genController(proProject, controllerList, commValidMap);
+		projectGenUtil.genService(proProject, controllerList);
 	}
 	
 	private void getVo(ProjectGenUtil projectGenUtil, ProProject proProject, Map<String, String> commValidMap) throws FileNotFoundException, IOException {

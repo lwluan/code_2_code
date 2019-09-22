@@ -62,6 +62,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.alibaba.fastjson.JSONObject;
+import com.cd2cd.dom.java.ClassFile;
 import com.cd2cd.dom.java.CodeUtils;
 import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
@@ -666,19 +667,18 @@ public class ProjectGenUtil {
 		for(ProFile file : controllerList) {
 			
 			ProModule module = file.getModule();
-			String fileGenPath = (localPath + "/" + artifactId + "/"+artifactId+"_main/src/main/java/" + groupId + "." + artifactId).replaceAll("\\.", "/");
-			String filePkg = groupId + "." + artifactId;
-			String fileClassPath = filePkg + ".controller." + file.getName();
 			
-			if( ProjectModulTypeEnum.standard.name().equals(packageType) ) {
-				fileGenPath += "/controller/" + file.getName() + ".java";
-			} else { // 模块化
-				fileGenPath += "/" + module.getName() + "/controller/" + file.getName() + ".java";
-				fileClassPath = filePkg + "." + module.getName() + ".controller." + file.getName();
-			}
+			String fgp = proProject.getClassRootPath();
+			String fcp = proProject.getClassRootPkg();
+			String moduleName = module.getName();
+			String packageType = proProject.getPackageType();
+			String pkgName = "controller";
+			String className = file.getName();
+			ClassFile mClassFile = new ClassFile(fgp, fcp, moduleName, packageType, pkgName, className);
 			
-			FullyQualifiedJavaType controllerType = new FullyQualifiedJavaType(fileClassPath);
-			TopLevelClass topClass = new TopLevelClass(controllerType);
+			String fileGenPath = mClassFile.getFileGenPath();
+			TopLevelClass topClass = mClassFile.getType();
+			
 			topClass.setVisibility(JavaVisibility.PUBLIC);
 			if(StringUtils.isNotBlank(file.getComment())) {
 				topClass.addFileCommentLine("/** "+NEW_LINE + file.getComment() + NEW_LINE+" **/");
@@ -829,7 +829,6 @@ public class ProjectGenUtil {
 				topClass.addMethod(m);
 			}
 			
-			
 			File genFile = new File(fileGenPath);
 			if( ! genFile.getParentFile().exists()) {
 				genFile.getParentFile().mkdirs();
@@ -897,7 +896,35 @@ public class ProjectGenUtil {
 				// 回写内容
 				IOUtils.write(classTxt, new FileOutputStream(new File(fileGenPath)), "utf-8");
 			}
+		}		
+	}
+	
+	/** 生成 Service
+	 * 
+	 */
+	public void genService(ProProject project, List<ProFile> controllerList) {
+	
+		/**
+		 * 需要生成 接口文件和实现文件
+		 * controller 需要有funcation 和 参数
+		 */
+		for(ProFile file : controllerList) {
+			
+			ProModule module = file.getModule();
+			
+			String fgp = project.getClassRootPath();
+			String fcp = project.getClassRootPkg();
+			String moduleName = module.getName();
+			String packageType = project.getPackageType();
+			String pkgName = "service";
+			String className = file.getName();
+			ClassFile mClassFile = new ClassFile(fgp, fcp, moduleName, packageType, pkgName, className);
+			
+			String fileGenPath = mClassFile.getFileGenPath();
+			TopLevelClass topClass = mClassFile.getType();
+			
 		}
+		
 	}
 	
 	public String getVoClassPath(ProFile f) {

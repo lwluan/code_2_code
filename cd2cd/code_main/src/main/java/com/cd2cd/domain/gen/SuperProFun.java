@@ -51,6 +51,11 @@ public class SuperProFun implements Serializable {
      */
     private String todoContent;
 
+    /**
+     * yes;no
+     */
+    private String genService;
+
     private Date createTime;
 
     private Date updateTime;
@@ -203,6 +208,20 @@ public class SuperProFun implements Serializable {
         this.todoContent = todoContent;
     }
 
+    /**
+     * yes;no
+     */
+    public String getGenService() {
+        return genService;
+    }
+
+    /**
+     * yes;no
+     */
+    public void setGenService(String genService) {
+        this.genService = genService;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -238,6 +257,7 @@ public class SuperProFun implements Serializable {
         sb.append(", returnVo=").append(returnVo);
         sb.append(", returnShow=").append(returnShow);
         sb.append(", todoContent=").append(todoContent);
+        sb.append(", genService=").append(genService);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -270,6 +290,7 @@ public class SuperProFun implements Serializable {
             && (this.getReturnVo() == null ? other.getReturnVo() == null : this.getReturnVo().equals(other.getReturnVo()))
             && (this.getReturnShow() == null ? other.getReturnShow() == null : this.getReturnShow().equals(other.getReturnShow()))
             && (this.getTodoContent() == null ? other.getTodoContent() == null : this.getTodoContent().equals(other.getTodoContent()))
+            && (this.getGenService() == null ? other.getGenService() == null : this.getGenService().equals(other.getGenService()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -291,6 +312,7 @@ public class SuperProFun implements Serializable {
         result = prime * result + ((getReturnVo() == null) ? 0 : getReturnVo().hashCode());
         result = prime * result + ((getReturnShow() == null) ? 0 : getReturnShow().hashCode());
         result = prime * result + ((getTodoContent() == null) ? 0 : getTodoContent().hashCode());
+        result = prime * result + ((getGenService() == null) ? 0 : getGenService().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

@@ -20,6 +20,8 @@ public class ProFile extends SuperProFile implements Serializable {
 	private Set<String> importTypes = new HashSet<>(); // 方法返回类型import
 	private String superName; // 继承的父类
 	
+	private boolean genService; // 是否生成Service类
+	
 	private Map<String, Map<String, Set<String>>> propertyValid; // 成员变量验证
 	
 	public List<ProTableColumn> getColumns() {
@@ -84,6 +86,14 @@ public class ProFile extends SuperProFile implements Serializable {
 
 	public void setValidateMethods(List<ProField> validateMethods) {
 		this.validateMethods = validateMethods;
+	}
+
+	public boolean isGenService() {
+		return genService;
+	}
+
+	public void setGenService(boolean genService) {
+		this.genService = genService;
 	}
 	
 }
