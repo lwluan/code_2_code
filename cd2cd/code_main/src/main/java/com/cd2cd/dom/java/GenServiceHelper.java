@@ -18,6 +18,7 @@ import org.mybatis.generator.api.dom.java.TopLevelClass;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
 import com.cd2cd.domain.ProFunArg;
+import com.cd2cd.util.CommUtils;
 
 public class GenServiceHelper {
 
@@ -112,10 +113,23 @@ public class GenServiceHelper {
 			m.addJavaDocLine("**/");
 			mInterface.addMethod(m);
 		}
+
+		String filePath = getClassAbsPath();
+		String classTxt = "";
+		
+		/**
+		 * 判断是否已经存在这个类
+		 */
+		if(CommUtils.fileExists(filePath)) {
+			/**
+			 * 先读到原始类信息
+			 */
+			
+		} else {
+			classTxt = mInterface.getFormattedContent();
+		}
 		
 		// gen
-		String classTxt = mInterface.getFormattedContent();
-		String filePath = getClassAbsPath();		
 		writeFile(classTxt, filePath);
 	}
 	

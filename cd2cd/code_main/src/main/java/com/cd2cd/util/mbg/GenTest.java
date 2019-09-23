@@ -27,7 +27,7 @@ public class GenTest {
 	
 	public void process(String fileName) {
 		try {
-			List<String> warnings = new ArrayList<String>();
+			List<String> warnings = new ArrayList<>();
 			ConfigurationParser cp = new ConfigurationParser(warnings);
 			
 			InputStream is = GenTest.class.getClassLoader().getResourceAsStream(fileName);
@@ -37,7 +37,7 @@ public class GenTest {
 			
 			
 			MyBatisGenerator myBatisGenerator = new MyBatisGenerator(config, shellCallback, warnings);
-			Set<String> ids = new HashSet<String>();
+			Set<String> ids = new HashSet<>();
 			ids.add("tables");
 			
 			myBatisGenerator.generate(null, ids);
