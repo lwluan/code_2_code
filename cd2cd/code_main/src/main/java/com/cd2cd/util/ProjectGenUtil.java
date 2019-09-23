@@ -667,11 +667,13 @@ public class ProjectGenUtil {
 		
 		for(ProFile file : controllerList) {
 			
+			String moduleName = null;
 			ProModule module = file.getModule();
-			
+			if(module != null) {
+				moduleName = module.getName();
+			}
 			String fgp = proProject.getClassRootPath();
 			String fcp = proProject.getClassRootPkg();
-			String moduleName = module.getName();
 			String packageType = proProject.getPackageType();
 			String pkgName = "controller";
 			String className = file.getName();
@@ -913,18 +915,21 @@ public class ProjectGenUtil {
 		 */
 		for(ProFile file : controllerList) {
 			
+			String moduleName = null;
 			ProModule module = file.getModule();
+			if(module != null) {
+				moduleName = module.getName();
+			}
 			
 			String fgp = project.getClassRootPath();
 			String fcp = project.getClassRootPkg();
-			String moduleName = module.getName();
 			String packageType = project.getPackageType();
 			String pkgName = "service";
 			String className = file.getName();
 			ClassFile classFile = new ClassFile(fgp, fcp, moduleName, packageType, pkgName, className);
 			
 			GenServiceHelper mGenServiceHelper = new GenServiceHelper(classFile, file);
-			mGenServiceHelper.genCode();
+			// mGenServiceHelper.genCode();
 			
 		}
 		

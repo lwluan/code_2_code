@@ -1,5 +1,6 @@
 package com.cd2cd.dom.java;
 
+import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
@@ -28,7 +29,7 @@ public class ClassFile {
 
 	public String getFileGenPackagePath() {
 		String fgp = null;
-		if (ProjectModulTypeEnum.standard.name().equals(packageType)) {
+		if (ProjectModulTypeEnum.standard.name().equals(packageType) || StringUtils.isBlank(this.moduleName)) {
 			fgp = String.format("%s/%s", fileGenPath, pkgName);
 		} else { // 模块化
 			fgp = String.format("%s/%s/%s", fileGenPath, this.moduleName, pkgName);
@@ -42,7 +43,7 @@ public class ClassFile {
 
 	public String getFileClassPackagePath() {
 		String fcp = null;
-		if (ProjectModulTypeEnum.standard.name().equals(packageType)) {
+		if (ProjectModulTypeEnum.standard.name().equals(packageType) || StringUtils.isBlank(this.moduleName)) {
 			fcp = String.format("%s.%s", fileClassPath, pkgName);
 		} else { // 模块化
 			fcp = String.format("%s.%s.%s", fileClassPath, moduleName, pkgName);
