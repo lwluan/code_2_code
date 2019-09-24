@@ -1,10 +1,12 @@
 package com.cd2cd.dom.java;
 
-import java.io.FileInputStream;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.apache.commons.io.IOUtils;
+import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 
@@ -85,10 +87,79 @@ public class CodeUtils {
 		return csStr + String.join(_n, imports) +ceStr;
 	}
 	
+	public static String getInterfaceName(String txt) {
+		Pattern p = Pattern.compile("public\\s+interface\\s+.+\\{");
+		Matcher m = p.matcher(txt);
+		if(m.find()) {
+			String cName = m.group();
+			cName = cName.split("interface")[1];
+			cName = cName.substring(0, cName.indexOf("{"));
+			cName = cName.trim();
+			return cName;
+		}
+		return null;
+	}
+	
+	public static String getClassName(String txt) {
+		Pattern p = Pattern.compile("public\\s+class\\s+.+\\{");
+		Matcher m = p.matcher(txt);
+		if(m.find()) {
+			String cName = m.group();
+			cName = cName.split("class")[1];
+			cName = cName.substring(0, cName.indexOf("{"));
+			cName = cName.trim();
+			return cName;
+		}
+		return null;
+	}
+	
+	public static String getPackage(String txt) {
+		String pStr = "package";
+		Pattern p = Pattern.compile(pStr+"\\s+.+;");
+		Matcher m = p.matcher(txt);
+		if(m.find()) {
+			String cName = m.group();
+			cName = cName.substring(cName.indexOf(pStr)+pStr.length(), cName.indexOf(";"));
+			cName = cName.trim();
+			return cName;
+		}
+		return null;
+	}
+	
+	public static Set<FullyQualifiedJavaType> getImport(String txt) {
+		Set<FullyQualifiedJavaType> importedTypes = new HashSet<>();
+		
+		String pStr = "import";
+		Pattern p = Pattern.compile(pStr+"\\s+.+;");
+		Matcher m = p.matcher(txt);
+		while(m.find()) {
+			String s = m.group();
+			s = s.substring(s.indexOf(pStr)+pStr.length(), s.indexOf(";"));
+			s = s.trim();
+			FullyQualifiedJavaType type = new FullyQualifiedJavaType(s);
+			importedTypes.add(type);
+		}
+		return importedTypes;
+	}
+	
+	public static String getClassjavaDocLine(String txt) {
+		Pattern p = Pattern.compile("\\s+\\/\\*\\*.+public interface");
+		Matcher m = p.matcher(txt);
+		if(m.find()) {
+			String cName = m.group();
+			
+			System.out.println(cName);
+			
+			cName = cName.trim();
+			return cName;
+		}
+		return null;
+	}
+	
 	public static void main(String[] args) throws Exception {
 		
-		String genFile = "/Users/lwl/Documents/source-code/java-code/financial_api/financial_api_main/src/main/java/com/center/financial_api/controller/DeviceController.java";
-		String classTxt = IOUtils.toString(new FileInputStream(genFile), "utf-8");
-		
+		String s = "99999  package com.cd2cd.dom.java;  ooo";
+		System.out.println(getPackage(s));
+
 	}
 }
