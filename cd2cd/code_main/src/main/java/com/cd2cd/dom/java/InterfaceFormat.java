@@ -30,9 +30,9 @@ public class InterfaceFormat {
 		i.addJavaDocLine(javaDocLine);
 		
 		// 类的方法
+		CodeUtils.getMethods(i.getMethods(), code);
 		
 		// 类的唯一标识号
-		
 		
 		return i;
 	}

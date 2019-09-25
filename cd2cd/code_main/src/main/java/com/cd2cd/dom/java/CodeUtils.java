@@ -1,12 +1,14 @@
 package com.cd2cd.dom.java;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
+import org.mybatis.generator.api.dom.java.Method;
 
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 
@@ -143,23 +145,38 @@ public class CodeUtils {
 	}
 	
 	public static String getClassjavaDocLine(String txt) {
-		Pattern p = Pattern.compile("\\s+\\/\\*\\*.+public interface");
+		String key = "public interface";
+		Pattern p = Pattern.compile("/\\*\\*[\\s\\S]*" + key);
 		Matcher m = p.matcher(txt);
 		if(m.find()) {
 			String cName = m.group();
-			
-			System.out.println(cName);
-			
+			cName = cName.substring(0, cName.length() - key.length()).trim();
 			cName = cName.trim();
 			return cName;
 		}
 		return null;
 	}
 	
+	public static void getMethods(List<Method> methods, String code) {
+		
+//
+//	    /**
+//	     * @gen_31_lwl
+//	     * 更新项目
+//	     * 更新项目
+//	     * @param projectVo
+//	    **/
+//	    BaseRes<String> modifyEntityInfo(ProjectVo projectVo);
+		
+		
+		
+	}
+	
 	public static void main(String[] args) throws Exception {
 		
-		String s = "99999  package com.cd2cd.dom.java;  ooo";
-		System.out.println(getPackage(s));
+		String s = "\n /** \n项目管理 \n**/ jujjj **/ \n public interface aaa {";
+		System.out.println(getClassjavaDocLine(s));
 
 	}
+
 }
