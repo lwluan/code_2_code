@@ -1,5 +1,6 @@
 package com.cd2cd.dom.java;
 
+import java.io.FileInputStream;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -7,8 +8,11 @@ import java.util.TreeSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
 import org.mybatis.generator.api.dom.java.Method;
+import org.mybatis.generator.api.dom.java.Parameter;
 
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 
@@ -157,7 +161,7 @@ public class CodeUtils {
 		return null;
 	}
 	
-	public static void getMethods(List<Method> methods, String code) {
+	public static void getInterfaceMethods(List<Method> methods, String code) {
 		
 //
 //	    /**
@@ -168,15 +172,60 @@ public class CodeUtils {
 //	    **/
 //	    BaseRes<String> modifyEntityInfo(ProjectVo projectVo);
 		
-		
+		Pattern p = Pattern.compile(".+/\\*(\\s|.)*?[^\\{]\\*/(\\s|.)*?;");
+		Matcher m = p.matcher(code);
+		while(m.find()) {
+			String cName = m.group();
+			
+			Pattern fp = Pattern.compile(".+;");
+			Matcher mp = fp.matcher(cName);
+			mp.find();
+			String fun = mp.group().trim();
+			
+			String vis = "public";
+			int s = fun.indexOf(vis);
+			if(s > 0) {
+				s = vis.length();
+			} else {
+				s = 0;
+			}
+			String rType = fun.substring(s, fun.indexOf(" "));
+			String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
+			String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
+			
+			Method method = new Method(fName);
+			method.setReturnType(new FullyQualifiedJavaType(rType));
+			
+			if(methods != null) {
+				methods.add(method);
+			}
+			
+			if(StringUtils.isNotBlank(params)) {
+				String[] pp = params.split(",");
+				for(String ps: pp) {
+					String[] pArg = ps.trim().replaceAll("  ", " ").split(" ");
+					String paramsType = pArg[0];
+					String paramsName = pArg[1];
+					Parameter parameter = new Parameter(new FullyQualifiedJavaType(paramsType), paramsName); 
+					method.addParameter(parameter);
+				}
+			}
+			
+			String javaDocLine = cName.substring(cName.lastIndexOf("/**"), cName.lastIndexOf("**/")+3);
+			method.addJavaDocLine(javaDocLine);
+			
+			
+			// @gen_32_lwl
+			System.out.println("javaDocLine="+javaDocLine+", rType="+rType+", fName=" + fName + ",params=" + params);
+//			System.out.println("-----\n"+cName+"\n++++++++");
+		}
 		
 	}
 	
 	public static void main(String[] args) throws Exception {
 		
-		String s = "\n /** \n项目管理 \n**/ jujjj **/ \n public interface aaa {";
-		System.out.println(getClassjavaDocLine(s));
-
+		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_manager/auto_code/auto_code_main/src/main/java/com/cd2cd/auto_code/project/service/ProjectService.java"), "utf-8");
+		getInterfaceMethods(null, code);
 	}
 
 }
