@@ -1,8 +1,10 @@
 package com.cd2cd.dom.java;
 
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.regex.Matcher;
@@ -11,7 +13,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
@@ -161,22 +162,17 @@ public class CodeUtils {
 		return null;
 	}
 	
-	public static void getInterfaceMethods(List<Method> methods, String code) {
+	public static Map<String, MyMethod> getInterfaceMethods(List<MyMethod> methods, String code) {
+		Map<String, MyMethod> mapDic = new HashMap<>();
+		if(StringUtils.isBlank(code)) {
+			return mapDic;
+		}
 		
-//
-//	    /**
-//	     * @gen_31_lwl
-//	     * 更新项目
-//	     * 更新项目
-//	     * @param projectVo
-//	    **/
-//	    BaseRes<String> modifyEntityInfo(ProjectVo projectVo);
-		
-		Pattern p = Pattern.compile(".+/\\*(\\s|.)*?[^\\{]\\*/(\\s|.)*?;");
+		// 匹配有注释或无注释方法
+		Pattern p = Pattern.compile("(.+/\\*(\\s|.)*?[^\\{]\\*/(\\s|.)*?;)|(.+\\(.*\\);)");
 		Matcher m = p.matcher(code);
 		while(m.find()) {
 			String cName = m.group();
-			
 			Pattern fp = Pattern.compile(".+;");
 			Matcher mp = fp.matcher(cName);
 			mp.find();
@@ -193,7 +189,7 @@ public class CodeUtils {
 			String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
 			String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
 			
-			Method method = new Method(fName);
+			MyMethod method = new MyMethod(fName);
 			method.setReturnType(new FullyQualifiedJavaType(rType));
 			
 			if(methods != null) {
@@ -211,20 +207,47 @@ public class CodeUtils {
 				}
 			}
 			
-			String javaDocLine = cName.substring(cName.lastIndexOf("/**"), cName.lastIndexOf("**/")+3);
-			method.addJavaDocLine(javaDocLine);
+			String javaDocLine = null;
+			if(cName.lastIndexOf("/*") > -1) {
+				javaDocLine = cName.substring(cName.lastIndexOf("/*"), cName.lastIndexOf("*/")+2);
+				method.addJavaDocLine(javaDocLine);
+			}
 			
-			
-			// @gen_32_lwl
-			System.out.println("javaDocLine="+javaDocLine+", rType="+rType+", fName=" + fName + ",params=" + params);
-//			System.out.println("-----\n"+cName+"\n++++++++");
+			// 唯一标识
+			Pattern genP = Pattern.compile("@gen_.*_lwl");
+			Matcher GenMp = genP.matcher(cName);
+			if(GenMp.find()) {
+				String genStr = GenMp.group().trim();
+				method.setGenStr(genStr);
+				
+				// to set map gen
+				mapDic.put(genStr, method);
+				
+				// 自定义 comment
+				int si = cName.indexOf(_n);
+				int genI = cName.indexOf(genStr);
+				if(si < genI) {
+					String comment = cName.substring(si+_n.length(), genI);
+					if(comment.lastIndexOf(_n) > -1) {
+						comment = comment.substring(0, comment.lastIndexOf(_n));
+						String[] lines = comment.split(_n);
+						StringBuilder csb = new StringBuilder();
+						for(String l: lines) {
+							csb.append(" ");
+							csb.append(l.trim());
+							csb.append(_n);
+						}
+						method.setCustomComment(csb.toString());
+					}
+				}
+			}
 		}
-		
+		return mapDic;
 	}
 	
 	public static void main(String[] args) throws Exception {
 		
-		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_manager/auto_code/auto_code_main/src/main/java/com/cd2cd/auto_code/project/service/ProjectService.java"), "utf-8");
+		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/loan_admin/loan_admin_main/src/main/java/com/yishang/loan_admin/credit_trial/service/CreditTrialService.java"), "utf-8");
 		getInterfaceMethods(null, code);
 	}
 

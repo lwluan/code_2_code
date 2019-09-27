@@ -1,10 +1,13 @@
 package com.cd2cd.dom.java;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -15,10 +18,10 @@ import org.mybatis.generator.api.dom.java.Method;
 import org.mybatis.generator.api.dom.java.Parameter;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
+import com.cd2cd.dom.java.interfase.InterfaceFormat;
 import com.cd2cd.domain.ProFile;
 import com.cd2cd.domain.ProFun;
 import com.cd2cd.domain.ProFunArg;
-import com.cd2cd.util.CommUtils;
 
 public class GenServiceHelper {
 
@@ -63,6 +66,19 @@ public class GenServiceHelper {
 		return filePath;
 	}
 	
+	private String getOriginCodeTxt() {
+		String filePath = getClassAbsPath();
+		File file = new File(filePath);
+		if(file.exists()) {
+			try {
+				return IOUtils.toString(new FileInputStream(new File(filePath)), "utf-8");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	private void genServiceInterface() throws FileNotFoundException, IOException {
 		String type = getClassName();
 		Interface mInterface = new Interface(type);
@@ -77,15 +93,33 @@ public class GenServiceHelper {
 			mInterface.addImportedType(new FullyQualifiedJavaType(importedType));
 		}
 		
-		// package
+		// origin code method list
+		String originCode = getOriginCodeTxt();
+		InterfaceFormat iff = new InterfaceFormat(originCode);
+		Interface originInferface = iff.getmInterface();
+		List<MyMethod> originMethods = iff.getMethods();
+		Map<String, MyMethod> methodDic = iff.getGenMethodMap();
 		
+		Map<String, String> newFunGenMap = new HashMap<String, String>();
 		/** 添加方法 */
 		for(ProFun fun : file.getFuns()) {
 			Method m = new Method(fun.getFunName());
 			
+			String genStr = CodeUtils.getFunIdenStr(fun.getId()+"");
+			MyMethod originMethod = methodDic.get(genStr);
+			
 			m.setVisibility(JavaVisibility.PUBLIC);
 			m.addJavaDocLine("/**");
-			m.addJavaDocLine(" * "+ CodeUtils.getFunIdenStr(fun.getId()+""));
+			
+			// merge add user cusotem comment
+			if(originMethod != null && StringUtils.isNotBlank(originMethod.getCustomComment())) {
+				m.addJavaDocLine(originMethod.getCustomComment());
+			}
+			
+			// mark ok
+			newFunGenMap.put(genStr, "markOK");
+			
+			m.addJavaDocLine(" * "+ genStr);
 			m.addJavaDocLine(" * "+fun.getName());
 			m.addJavaDocLine(" * "+fun.getComment());
 			
@@ -114,22 +148,19 @@ public class GenServiceHelper {
 			mInterface.addMethod(m);
 		}
 
-		String filePath = getClassAbsPath();
-		String classTxt = "";
+		// add origin interface import type
+		mInterface.addImportedTypes(originInferface.getImportedTypes());
 		
-		/**
-		 * 判断是否已经存在这个类
-		 */
-		if(CommUtils.fileExists(filePath)) {
-			/**
-			 * 先读到原始类信息
-			 */
+		// add fun for not gen fun in origin 
+		for(MyMethod mm :originMethods) {
 			
-		} else {
-			classTxt = mInterface.getFormattedContent();
+			if(newFunGenMap.get(mm.getGenStr()) == null) {
+				mInterface.addMethod(mm);
+			}
 		}
 		
-		// gen
+		String classTxt = mInterface.getFormattedContent();
+		String filePath = getClassAbsPath();
 		writeFile(classTxt, filePath);
 	}
 	
