@@ -231,13 +231,10 @@ public class CodeUtils {
 					if(comment.lastIndexOf(_n) > -1) {
 						comment = comment.substring(0, comment.lastIndexOf(_n));
 						String[] lines = comment.split(_n);
-						StringBuilder csb = new StringBuilder();
+						
 						for(String l: lines) {
-							csb.append(" ");
-							csb.append(l.trim());
-							csb.append(_n);
+							method.getCustomComment().add(" " + l.trim());
 						}
-						method.setCustomComment(csb.toString());
 					}
 				}
 			}

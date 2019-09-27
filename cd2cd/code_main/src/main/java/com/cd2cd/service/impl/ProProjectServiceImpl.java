@@ -349,7 +349,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 				fun.setArgs(args);
 				
 				
-				List<Long> voIds = new ArrayList<Long>();
+				List<Long> voIds = new ArrayList<>();
 				
 				/**
 				 * 将参数的类类型加入到 file的import中

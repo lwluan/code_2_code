@@ -19,12 +19,15 @@ import com.cd2cd.dom.java.CodeUtils;
 import com.cd2cd.dom.java.MyMethod;
 
 public class InterfaceFormat {
-	private List<MyMethod> methods;
-	private Interface mInterface;
-	private Map<String, MyMethod> genMethodMap;
-	public InterfaceFormat(String code) {
+	private List<MyMethod> methods = new ArrayList<>();
+	private Interface mInterface = new Interface("");
+	private Map<String, MyMethod> genMethodMap = new HashMap<>();
+	public InterfaceFormat(String code, String defaultName) {
 		
-		genMethodMap = new HashMap<>();
+		if(StringUtils.isEmpty(code)) {
+			mInterface = new Interface(defaultName);
+			return;
+		}
 		
 		// 生成包名、类名
 		String pkg = CodeUtils.getPackage(code);
@@ -44,7 +47,6 @@ public class InterfaceFormat {
 		}
 		
 		// 类的方法
-		methods = new ArrayList<>();
 		genMethodMap = CodeUtils.getInterfaceMethods(methods, code);
 		mInterface.getMethods().addAll(methods);
 	}
@@ -64,7 +66,7 @@ public class InterfaceFormat {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/loan_admin/loan_admin_main/src/main/java/com/yishang/loan_admin/credit_trial/service/CreditTrialService.java"), "utf-8");
 		
-		InterfaceFormat mInterfaceFormat = new InterfaceFormat(code);
+		InterfaceFormat mInterfaceFormat = new InterfaceFormat(code, "aaa");
 		System.out.println(mInterfaceFormat.getmInterface().getFormattedContent());
 		
 	}

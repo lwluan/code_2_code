@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
@@ -71,7 +72,7 @@ public class GenServiceHelper {
 		File file = new File(filePath);
 		if(file.exists()) {
 			try {
-				return IOUtils.toString(new FileInputStream(new File(filePath)), "utf-8");
+				return IOUtils.toString(new FileInputStream(file), "utf-8");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -95,14 +96,21 @@ public class GenServiceHelper {
 		
 		// origin code method list
 		String originCode = getOriginCodeTxt();
-		InterfaceFormat iff = new InterfaceFormat(originCode);
+		InterfaceFormat iff = new InterfaceFormat(originCode, type);
 		Interface originInferface = iff.getmInterface();
 		List<MyMethod> originMethods = iff.getMethods();
 		Map<String, MyMethod> methodDic = iff.getGenMethodMap();
 		
-		Map<String, String> newFunGenMap = new HashMap<String, String>();
+		Map<String, String> newFunGenMap = new HashMap<>();
+		
 		/** 添加方法 */
 		for(ProFun fun : file.getFuns()) {
+			
+			// not gen service
+			if( ! "yes".equals(fun.getGenService())) {
+				continue;
+			}
+			
 			Method m = new Method(fun.getFunName());
 			
 			String genStr = CodeUtils.getFunIdenStr(fun.getId()+"");
@@ -112,8 +120,8 @@ public class GenServiceHelper {
 			m.addJavaDocLine("/**");
 			
 			// merge add user cusotem comment
-			if(originMethod != null && StringUtils.isNotBlank(originMethod.getCustomComment())) {
-				m.addJavaDocLine(originMethod.getCustomComment());
+			if(originMethod != null && CollectionUtils.isNotEmpty(originMethod.getCustomComment())) {
+				m.getJavaDocLines().addAll(originMethod.getCustomComment());
 			}
 			
 			// mark ok
@@ -154,14 +162,18 @@ public class GenServiceHelper {
 		// add fun for not gen fun in origin 
 		for(MyMethod mm :originMethods) {
 			
-			if(newFunGenMap.get(mm.getGenStr()) == null) {
+			if(newFunGenMap.get(mm.getGenStr()) == null && StringUtils.isEmpty(mm.getGenStr())) {
 				mInterface.addMethod(mm);
 			}
 		}
 		
-		String classTxt = mInterface.getFormattedContent();
-		String filePath = getClassAbsPath();
-		writeFile(classTxt, filePath);
+		if(CollectionUtils.isNotEmpty(mInterface.getMethods())) {
+			String classTxt = mInterface.getFormattedContent();
+			String filePath = getClassAbsPath();
+			
+			// to write
+			writeFile(classTxt, filePath);
+		}
 	}
 	
 	private void writeFile(String classTxt , String filePath) throws FileNotFoundException, IOException {
@@ -178,7 +190,7 @@ public class GenServiceHelper {
 	}
 	
 	public void genCode() throws FileNotFoundException, IOException {
-		genServiceInterface();
+//		genServiceInterface();
 		genServiceImpl();
 	}
 	

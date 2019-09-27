@@ -21,6 +21,8 @@ code_template/code_template_main/.settings
 code_template/code_template_parent/.project
 code_template/code_template_parent/.settings
 
+**/.idea
+
 # Compiled class file
 *.class
 

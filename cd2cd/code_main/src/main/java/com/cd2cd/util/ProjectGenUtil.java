@@ -929,7 +929,7 @@ public class ProjectGenUtil {
 			ClassFile classFile = new ClassFile(fgp, fcp, moduleName, packageType, pkgName, className);
 			
 			GenServiceHelper mGenServiceHelper = new GenServiceHelper(classFile, file);
-			// mGenServiceHelper.genCode();
+			mGenServiceHelper.genCode();
 			
 		}
 		
