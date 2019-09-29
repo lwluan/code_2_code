@@ -908,11 +908,7 @@ public class ProjectGenUtil {
 	 * 
 	 */
 	public void genService(ProProject project, List<ProFile> controllerList) throws FileNotFoundException, IOException {
-	
-		/**
-		 * 需要生成 接口文件和实现文件
-		 * controller 需要有funcation 和 参数
-		 */
+
 		for(ProFile file : controllerList) {
 			
 			String moduleName = null;

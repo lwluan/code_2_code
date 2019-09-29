@@ -9,15 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cd2cd.dom.java.interfase.InterfaceImplFormat;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Interface;
-import org.mybatis.generator.api.dom.java.JavaVisibility;
-import org.mybatis.generator.api.dom.java.Method;
-import org.mybatis.generator.api.dom.java.Parameter;
-import org.mybatis.generator.api.dom.java.TopLevelClass;
+import org.mybatis.generator.api.dom.java.*;
 
 import com.cd2cd.dom.java.interfase.InterfaceFormat;
 import com.cd2cd.domain.ProFile;
@@ -55,20 +51,55 @@ public class GenServiceHelper {
 		}
 	}
 	
-	private String getClassName() {
+	private String getInterfaceClassName() {
 		String type = classFile.getFileClassPath();
 		type = replaceEndWord(type);
 		return type;
 	}
 	
-	private String getClassAbsPath() {
+	private String getInterfaceClassAbsPath() {
 		String filePath = classFile.getFileGenPath();
 		filePath = replaceEndWord(filePath);
 		return filePath;
 	}
-	
-	private String getOriginCodeTxt() {
-		String filePath = getClassAbsPath();
+
+	private String getOriginInterfaceCodeTxt() {
+		String filePath = getInterfaceClassAbsPath();
+		File file = new File(filePath);
+		if(file.exists()) {
+			try {
+				return IOUtils.toString(new FileInputStream(file), "utf-8");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+
+	private String getImplClassName() {
+		String type = classFile.getFileClassPath();
+		int typeSLen = type.length();
+
+		String implPkg = type.substring(0, type.lastIndexOf(".") - 1) + "impl";
+		String implName = type.substring(type.lastIndexOf(".") + 1, typeSLen);
+		String newClassName = implPkg+implName;
+		type = replaceEndWord(newClassName);
+		return type;
+	}
+
+	private String getImplClassAbsPath() {
+		String filePath = classFile.getFileGenPath();
+		int fpLen = filePath.length();
+		String implPkg = filePath.substring(0, filePath.lastIndexOf("/") - 1) + "impl";
+		String implName = filePath.substring(filePath.lastIndexOf("/") + 1, fpLen);
+		String newClassName = implPkg+implName;
+
+		filePath = replaceEndWord(newClassName);
+		return filePath;
+	}
+
+	private String getOriginImplCodeTxt() {
+		String filePath = getImplClassAbsPath();
 		File file = new File(filePath);
 		if(file.exists()) {
 			try {
@@ -81,7 +112,7 @@ public class GenServiceHelper {
 	}
 	
 	private void genServiceInterface() throws FileNotFoundException, IOException {
-		String type = getClassName();
+		String type = getInterfaceClassName();
 		Interface mInterface = new Interface(type);
 		mInterface.setVisibility(JavaVisibility.PUBLIC);
 		
@@ -90,12 +121,10 @@ public class GenServiceHelper {
 		}
 		
 		// class import
-		for(String importedType : file.getImportTypes()) {
-			mInterface.addImportedType(new FullyQualifiedJavaType(importedType));
-		}
+		addClassImport(mInterface);
 		
 		// origin code method list
-		String originCode = getOriginCodeTxt();
+		String originCode = getOriginInterfaceCodeTxt();
 		InterfaceFormat iff = new InterfaceFormat(originCode, type);
 		Interface originInferface = iff.getmInterface();
 		List<MyMethod> originMethods = iff.getMethods();
@@ -169,13 +198,19 @@ public class GenServiceHelper {
 		
 		if(CollectionUtils.isNotEmpty(mInterface.getMethods())) {
 			String classTxt = mInterface.getFormattedContent();
-			String filePath = getClassAbsPath();
+			String filePath = getInterfaceClassAbsPath();
 			
 			// to write
 			writeFile(classTxt, filePath);
 		}
 	}
-	
+
+	private void addClassImport(CompilationUnit compilationUnit) {
+		for(String importedType : file.getImportTypes()) {
+			compilationUnit.addImportedType(new FullyQualifiedJavaType(importedType));
+		}
+	}
+
 	private void writeFile(String classTxt , String filePath) throws FileNotFoundException, IOException {
 		File file = new File(filePath);
 		if( ! file.getParentFile().exists()) {
@@ -185,8 +220,42 @@ public class GenServiceHelper {
 	}
 	
 	private void genServiceImpl() {
-		String fileGenPath = classFile.getFileGenPath();
-		TopLevelClass topClass = classFile.getType();
+		String interfaceType = getInterfaceClassName();
+		FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType(interfaceType);
+
+		String implType = getImplClassName();
+
+		TopLevelClass serviceImpl = new TopLevelClass(implType);
+		serviceImpl.addSuperInterface(superInterface);
+		serviceImpl.setVisibility(JavaVisibility.PUBLIC);
+
+		/** class import **/
+		addClassImport(serviceImpl);
+
+		// origin code method list
+		String originCode = getOriginImplCodeTxt();
+		InterfaceImplFormat iff = new InterfaceImplFormat(originCode, implType);
+		TopLevelClass originImpl = iff.getmTopLevelClass();
+		List<MyMethod> originMethods = iff.getMethods();
+		Map<String, MyMethod> methodDic = iff.getGenMethodMap();
+
+		Map<String, String> newFunGenMap = new HashMap<>();
+
+		/** super interface */
+
+		/** 添加方法 */
+		for(ProFun fun : file.getFuns()) {
+
+			// not gen service
+			if (!"yes".equals(fun.getGenService())) {
+				continue;
+			}
+
+			/** function 注解：事务注释、或其他注解 */
+
+		}
+
+
 	}
 	
 	public void genCode() throws FileNotFoundException, IOException {

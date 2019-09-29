@@ -20,7 +20,7 @@ import com.cd2cd.dom.java.MyMethod;
 
 public class InterfaceFormat {
 	private List<MyMethod> methods = new ArrayList<>();
-	private Interface mInterface = new Interface("");
+	private Interface mInterface;
 	private Map<String, MyMethod> genMethodMap = new HashMap<>();
 	public InterfaceFormat(String code, String defaultName) {
 		
