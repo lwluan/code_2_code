@@ -25,7 +25,7 @@ public class InterfaceImplFormat {
 
         // 生成包名、类名
         String pkg = CodeUtils.getPackage(code);
-        String cName = CodeUtils.getInterfaceName(code);
+        String cName = CodeUtils.getClassName(code);
         FullyQualifiedJavaType type = new FullyQualifiedJavaType(String.format("%s.%s", pkg, cName));
         mTopLevelClass = new TopLevelClass(type);
         mTopLevelClass.setVisibility(JavaVisibility.PUBLIC);
@@ -35,7 +35,7 @@ public class InterfaceImplFormat {
         mTopLevelClass.addImportedTypes(importedTypes);
 
         // 设置类注释
-        String javaDocLine = CodeUtils.getClassjavaDocLine(code);
+        String javaDocLine = CodeUtils.getClassjavaDocLine("class", code);
         if(StringUtils.isNotBlank(javaDocLine)) {
             mTopLevelClass.addJavaDocLine(javaDocLine);
         }

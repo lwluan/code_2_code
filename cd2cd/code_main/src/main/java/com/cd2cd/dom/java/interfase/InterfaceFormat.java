@@ -41,7 +41,7 @@ public class InterfaceFormat {
 		mInterface.addImportedTypes(importedTypes);
 		
 		// 设置类注释
-		String javaDocLine = CodeUtils.getClassjavaDocLine(code);
+		String javaDocLine = CodeUtils.getClassjavaDocLine("interface", code);
 		if(StringUtils.isNotBlank(javaDocLine)) {
 			mInterface.addJavaDocLine(javaDocLine);
 		}

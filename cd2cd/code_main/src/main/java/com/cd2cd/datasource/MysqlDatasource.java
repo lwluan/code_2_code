@@ -24,6 +24,7 @@ public class MysqlDatasource {
 	
 	@Bean(name = "dataSource")
 	@ConfigurationProperties(prefix = "spring.multisource")
+
     @Primary
     public DataSource dataSource() {
         return new MultiDataSource();
