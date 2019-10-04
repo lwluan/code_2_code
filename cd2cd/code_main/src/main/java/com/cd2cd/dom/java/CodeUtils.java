@@ -274,57 +274,60 @@ public class CodeUtils {
 			return mapDic;
 		}
 
-		// 匹配有注释或无注释方法
-		Pattern p = Pattern.compile(".*(public|private|protected){1}.{1,3}(static)*.*\\(.*\\)+[\\s]+?\\{[\\s|\\S]+?(public|private|protected|@Override){1}");
-		Matcher m = p.matcher(code);
+		code = code.substring(code.indexOf("{") + 1, code.lastIndexOf("}"));
+		Stack<Character> stack = new Stack<>();
+
 		List<String> methodStrs = new ArrayList<>();
-		int sIndex = 0;
-		int eIndex = 0;
-		while(m.find()) {
-			String cName = m.group();
+		StringBuilder sb = new StringBuilder();
+		boolean firstFun = true;
+		char[] codeArr = code.toCharArray();
+		for(int i=0; i<codeArr.length; i++) {
+			Character c = codeArr[i];
+			sb.append(c);
+			if('{' == c) {
+				if(firstFun && stack.isEmpty()) {
+					sb.delete(0, sb.length());
 
-			// 获取方法前缀内容；注解、注释(多行，多段)
-			String methodHeader = code.substring(sIndex, m.start());
+					// 获取first fun comment and fun define
+					String methodHeader = code.substring(0, i+1);
 
-			int mSindex = lastEndIndex(methodHeader);
-			methodHeader = code.substring(mSindex, m.start());
+					int mSindex = lastEndIndex(methodHeader);
+					methodHeader = code.substring(mSindex, i+1);
+					sb.append(methodHeader);
 
-			// 有可能注释存在 } 字符
-			int lastNum = cName.lastIndexOf("}");
+					firstFun = false;
+				}
+				stack.push(c);
 
-			String tmp = cName;
-			while(tmp.substring(lastNum +1, tmp.length()).trim().startsWith("*")) {
-				tmp = cName.substring(0, lastNum);
-				lastNum = tmp.lastIndexOf("}");
+			} else if('}' == c) {
+				stack.pop();
+				if(stack.empty()) {
+					methodStrs.add(sb.toString());
+					sb.delete(0, sb.length());
+				}
 			}
-			cName = cName.substring(0, lastNum+1);
-			String mStr = methodHeader + cName;
-			methodStrs.add(mStr);
-			if(StringUtils.isNotBlank(cName)) continue;
-
-			sIndex = m.start();
 		}
 
-		// 加入最后一个方法
-
-
-
 		for (String cName: methodStrs) {
-			Pattern fp = Pattern.compile(".+;");
+
+			Pattern fp = Pattern.compile("(public|private|protected)[\\s\\S]*?\\([\\s\\S]*?\\)");
 			Matcher mp = fp.matcher(cName);
-			mp.find();
+
+			if( !mp.find()) {
+				continue;
+			}
 			String fun = mp.group().trim();
 
-			String vis = "public";
-			int s = fun.indexOf(vis);
-			if(s > 0) {
-				s = vis.length();
-			} else {
-				s = 0;
-			}
+			int s = fun.indexOf("private") > -1 ? fun.indexOf("private") :(
+					fun.indexOf("public") > -1 ? fun.indexOf("public") :(
+							fun.indexOf("public") > -1 ? fun.indexOf("protected") : 0 )
+			);
+
 			String rType = fun.substring(s, fun.indexOf(" "));
 			String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
 			String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
+
+			System.out.println("|"+rType + "| " + fName + "(" + params + ")");
 
 			MyMethod method = new MyMethod(fName);
 			method.setReturnType(new FullyQualifiedJavaType(rType));
@@ -376,6 +379,7 @@ public class CodeUtils {
 				}
 			}
 		}
+
 		return mapDic;
 	}
 
@@ -383,8 +387,11 @@ public class CodeUtils {
 	
 	public static void main(String[] args) throws Exception {
 		
-		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/loan_admin/loan_admin_main/src/main/java/com/yishang/loan_admin/credit_trial/service/impl/CreditTrialServiceImpl.java"), "utf-8");
+		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
 		getInterfaceImplMethods(null, code);
+
+
+
 
 	}
 

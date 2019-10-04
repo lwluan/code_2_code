@@ -99,16 +99,25 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired
 	CommValidateMapper commValidateMapper;
 
+	/**
+	 * fdsa
+	 * fdsaf
+	 * fds
+	 * afds
+	 * afds
+	 * fds;
+	 * @param projectId
+	 * @param packageType
+	 * @param moduleId
+	 * @return
+	 */
 	@Override
 	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
 
 		ProProject mProProject = proProjectMapper.selectByPrimaryKey(projectId);
 
-		BaseRes<String> res = null;
 		if (mProProject == null) {
-			res = new BaseRes<String>();
-			res.setServiceCode(ServiceCode.NOT_EXISTS_PROJECT);
-			return res;
+			return new BaseRes<>(ServiceCode.NOT_EXISTS_PROJECT);
 		}
 
 		ProModule commProModule = new ProModule();
@@ -156,15 +165,11 @@ public class ProjectServiceImpl implements ProjectService {
 			e.printStackTrace();
 		}
 
-		res = new BaseRes<String>();
-		res.setData(rootArray.toString());
-		res.setServiceCode(ServiceCode.SUCCESS);
-		return res;
+		return new BaseRes<>(rootArray.toString(), ServiceCode.SUCCESS);
 	}
 
 	/** Package Type Hierarchical */
-	private void processProjectByHierarchical(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject,
-			List<ProModule> modules) throws JSONException {
+	private void processProjectByHierarchical(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules) throws JSONException {
 
 		// root module-_package
 		Long projectId = proProject.getId();
@@ -913,4 +918,5 @@ public class ProjectServiceImpl implements ProjectService {
 		List<CommValidate> list = commValidateMapper.selectByExample(mCommValidateCriteria);
 		return new BaseRes<List<CommValidate>>(ServiceCode.SUCCESS, list);
 	}
+
 }

@@ -14,6 +14,12 @@ public class BaseRes<T> {
 	private ServiceCode serviceCode;
 	
 	public BaseRes() {}
+
+	public BaseRes(T data, ServiceCode serviceCode) {
+		this.data = data;
+		this.serviceCode = serviceCode;
+	}
+
 	public BaseRes(ServiceCode serviceCode) {
 		this.serviceCode = serviceCode;
 	}
