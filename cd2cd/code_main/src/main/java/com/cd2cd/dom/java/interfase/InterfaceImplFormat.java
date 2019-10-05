@@ -4,7 +4,6 @@ import com.cd2cd.dom.java.CodeUtils;
 import com.cd2cd.dom.java.MyMethod;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Interface;
 import org.mybatis.generator.api.dom.java.JavaVisibility;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
@@ -40,11 +39,9 @@ public class InterfaceImplFormat {
             mTopLevelClass.addJavaDocLine(javaDocLine);
         }
 
-        // 类的方法-注解
-        genMethodMap = CodeUtils.getInterfaceMethods(methods, code);
+        // 类的方法-注解、类成员变量-注解、静态块、内部类(枚举)、父类、接口
+        genMethodMap = CodeUtils.getInterfaceImplMethodsAndSetClassProperties(mTopLevelClass, methods, code);
         mTopLevelClass.getMethods().addAll(methods);
-
-        // 类成员变量-注解
 
     }
 

@@ -100,6 +100,20 @@ public class ProjectServiceImpl implements ProjectService {
 	CommValidateMapper commValidateMapper;
 
 	/**
+	 * fdfdsafa
+	 */
+	static {
+		int i=0;
+	}
+
+	/**
+	 * fdafdafdsf
+	 */
+	{
+		int aa=0;
+	}
+
+	/**
 	 * fdsa
 	 * fdsaf
 	 * fds
@@ -919,4 +933,8 @@ public class ProjectServiceImpl implements ProjectService {
 		return new BaseRes<List<CommValidate>>(ServiceCode.SUCCESS, list);
 	}
 
+	private enum aaa {
+		aaa, bbb, ccc;
+
+	}
 }

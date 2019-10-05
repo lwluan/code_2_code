@@ -255,12 +255,11 @@ public class GenServiceHelper {
 
 		}
 
-
 	}
 	
 	public void genCode() throws FileNotFoundException, IOException {
 //		genServiceInterface();
-		genServiceImpl();
+//		genServiceImpl();
 	}
 	
 	

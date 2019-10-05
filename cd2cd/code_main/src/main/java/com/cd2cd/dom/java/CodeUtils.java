@@ -7,8 +7,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.mybatis.generator.api.dom.java.FullyQualifiedJavaType;
-import org.mybatis.generator.api.dom.java.Parameter;
+import org.mybatis.generator.api.dom.java.*;
 
 import com.cd2cd.dom.java.TypeEnum.CollectionType;
 
@@ -268,7 +267,7 @@ public class CodeUtils {
 		return i + 1;
 	}
 
-	public static Map<String, MyMethod> getInterfaceImplMethods(List<MyMethod> methods, String code) {
+	public static Map<String, MyMethod> getInterfaceImplMethodsAndSetClassProperties(TopLevelClass topLevelClass, List<MyMethod> methods, String code) {
 		Map<String, MyMethod> mapDic = new HashMap<>();
 		if(StringUtils.isBlank(code)) {
 			return mapDic;
@@ -308,12 +307,54 @@ public class CodeUtils {
 			}
 		}
 
+
 		for (String cName: methodStrs) {
 
 			Pattern fp = Pattern.compile("(public|private|protected)[\\s\\S]*?\\([\\s\\S]*?\\)");
 			Matcher mp = fp.matcher(cName);
 
 			if( !mp.find()) {
+
+				// check class
+				// private class TreeId {
+				Pattern checkClassP = Pattern.compile("(private|public)?.*(class|enum).*\\{");
+				Matcher ccMp = checkClassP.matcher(cName);
+				if(ccMp.find()) {
+
+
+					// TODO inner class Obj
+					boolean isInnerClass = cName.substring(0, cName.indexOf("{")).indexOf("class") > -1;
+					if(isInnerClass) {
+						topLevelClass.addInnerClass(formatInnerClass(cName));
+					} else {
+						topLevelClass.addInnerEnum(formatInnerEnum(cName));
+					}
+					System.out.println("isInnerClass=" + isInnerClass);
+
+				} else {
+
+					// check static block code TODO
+					boolean isStatic = cName.trim().indexOf("static") > -1;
+					InitializationBlock initializationBlock = new InitializationBlock();
+					initializationBlock.setStatic(isStatic);
+
+					String blockStr = cName.substring(cName.indexOf("{")+1, cName.lastIndexOf("}")).trim();
+					initializationBlock.addBodyLines(Arrays.asList(blockStr.split(_n)));
+					topLevelClass.addInitializationBlock(initializationBlock);
+
+					String staticBlocks;
+					if(isStatic) {
+						staticBlocks = cName.substring(0, cName.indexOf("static"));
+					} else {
+						staticBlocks = cName.substring(0, cName.indexOf("{"));
+					}
+
+					if(StringUtils.isNotBlank(staticBlocks)) {
+						for(String ll: staticBlocks.split(_n)) {
+							initializationBlock.addJavaDocLine(ll.trim());
+						}
+					}
+				}
 				continue;
 			}
 			String fun = mp.group().trim();
@@ -323,19 +364,39 @@ public class CodeUtils {
 							fun.indexOf("public") > -1 ? fun.indexOf("protected") : 0 )
 			);
 
-			String rType = fun.substring(s, fun.indexOf(" "));
+			String vis = fun.substring(s, fun.indexOf(" "));
+			fun = fun.substring(fun.indexOf(" "), fun.length()).trim();
+			String rType = fun.substring(0, fun.indexOf(" "));
 			String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
 			String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
 
-			System.out.println("|"+rType + "| " + fName + "(" + params + ")");
+//			System.out.println(vis + "|"+rType + "| " + fName + "(" + params + ")");
 
 			MyMethod method = new MyMethod(fName);
+			method.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
 			method.setReturnType(new FullyQualifiedJavaType(rType));
+
+			// throws
+//			method.addException();
+			String exceptions = cName.substring(cName.indexOf(")")+1, cName.indexOf("{")).trim();
+			if(StringUtils.isNotBlank(exceptions)) {
+				exceptions = exceptions.substring(exceptions.indexOf(" ")+1, exceptions.length());
+				String[] exs = exceptions.split(",");
+				for(String e: exs) {
+					method.addException(new FullyQualifiedJavaType(e));
+				}
+			}
+
+			// add method lines ： 前后有可能会多出空回车
+			String mLines = cName.substring(cName.indexOf("{")+1, cName.lastIndexOf("}"));
+			List<String> bodyLines = Arrays.asList(mLines.split(_n));
+			method.addBodyLines(bodyLines);
 
 			if(methods != null) {
 				methods.add(method);
 			}
 
+			// method parameter
 			if(StringUtils.isNotBlank(params)) {
 				String[] pp = params.split(",");
 				for(String ps: pp) {
@@ -347,9 +408,8 @@ public class CodeUtils {
 				}
 			}
 
-			String javaDocLine = null;
 			if(cName.lastIndexOf("/*") > -1) {
-				javaDocLine = cName.substring(cName.lastIndexOf("/*"), cName.lastIndexOf("*/")+2);
+				String javaDocLine = cName.substring(cName.lastIndexOf("/*"), cName.lastIndexOf("*/")+2);
 				method.addJavaDocLine(javaDocLine);
 			}
 
@@ -384,13 +444,36 @@ public class CodeUtils {
 	}
 
 
-	
+	public static InnerClass formatInnerClass(String code) {
+		InnerClass innerClass = null;
+
+		// class name
+
+		// class visible
+
+		// class field
+
+		// class method
+
+		//
+
+
+		return innerClass;
+	}
+
+	public static InnerEnum formatInnerEnum(String code) {
+		InnerEnum innerEnum = null;
+
+
+		return innerEnum;
+	}
+
+
+
 	public static void main(String[] args) throws Exception {
 		
-		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
-		getInterfaceImplMethods(null, code);
-
-
+		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+		getInterfaceImplMethodsAndSetClassProperties(new TopLevelClass(""),null, code);
 
 
 	}
