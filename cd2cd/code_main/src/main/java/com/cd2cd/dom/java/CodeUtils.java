@@ -113,6 +113,7 @@ public class CodeUtils {
 		}
 		return null;
 	}
+
 	
 	public static String getPackage(String txt) {
 		String pStr = "package";
@@ -320,20 +321,16 @@ public class CodeUtils {
 				Pattern checkClassP = Pattern.compile("(private|public)?.*(class|enum).*\\{");
 				Matcher ccMp = checkClassP.matcher(cName);
 				if(ccMp.find()) {
-
-
-					// TODO inner class Obj
 					boolean isInnerClass = cName.substring(0, cName.indexOf("{")).indexOf("class") > -1;
 					if(isInnerClass) {
-						topLevelClass.addInnerClass(formatInnerClass(cName));
+						topLevelClass.addInnerClass(InnerClassUtil.formatInnerClass(cName));
 					} else {
 						topLevelClass.addInnerEnum(formatInnerEnum(cName));
 					}
-					System.out.println("isInnerClass=" + isInnerClass);
 
 				} else {
 
-					// check static block code TODO
+					// check static block code
 					boolean isStatic = cName.trim().indexOf("static") > -1;
 					InitializationBlock initializationBlock = new InitializationBlock();
 					initializationBlock.setStatic(isStatic);
@@ -444,22 +441,7 @@ public class CodeUtils {
 	}
 
 
-	public static InnerClass formatInnerClass(String code) {
-		InnerClass innerClass = null;
 
-		// class name
-
-		// class visible
-
-		// class field
-
-		// class method
-
-		//
-
-
-		return innerClass;
-	}
 
 	public static InnerEnum formatInnerEnum(String code) {
 		InnerEnum innerEnum = null;
@@ -472,8 +454,8 @@ public class CodeUtils {
 
 	public static void main(String[] args) throws Exception {
 		
-//		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
-		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+//		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
 		getInterfaceImplMethodsAndSetClassProperties(new TopLevelClass(""),null, code);
 
 
