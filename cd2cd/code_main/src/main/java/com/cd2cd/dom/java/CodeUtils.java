@@ -472,7 +472,8 @@ public class CodeUtils {
 
 	public static void main(String[] args) throws Exception {
 		
-		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+//		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
 		getInterfaceImplMethodsAndSetClassProperties(new TopLevelClass(""),null, code);
 
 
