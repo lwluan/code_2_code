@@ -70,6 +70,10 @@ public class InnerClassUtil {
         }
     }
 
+    public static void setClassComment(InnerClass innerClass, String code) {
+
+    }
+
     public static void setClassMethod(InnerClass innerClass, String code) {
 
     }
@@ -80,10 +84,14 @@ public class InnerClassUtil {
         String classH = getClassHeader(code);
         System.out.println(code);
 
+
         // class name
         String className = getInnerClassName(classH);
 
         InnerClass innerClass = new InnerClass(className);
+
+        // class comment
+        setClassComment(innerClass, code);
 
         // class visible
         String vis = getVisible(classH);
@@ -97,7 +105,15 @@ public class InnerClassUtil {
 
         // static initializationBlocks
 
-        //
+        // set innerClass
+
+        // set innerEnums
+
+        // set superClass
+
+        // set superInterfaceTypes
+
+        // set typeParameters
 
         return innerClass;
     }
