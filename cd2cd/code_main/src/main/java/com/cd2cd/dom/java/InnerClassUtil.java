@@ -254,26 +254,51 @@ public class InnerClassUtil {
 
         /**
          * public static class dddd<T extends SysUser & SysUserService> extends BaseRes<SysUser> implements Serializable { }
+         *
+         * #**1; extends SysUser & SysUserService>
+         * #**2; extends BaseRes<SysUser> implements Serializable { }
          */
+        String className = null;
+        String superC = null;
+        String[] ss = classH.split("extends");
+        int ssLen = ss.length;
+        if(ssLen == 3) { // xxxx extends xxxxx extends bbbb
+            superC = ss[2].trim();
+            int lastInt = (superC.indexOf("implements") > -1 ? superC.indexOf("implements")
+                    :(superC.indexOf("{")));
+            superC = superC.substring(0, lastInt);
 
-        Pattern p = Pattern.compile(">.*?extends.*?(implements|\\{)");
-        Matcher m = p.matcher(classH);
-        if(m.find()) {
+            // class name
+            className = classH.substring(classH.indexOf("class")+5, classH.indexOf(">"));
 
-            String name = m.group();
-            System.out.println(name);
+        } else if(ssLen == 2) {
+            superC = ss[1].trim();
+            if(superC.indexOf("<") > -1) { // #**2;
+                int lastInt = superC.indexOf("implements") > -1 ? superC.indexOf("implements")
+                        :superC.indexOf("{");
+                superC = superC.substring(0, lastInt);
+            }
         }
-//
-//        int classH.indexOf("extends")
-//        if(ss.length > 1) {
-//            String superC = ss[1].trim();
-//            superC = superC.substring(0, superC.lastIndexOf("{"));
-//            // 有可能有范型<User> 或 <? extends User>
-//            // public static class dddd<T extends SysUser & SysUserService> {
-//
-//
-//
-//        }
+
+        System.out.println("superC="+superC);
+        if(StringUtils.isNotBlank(superC)) {
+            innerClass.setSuperClass(superC);
+        }
+
+        // implements class
+        String ii = "implements";
+        if(classH.indexOf(ii) > -1) {
+
+            String interStr = classH.substring(classH.indexOf(ii) + ii.length(), classH.indexOf("{")).trim();
+            String[] isArr = interStr.split(",");
+            for(String is: isArr) {
+                innerClass.addSuperInterface(new FullyQualifiedJavaType(is.trim()));
+            }
+            System.out.println(interStr);
+
+        }
+
+
 
     }
 
@@ -288,7 +313,7 @@ public class InnerClassUtil {
 
         InnerClass innerClass = new InnerClass(className);
 
-        // set superClass
+        // set superClass/superInterfaceTypes
         setSuperClass(innerClass, classH);
 
         // class comment
@@ -307,14 +332,19 @@ public class InnerClassUtil {
         // class method/initializationBlocks/innerClass/innerEnums
         setClassMethodAndProperties(innerClass, code);
 
-        // set superInterfaceTypes
-
         // set typeParameters
 
         return innerClass;
     }
 
     public static void main(String[] args) {
-        setSuperClass(null, "public static class dddd<T extends SysUser & SysUserService> extends BaseRes<SysUser> implements Serializable { }");
+        String s = "public static class dddd<T extends SysUser & SysUserService> extends BaseRes<SysUser> implements Serializable { }";
+//        s = "public static class dddd extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
+
+        InnerClass in = new InnerClass("aaa");
+        setSuperClass(in, s);
+
+        System.out.println(in.getFormattedContent(1, new TopLevelClass("")));
+
     }
 }

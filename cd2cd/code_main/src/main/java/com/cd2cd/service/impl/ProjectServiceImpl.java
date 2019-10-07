@@ -923,8 +923,8 @@ public class ProjectServiceImpl implements ProjectService {
 		return new BaseRes<List<CommValidate>>(ServiceCode.SUCCESS, list);
 	}
 
-	public static class dddd<T extends SysUser & SysUserService>extends BaseRes<SysUser> {
-	    private T user;
+	public static class dddd<TT extends SysUser & SysUserService>extends BaseRes<SysUser> {
+	    private TT user;
     }
 
     public class fff extends SysUser implements Serializable {
