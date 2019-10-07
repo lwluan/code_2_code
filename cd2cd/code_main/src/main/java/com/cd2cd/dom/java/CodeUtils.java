@@ -243,7 +243,7 @@ public class CodeUtils {
 		return mapDic;
 	}
 
-	private static int lastEndIndex(String s) {
+	public static int lastEndIndex(String s) {
 		int e1 = s.lastIndexOf("}");
 		int e2 = s.lastIndexOf(";");
 		String tmp = s;
@@ -325,7 +325,7 @@ public class CodeUtils {
 					if(isInnerClass) {
 						topLevelClass.addInnerClass(InnerClassUtil.formatInnerClass(cName));
 					} else {
-						topLevelClass.addInnerEnum(formatInnerEnum(cName));
+						topLevelClass.addInnerEnum(InnerEnumUtil.formatInnerEnum(cName));
 					}
 
 				} else {
@@ -442,20 +442,10 @@ public class CodeUtils {
 
 
 
-
-	public static InnerEnum formatInnerEnum(String code) {
-		InnerEnum innerEnum = null;
-
-
-		return innerEnum;
-	}
-
-
-
 	public static void main(String[] args) throws Exception {
 		
-		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
-//		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+//		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
 		getInterfaceImplMethodsAndSetClassProperties(new TopLevelClass(""),null, code);
 
 

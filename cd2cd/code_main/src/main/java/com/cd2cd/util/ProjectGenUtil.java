@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Title;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
@@ -700,6 +701,7 @@ public class ProjectGenUtil {
 			topClass.addImportedType(ResponseBody.class.getName());
 			topClass.addImportedType(RequestBody.class.getName());
 			topClass.addImportedType(Validated.class.getName());
+			topClass.addImportedType(Title.class.getName());
 			topClass.addImportedType(RequestMethod.class.getName());
 			
 			
@@ -732,6 +734,7 @@ public class ProjectGenUtil {
 				/**
 				 * 方法注解
 				 */
+				m.addAnnotation("@Title(\""+fun.getName()+"\")");
 				m.addAnnotation("@ResponseBody");
 				m.addAnnotation("@RequestMapping(value=\""+fun.getReqPath()+"\", method=RequestMethod."+fun.getReqMethod()+")");
 				

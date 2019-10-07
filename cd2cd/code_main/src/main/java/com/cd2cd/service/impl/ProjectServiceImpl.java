@@ -1,5 +1,6 @@
 package com.cd2cd.service.impl;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -7,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.cd2cd.domain.*;
+import com.cd2cd.service.SysUserService;
+import com.cd2cd.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,17 +32,6 @@ import com.cd2cd.dom.java.TypeEnum.FieldDataType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
 import com.cd2cd.dom.java.TypeEnum.FunArgType;
 import com.cd2cd.dom.java.TypeEnum.PackageTypeEnum;
-import com.cd2cd.domain.CommValidate;
-import com.cd2cd.domain.ProField;
-import com.cd2cd.domain.ProFile;
-import com.cd2cd.domain.ProFun;
-import com.cd2cd.domain.ProFunArg;
-import com.cd2cd.domain.ProModule;
-import com.cd2cd.domain.ProPage;
-import com.cd2cd.domain.ProProject;
-import com.cd2cd.domain.ProProjectDatabaseRel;
-import com.cd2cd.domain.ProTable;
-import com.cd2cd.domain.ProTableColumn;
 import com.cd2cd.domain.gen.CommValidateCriteria;
 import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
@@ -65,13 +58,6 @@ import com.cd2cd.util.BeanUtil;
 import com.cd2cd.util.Constants.ProjectModuleTypeEnum;
 import com.cd2cd.util.ObjectTypeUtil;
 import com.cd2cd.util.mbg.Constants;
-import com.cd2cd.vo.BaseRes;
-import com.cd2cd.vo.ProFieldVo;
-import com.cd2cd.vo.ProFileVo;
-import com.cd2cd.vo.ProFunArgVo;
-import com.cd2cd.vo.ProFunVo;
-import com.cd2cd.vo.ProPageVo;
-import com.cd2cd.vo.ProTableVo;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -936,6 +922,14 @@ public class ProjectServiceImpl implements ProjectService {
 		List<CommValidate> list = commValidateMapper.selectByExample(mCommValidateCriteria);
 		return new BaseRes<List<CommValidate>>(ServiceCode.SUCCESS, list);
 	}
+
+	public static class dddd<T extends SysUser & SysUserService>extends BaseRes<SysUser> {
+	    private T user;
+    }
+
+    public class fff extends SysUser implements Serializable {
+
+    }
 
 	private enum aaa {
 		aaa, bbb, ccc;
