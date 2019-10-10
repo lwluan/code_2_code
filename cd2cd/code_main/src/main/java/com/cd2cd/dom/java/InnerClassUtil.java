@@ -20,19 +20,32 @@ public class InnerClassUtil {
     }
 
     public static String getInnerClassName(String classH) {
-        classH = classH.split("class")[1];
+
         /**
+         * TODO 有问题
+         * public static class dddd<TT extends SysUser & SysUserService, E, F>extends BaseRes<SysUser>
+         * public static class dddd<T> {}
+         * public static class dddd {}
          * public static class dddd<T extends SysUser & SysUserService> extends SysUser implements Serializable { }
          */
-        int lastInt = classH.indexOf("<") > -1 ? classH.indexOf("<")
-                : (classH.indexOf("extends") > -1 ? classH.indexOf("extends")
-                : (classH.indexOf("implements") > -1 ? classH.indexOf("implements")
-                :(classH.indexOf("{"))));
 
-        classH = classH.substring(0, lastInt);
-        classH = classH.trim();
-        return classH;
+        String ss = classH.split("class")[1];
+        int leftInt = ss.indexOf("<");
+        int extendsInt = ss.indexOf("extends");
+        int impleInt = ss.indexOf("implements");
+        int closeInt = ss.indexOf("{");
+
+        int lastInt = leftInt > -1 && leftInt < extendsInt ? leftInt :
+                (extendsInt>-1 ? extendsInt :
+                        (impleInt > -1 ? impleInt : closeInt));
+
+        ss = ss.substring(0, lastInt);
+        ss = ss.trim();
+
+        return ss;
     }
+
+
 
     public static String getVisible(String classH) {
         if(classH.indexOf("private") > -1) {
@@ -253,12 +266,15 @@ public class InnerClassUtil {
     public static void setSuperClass(InnerClass innerClass, String classH) {
 
         /**
+         * static class dddd extends fff {}
+         * static class dddd<T> extends fff {}
+         * static class dddd extends fff<EE> {}
+         * public static class dddd<SysUserService>
          * public static class dddd<T extends SysUser & SysUserService> extends BaseRes<SysUser> implements Serializable { }
          *
          * #**1; extends SysUser & SysUserService>
          * #**2; extends BaseRes<SysUser> implements Serializable { }
          */
-        String className = null;
         String superC = null;
         String[] ss = classH.split("extends");
         int ssLen = ss.length;
@@ -267,10 +283,6 @@ public class InnerClassUtil {
             int lastInt = (superC.indexOf("implements") > -1 ? superC.indexOf("implements")
                     :(superC.indexOf("{")));
             superC = superC.substring(0, lastInt);
-
-            // class name
-            className = classH.substring(classH.indexOf("class")+5, classH.indexOf(">"));
-
         } else if(ssLen == 2) {
             superC = ss[1].trim();
             if(superC.indexOf("<") > -1) { // #**2;
@@ -280,7 +292,30 @@ public class InnerClassUtil {
             }
         }
 
-        System.out.println("superC="+superC);
+        // 类范型
+        String typeS = classH.split("class")[1];
+        int leftInt = typeS.indexOf("<");
+        int extendsInt = typeS.indexOf("extends");
+        int impleInt = typeS.indexOf("implements");
+        int closeInt = typeS.indexOf("{");
+
+        if(extendsInt > -1 && leftInt > -1) {
+
+        } else {
+
+        }
+
+        int lastInt = leftInt > -1 && leftInt < extendsInt ? leftInt :
+                (extendsInt>-1 ? extendsInt :
+                        (impleInt > -1 ? impleInt : closeInt));
+
+        typeS = typeS.substring(0, lastInt);
+        typeS = typeS.trim();
+
+
+        innerClass.getTypeParameters().add(new TypeParameter("aaa"));
+
+        System.out.println("superC="+superC+",className=");
         if(StringUtils.isNotBlank(superC)) {
             innerClass.setSuperClass(superC);
         }
@@ -310,10 +345,9 @@ public class InnerClassUtil {
 
         // class name
         String className = getInnerClassName(classH);
-
         InnerClass innerClass = new InnerClass(className);
 
-        // set superClass/superInterfaceTypes
+        // set superClass/superInterfaceTypes/typeParams
         setSuperClass(innerClass, classH);
 
         // class comment
@@ -339,7 +373,10 @@ public class InnerClassUtil {
 
     public static void main(String[] args) {
         String s = "public static class dddd<T extends SysUser & SysUserService> extends BaseRes<SysUser> implements Serializable { }";
-//        s = "public static class dddd extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
+        s = "public static class rewr extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
+
+        String classH = getClassHeader(s);
+        System.out.println("classH=" + classH);
 
         InnerClass in = new InnerClass("aaa");
         setSuperClass(in, s);
