@@ -56,4 +56,8 @@ public class InterfaceImplFormat {
     public Map<String, MyMethod> getGenMethodMap() {
         return genMethodMap;
     }
+
+    public static void main(String[] args) {
+
+    }
 }

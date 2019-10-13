@@ -1,9 +1,11 @@
 package com.cd2cd.dom.java;
 
 import com.cd2cd.domain.SysUser;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.*;
 
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,7 +67,6 @@ public class InnerClassUtil {
             Field field = new Field();
 
             String fieldStr = m.group();
-            System.out.println("fieldStr=" + fieldStr);
 
             String vis = getVisible(fieldStr);
             field.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
@@ -150,7 +151,7 @@ public class InnerClassUtil {
                     if(isInnerClass) {
                         innerClass.addInnerClass(InnerClassUtil.formatInnerClass(cName));
                     } else {
-                        innerClass.addInnerEnum(InnerEnumUtil.formatInnerEnum(cName));
+                         innerClass.addInnerEnum(InnerEnumUtil.formatInnerEnum(cName));
                     }
 
                 } else {
@@ -191,8 +192,6 @@ public class InnerClassUtil {
             String rType = fun.substring(0, fun.indexOf(" "));
             String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
             String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
-
-//			System.out.println(vis + "|"+rType + "| " + fName + "(" + params + ")");
 
             MyMethod method = new MyMethod(fName);
             method.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
@@ -293,29 +292,8 @@ public class InnerClassUtil {
         }
 
         // 类范型
-        String typeS = classH.split("class")[1];
-        int leftInt = typeS.indexOf("<");
-        int extendsInt = typeS.indexOf("extends");
-        int impleInt = typeS.indexOf("implements");
-        int closeInt = typeS.indexOf("{");
+        setClassTypes(classH, innerClass);
 
-        if(extendsInt > -1 && leftInt > -1) {
-
-        } else {
-
-        }
-
-        int lastInt = leftInt > -1 && leftInt < extendsInt ? leftInt :
-                (extendsInt>-1 ? extendsInt :
-                        (impleInt > -1 ? impleInt : closeInt));
-
-        typeS = typeS.substring(0, lastInt);
-        typeS = typeS.trim();
-
-
-        innerClass.getTypeParameters().add(new TypeParameter("aaa"));
-
-        System.out.println("superC="+superC+",className=");
         if(StringUtils.isNotBlank(superC)) {
             innerClass.setSuperClass(superC);
         }
@@ -329,11 +307,50 @@ public class InnerClassUtil {
             for(String is: isArr) {
                 innerClass.addSuperInterface(new FullyQualifiedJavaType(is.trim()));
             }
-            System.out.println(interStr);
+
 
         }
+    }
 
+    /**
+     * 设置类型类型
+     * @param classH
+     * @param innerClass
+     */
+    private static void setClassTypes(String classH, InnerClass innerClass) {
+        String typeS = classH.split("class")[1];
+        int leftInt = typeS.indexOf("<");
+        int extendsInt = typeS.indexOf("extends");
 
+        String typeStrs = null;
+        if(leftInt > -1) {
+            if(extendsInt > -1) {
+                if(leftInt < extendsInt) {
+                    typeStrs = typeS.substring(leftInt+1, typeS.indexOf(">"));
+                }
+            } else {
+                typeStrs = typeS.substring(leftInt+1, typeS.indexOf(">"));
+            }
+        }
+        if(StringUtils.isNotBlank(typeStrs)) {
+            typeStrs = typeStrs.trim();
+
+            String[] sss = typeStrs.split(",");
+            for(String types: sss) {
+                String[] ssArr = types.split("extends");
+                String name = ssArr[0];
+                TypeParameter tp = new TypeParameter(name.trim());
+
+                if(ssArr.length > 1) {
+                    String extendStrs = ssArr[1].trim();
+                    String[] essArr = extendStrs.split("&");
+                    for(String eas: essArr) {
+                        tp.getExtendsTypes().add(new FullyQualifiedJavaType(eas.trim()));
+                    }
+                }
+                innerClass.getTypeParameters().add(tp);
+            }
+        }
 
     }
 
@@ -341,13 +358,12 @@ public class InnerClassUtil {
         code = code.trim();
 
         String classH = getClassHeader(code);
-        System.out.println(code);
 
         // class name
         String className = getInnerClassName(classH);
         InnerClass innerClass = new InnerClass(className);
 
-        // set superClass/superInterfaceTypes/typeParams
+        // set superClass/superInterfaceTypes/typeParameters
         setSuperClass(innerClass, classH);
 
         // class comment
@@ -366,22 +382,18 @@ public class InnerClassUtil {
         // class method/initializationBlocks/innerClass/innerEnums
         setClassMethodAndProperties(innerClass, code);
 
-        // set typeParameters
-
         return innerClass;
     }
 
-    public static void main(String[] args) {
-        String s = "public static class dddd<T extends SysUser & SysUserService> extends BaseRes<SysUser> implements Serializable { }";
-        s = "public static class rewr extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
+    public static void main(String[] args) throws IOException {
+        String s = "public static class dddd<T extends SysUser & SysUserService, E, F> extends BaseRes<SysUser> implements Serializable { }";
+//        s = "public static class rewr extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
 
-        String classH = getClassHeader(s);
-        System.out.println("classH=" + classH);
+        s = IOUtils.toString(new FileInputStream(new File("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java")), "utf-8");
 
-        InnerClass in = new InnerClass("aaa");
-        setSuperClass(in, s);
+        InnerClass in = formatInnerClass(s);
 
-        System.out.println(in.getFormattedContent(1, new TopLevelClass("")));
+        System.out.println(in.getFormattedContent(0, new TopLevelClass("")));
 
     }
 }

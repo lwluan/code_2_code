@@ -106,9 +106,7 @@ public class CodeUtils {
 		Matcher m = p.matcher(txt);
 		if(m.find()) {
 			String cName = m.group();
-			cName = cName.split("class")[1];
-			cName = cName.substring(0, cName.indexOf("{"));
-			cName = cName.trim();
+			cName = InnerClassUtil.getInnerClassName(cName);
 			return cName;
 		}
 		return null;
@@ -392,6 +390,7 @@ public class CodeUtils {
 			if(methods != null) {
 				methods.add(method);
 			}
+			topLevelClass.addMethod(method);
 
 			// method parameter
 			if(StringUtils.isNotBlank(params)) {
@@ -440,15 +439,16 @@ public class CodeUtils {
 		return mapDic;
 	}
 
-
-
 	public static void main(String[] args) throws Exception {
 		
-//		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
-		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
-		getInterfaceImplMethodsAndSetClassProperties(new TopLevelClass(""),null, code);
+		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+//		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+
+		TopLevelClass t = new TopLevelClass("");
+		getInterfaceImplMethodsAndSetClassProperties(t,null, code);
 
 
+		System.out.println(t.getFormattedContent());
 	}
 
 }
