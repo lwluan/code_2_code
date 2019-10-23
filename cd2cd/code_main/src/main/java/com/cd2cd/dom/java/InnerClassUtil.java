@@ -4,6 +4,8 @@ import com.cd2cd.domain.SysUser;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -11,6 +13,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InnerClassUtil {
+
+    private static Logger log = LoggerFactory.getLogger(InnerClassUtil.class);
 
     public static String getClassHeader(String code) {
         Pattern p = Pattern.compile("(public|private|protected)?.*(static)?.*class.+\\{");
@@ -94,7 +98,7 @@ public class InnerClassUtil {
     }
 
     public static void setClassComment(InnerClass innerClass, String code) {
-
+        // TODO 类注释
     }
 
     public static void setClassMethodAndProperties(InnerClass innerClass, String code) {
@@ -193,6 +197,8 @@ public class InnerClassUtil {
             String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
             String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
 
+            log.info("fName={}", fName);
+
             MyMethod method = new MyMethod(fName);
             method.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
             method.setReturnType(new FullyQualifiedJavaType(rType));
@@ -260,6 +266,8 @@ public class InnerClassUtil {
                 }
             }
         }
+
+        innerClass.getMethods().addAll(methods);
     }
 
     public static void setSuperClass(InnerClass innerClass, String classH) {
@@ -288,6 +296,10 @@ public class InnerClassUtil {
                 int lastInt = superC.indexOf("implements") > -1 ? superC.indexOf("implements")
                         :superC.indexOf("{");
                 superC = superC.substring(0, lastInt);
+
+                // TODO className = classH.substring(classH.indexOf("class")+5, classH.indexOf(">"+1));
+            } else {
+
             }
         }
 
@@ -387,13 +399,14 @@ public class InnerClassUtil {
 
     public static void main(String[] args) throws IOException {
         String s = "public static class dddd<T extends SysUser & SysUserService, E, F> extends BaseRes<SysUser> implements Serializable { }";
-//        s = "public static class rewr extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
+        s = "public static class rewr extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
 
-        s = IOUtils.toString(new FileInputStream(new File("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java")), "utf-8");
+        s = IOUtils.toString(new FileInputStream(new File("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java")), "utf-8");
+//        s = IOUtils.toString(new FileInputStream(new File("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java")), "utf-8");
 
         InnerClass in = formatInnerClass(s);
 
-        System.out.println(in.getFormattedContent(0, new TopLevelClass("")));
+//        System.out.println(in.getFormattedContent(0, new TopLevelClass("")));
 
     }
 }

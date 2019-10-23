@@ -790,6 +790,8 @@ public class ProjectServiceImpl implements ProjectService {
 						_fa.setFieldId(field.getId());
 						_fa.setPid(fa.getId());
 						_fa.setFieldType("table");
+						_fa.setComment(field.getComment());
+						_fa.setArgTypeName(field.getMysqlType());
 						voFiledMap.put(_fa.getName(), _fa);
 					});
 				}
@@ -810,6 +812,8 @@ public class ProjectServiceImpl implements ProjectService {
 						_fa.setFieldId(field.getId());
 						_fa.setPid(fa.getId());
 						_fa.setFieldType("vo");
+						_fa.setComment(field.getComment());
+						_fa.setArgTypeName(field.getTypePath());
 						voFiledMap.put(_fa.getName(), _fa);
 					}
 				});

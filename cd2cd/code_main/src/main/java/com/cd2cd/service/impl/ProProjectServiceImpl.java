@@ -258,7 +258,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 			 * 生成Controller 控制器 和 Service
 			 */
 			genControllerAndService(projectGenUtil, proProject, commValidMap);
-			LOG.info("genController(projectGenUtil, proProject, commValidMap) ...");
+			LOG.info("genControllerAndService(projectGenUtil, proProject, commValidMap) ...");
 			
 			/**
 			 * 生成 vo 类

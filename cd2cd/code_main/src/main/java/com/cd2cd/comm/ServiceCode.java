@@ -16,7 +16,8 @@ public enum ServiceCode {
 	LOGIN_ERROR(10006, "用户名或密码不匹配"),
 	___GEN_CODE_END___(-10000, "自动生成内容【结束】不要编辑"),
 	
-	NOT_EXISTS_PROJECT(11001, "项目不存在")
+	NOT_EXISTS_PROJECT(11001, "项目不存在"),
+	DIR_CONNOT_WRITE(11002, "目录无法写入"),
 	
 	;
 	

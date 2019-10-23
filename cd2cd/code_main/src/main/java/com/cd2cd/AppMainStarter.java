@@ -24,7 +24,7 @@ public class AppMainStarter {
 	DatabaseInitDataUtil databaseInitDataUtil;
 	
 	@PostConstruct
-    public void init() throws FileNotFoundException, SQLException, IOException {
+    public void init() throws SQLException, IOException {
 		databaseInitDataUtil.initDatabase();
     }
 	

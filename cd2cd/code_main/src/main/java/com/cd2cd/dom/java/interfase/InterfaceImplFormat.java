@@ -41,8 +41,6 @@ public class InterfaceImplFormat {
 
         // 类的方法-注解、类成员变量-注解、静态块、内部类(枚举)、父类、接口
         genMethodMap = CodeUtils.getInterfaceImplMethodsAndSetClassProperties(mTopLevelClass, methods, code);
-        mTopLevelClass.getMethods().addAll(methods);
-
     }
 
     public List<MyMethod> getMethods() {

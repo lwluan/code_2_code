@@ -27,6 +27,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import com.cd2cd.comm.ServiceCode;
+import com.cd2cd.comm.exceptions.ServiceBusinessException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.util.Strings;
@@ -211,10 +213,10 @@ public class ProjectGenUtil {
 		String importSrc = "import com.cd2cd.admin.";
 		String importDesc = "import " + groupId + "." + artifactIdName + ".";
 
-		LOG.info("files-size={}", files.size());
+//		LOG.info("files-size={}", files.size());
 		for (File f : files) {
 
-			LOG.info("f-name={}", f.getAbsoluteFile());
+//			LOG.info("f-name={}", f.getAbsoluteFile());
 			
 			if (f.getPath().endsWith(".java")) {
 				String content = IOUtils.toString(new FileInputStream(f), "utf-8");
@@ -476,15 +478,17 @@ public class ProjectGenUtil {
 	 */
 	private void copyFolder(File src, File dest) throws IOException {
 		
-		LOG.info("copyFolder src={}, dest={}", src.getAbsoluteFile(), dest.getAbsoluteFile());
+//		LOG.info("copyFolder src={}, dest={}", src.getAbsoluteFile(), dest.getAbsoluteFile());
 		
 		if(_n.contains(src.getName())) {
-			LOG.info("ignore file [{}]", src.getName());
+//			LOG.info("ignore file [{}]", src.getName());
 			return;
 		}
 		if (src.isDirectory()) {
 			if (!dest.exists()) {
-				dest.mkdir();
+				if( ! dest.mkdir()) {
+					throw new ServiceBusinessException(ServiceCode.DIR_CONNOT_WRITE);
+				}
 			}
 			String files[] = src.list();
 			for (String file : files) {
@@ -507,7 +511,7 @@ public class ProjectGenUtil {
 	 * @return
 	 */
 	private String getRealPath(String path) {
-		LOG.info("path={}", path);
+//		LOG.info("path={}", path);
 		int n = path.indexOf("../");
 		if (n > -1) {
 			String eStr = path.substring(n + 3, path.length());

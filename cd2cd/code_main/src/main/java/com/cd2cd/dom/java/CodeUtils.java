@@ -384,7 +384,14 @@ public class CodeUtils {
 
 			// add method lines ： 前后有可能会多出空回车
 			String mLines = cName.substring(cName.indexOf("{")+1, cName.lastIndexOf("}"));
-			List<String> bodyLines = Arrays.asList(mLines.split(_n));
+			List<String> bodyLines = new ArrayList<>();
+			for (String line : Arrays.asList(mLines.trim().split(_n))) {
+				String lineTmp = line.trim();
+				if(StringUtils.isNotBlank(lineTmp)) {
+					bodyLines.add(lineTmp);
+				}
+			}
+
 			method.addBodyLines(bodyLines);
 
 			if(methods != null) {
