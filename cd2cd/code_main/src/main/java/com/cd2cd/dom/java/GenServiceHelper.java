@@ -122,6 +122,10 @@ public class GenServiceHelper {
 		InterfaceFormat iff = new InterfaceFormat(originCode, type);
 		Interface originInferface = iff.getmInterface();
 
+		if(originInferface.getMethods().size() < 1) {
+			return;
+		}
+
 		List<MyMethod> originMethods = iff.getMethods();
 		Map<String, MyMethod> oldMethodDic = iff.getGenMethodMap();
 		Map<String, Method> newFunGenMap = new HashMap<>();
@@ -146,11 +150,9 @@ public class GenServiceHelper {
 
 	private void writeCodeToFile(CompilationUnit compilationUnit, String filePath) throws IOException {
 		String classTxt = compilationUnit.getFormattedContent();
-		if(StringUtils.isNotBlank(classTxt)) {
-			log.info("filePath={}, classTxt={}", filePath, classTxt);
-			// to write
-			writeFile(classTxt, filePath);
-		}
+		// to write
+		writeFile(classTxt, filePath);
+
 	}
 
 	private void addClassImport(CompilationUnit compilationUnit) {
@@ -251,7 +253,9 @@ public class GenServiceHelper {
 		TopLevelClass originImpl = iff.getmTopLevelClass();
 		addClassImport(originImpl);
 
-		log.info("originImpl={}", originImpl.getFormattedContent());
+		if(originImpl.getMethods().size() <1) {
+			return;
+		}
 
 		Map<String, MyMethod> oldMethodDic = iff.getGenMethodMap();
 		Map<String, Method> newFunGenMap = new HashMap<>();
@@ -270,7 +274,6 @@ public class GenServiceHelper {
 
 			List<String> javaDocLines = new ArrayList<>(oldMethod.getJavaDocLines());
 			List<String> bodyLines = new ArrayList<>(oldMethod.getBodyLines());
-			log.info("bodyLines={}", String.join(",", bodyLines));
 
 			BeanUtils.copyProperties(newFunGenMap.get(mKey), oldMethod);
 
@@ -293,8 +296,8 @@ public class GenServiceHelper {
 	public void genCode() throws IOException {
 
 		// 判断是否需存在生成 genService
-		genServiceInterface();
-		genServiceImpl();
+//		genServiceInterface();
+//		genServiceImpl();
 	}
 	
 	

@@ -160,7 +160,36 @@ public class CodeUtils {
 		}
 		return null;
 	}
-	
+
+	private static String getFunArgType(String str) {
+		int lastIndex = str.lastIndexOf("<");
+		int whiteIndex = str.indexOf(" ");
+		if(lastIndex > -1 && lastIndex < whiteIndex) {
+
+			// <<>> 计算成对 TODO
+			Stack<Character> stack = new Stack<>();
+			char[] codeArr = str.toCharArray();
+			StringBuilder sb = new StringBuilder();
+			for(int i=0; i<codeArr.length; i++) {
+				Character c = codeArr[i];
+				sb.append(c);
+				if('<' == c) {
+					stack.push(c);
+				} else if('>' == c) {
+					stack.pop();
+					if(stack.size() == 0) {
+						break;
+					}
+				}
+			}
+			return sb.toString();
+		} else {
+			lastIndex = str.indexOf(" ");
+		}
+
+		return str.substring(0, lastIndex);
+	}
+
 	public static Map<String, MyMethod> getInterfaceMethods(List<MyMethod> methods, String code) {
 		Map<String, MyMethod> mapDic = new HashMap<>();
 		if(StringUtils.isBlank(code)) {
@@ -184,7 +213,10 @@ public class CodeUtils {
 			} else {
 				s = 0;
 			}
-			String rType = fun.substring(s, fun.indexOf(" "));
+
+//			String rType = fun.substring(s, fun.indexOf(" "));
+			String rType = getFunArgType(fun.substring(s));
+
 			String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
 			String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
 			
@@ -239,6 +271,22 @@ public class CodeUtils {
 			}
 		}
 		return mapDic;
+	}
+
+	private static void setMethodPrams(String params, Method method) {
+
+		List<String[]> pp = new ArrayList<>();
+		params = params.replaceAll("  ",  " ");
+		char[] chars = params.toCharArray();
+
+		// TODO
+
+		for(String[] pArg: pp) {
+			String paramsType = pArg[0].trim();
+			String paramsName = pArg[1].trim();
+			Parameter parameter = new Parameter(new FullyQualifiedJavaType(paramsType), paramsName);
+			method.addParameter(parameter);
+		}
 	}
 
 	public static int lastEndIndex(String s) {
@@ -360,12 +408,12 @@ public class CodeUtils {
 			);
 
 			String vis = fun.substring(s, fun.indexOf(" "));
-			fun = fun.substring(fun.indexOf(" "), fun.length()).trim();
-			String rType = fun.substring(0, fun.indexOf(" "));
+			fun = fun.substring(fun.indexOf(" ")).trim();
+			String rType = getFunArgType(fun);
+
+			System.out.println("rType==" + rType + "fun=" + fun);
 			String fName = fun.substring(rType.length(), fun.indexOf("(")).trim();
 			String params = fun.substring(fun.indexOf("(")+1, fun.indexOf(")")).trim();
-
-//			System.out.println(vis + "|"+rType + "| " + fName + "(" + params + ")");
 
 			MyMethod method = new MyMethod(fName);
 			method.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
@@ -401,14 +449,7 @@ public class CodeUtils {
 
 			// method parameter
 			if(StringUtils.isNotBlank(params)) {
-				String[] pp = params.split(",");
-				for(String ps: pp) {
-					String[] pArg = ps.trim().replaceAll("  ", " ").split(" ");
-					String paramsType = pArg[0];
-					String paramsName = pArg[1];
-					Parameter parameter = new Parameter(new FullyQualifiedJavaType(paramsType), paramsName);
-					method.addParameter(parameter);
-				}
+				setMethodPrams(params, method);
 			}
 
 			if(cName.lastIndexOf("/*") > -1) {
