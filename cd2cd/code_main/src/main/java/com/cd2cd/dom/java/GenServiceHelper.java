@@ -169,6 +169,13 @@ public class GenServiceHelper {
 		IOUtils.write(classTxt, new FileOutputStream(file), "utf-8");
 	}
 
+	/**
+	 * 源类文件和现有文件混合
+	 * @param methods
+	 * @param oldMethodDic
+	 * @param newFunGenMap
+	 * @param impl
+	 */
 	private void setFunction(List<Method> methods, Map<String, MyMethod> oldMethodDic, Map<String, Method> newFunGenMap, boolean impl) {
 		/** 添加方法 */
 		for(ProFun fun : file.getFuns()) {

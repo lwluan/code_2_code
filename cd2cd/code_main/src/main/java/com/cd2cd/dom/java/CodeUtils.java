@@ -15,11 +15,11 @@ public class CodeUtils {
 	public static String _n = System.getProperty("line.separator");
 	public static String typeByCollectionType(String type, String collectionType) {
 		if(CollectionType.list.name().equalsIgnoreCase(collectionType)) {
-			return type = "List<" + type + ">";
+			type = "List<" + type + ">";
 		} else if(CollectionType.map.name().equalsIgnoreCase(collectionType)) {
-			return type = "Map<String, " + type + ">";
+			type = "Map<String, " + type + ">";
 		} else if(CollectionType.set.name().equalsIgnoreCase(collectionType)) {
-			return type = "Set<" + type + ">";
+			type = "Set<" + type + ">";
 		}
 		return type;
 	}
@@ -27,7 +27,6 @@ public class CodeUtils {
 	public static String getFunIdenStr(String funId) {
 		return "@gen_"+funId+"_lwl";
 	}
-	
 	public static String getFunHeaderByIdentify(String str, String iden) {
 		
 		String eIden = ") {";
@@ -321,6 +320,9 @@ public class CodeUtils {
 		}
 
 		code = code.substring(code.indexOf("{") + 1, code.lastIndexOf("}"));
+
+
+
 		Stack<Character> stack = new Stack<>();
 
 		List<String> methodStrs = new ArrayList<>();
@@ -489,7 +491,7 @@ public class CodeUtils {
 
 	public static void main(String[] args) throws Exception {
 		
-		String code = IOUtils.toString(new FileInputStream("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
+		String code = IOUtils.toString(new FileInputStream("/Volumes/data/code-sources/java-source/loan_admin/loan_admin_main/src/main/java/com/yishang/loan_admin/credit_trial/service/impl/CreditTrialServiceImpl.java"), "utf-8");
 //		String code = IOUtils.toString(new FileInputStream("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java"), "utf-8");
 
 		TopLevelClass t = new TopLevelClass("");

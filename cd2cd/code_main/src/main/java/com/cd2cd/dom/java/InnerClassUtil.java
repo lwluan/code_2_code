@@ -401,6 +401,7 @@ public class InnerClassUtil {
         String s = "public static class dddd<T extends SysUser & SysUserService, E, F> extends BaseRes<SysUser> implements Serializable { }";
         s = "public static class rewr extends BaseRes<SysUser> implements Serializable,Serializable1, 3 { }";
 
+
         s = IOUtils.toString(new FileInputStream(new File("/Users/leiwuluan/Documents/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java")), "utf-8");
 //        s = IOUtils.toString(new FileInputStream(new File("/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/service/impl/ProjectServiceImpl.java")), "utf-8");
 

@@ -331,12 +331,14 @@ public class ProProjectServiceImpl implements ProProjectService {
 		mProFileCriteria.createCriteria()
 		.andFileTypeEqualTo(FileTypeEnum.controller.name())
 		.andProjectIdEqualTo(proProject.getId());
+		mProFileCriteria.setOrderByClause("id");
 		List<ProFile> controllerList = proFileMapper.selectFileAndModule(mProFileCriteria);
 		
 		// 加载方法列表
 		for(ProFile file : controllerList) {
 			ProFunCriteria mProFunCriteria = new ProFunCriteria();
 			mProFunCriteria.createCriteria().andCidEqualTo(file.getId());
+			mProFunCriteria.setOrderByClause("id");
 			List<ProFun> funs = funMapper.selectByExample(mProFunCriteria);
 			
 			/**
@@ -394,6 +396,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 		List<ProFile> voList = proFileMapper.selectFileAndModule(voCriteria);
 		for(ProFile file : voList) {
 			ProFieldCriteria fieldCriteria = new ProFieldCriteria();
+			fieldCriteria.setOrderByClause("id");
 			fieldCriteria.createCriteria().andFileIdEqualTo(file.getId());
 			
 			List<ProField> fields = proFieldMapper.selectByExample(fieldCriteria);
@@ -466,6 +469,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 			mProFunArgCriteria.createCriteria()
 			.andArgTypeIdEqualTo(file.getId())
 			.andArgTypeEqualTo(FunArgType.vo.name());
+			mProFunArgCriteria.setOrderByClause("id");
 			List<ProFunArg> voArgs = funArgMapper.selectByExample(mProFunArgCriteria);
 			
 			// property, valid
@@ -477,7 +481,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 				Long funId = arg.getFunId();
 				ProFun fun = funMapper.selectByPrimaryKey(funId);
 				ProFile controller = proFileMapper.selectByPrimaryKey(fun.getCid());
-				
+
+				System.out.println("controller=" + controller + ", fun=" + fun);
+
 				// controller + fun
 				String validateGroupName = controller.getName() +"_" + fun.getFunName();
 				

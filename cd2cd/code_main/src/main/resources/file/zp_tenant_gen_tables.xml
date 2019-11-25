@@ -26,31 +26,22 @@
 		</commentGenerator>
 		
 		 <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://127.0.0.1:3306/zp_tenant" userId="root" password="root" >
+			connectionURL="jdbc:mysql://192.168.31.20:3306/tenant" userId="root" password="123456" >
 		</jdbcConnection>
 		
-		<javaModelGenerator targetPackage="com.zp_tenant.domain" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/zp_tenant/zp_tenant_main/src/main/java/" />
-		<sqlMapGenerator targetPackage="com.zp_tenant.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/zp_tenant/zp_tenant_main/src/main/java/" />
-		<javaClientGenerator targetPackage="com.zp_tenant.mapper" targetProject="/Users/leiwuluan/Documents/gxlt_workspace/zp_tenant/zp_tenant_main/src/main/java/" type="XMLMAPPER" />
+		<javaModelGenerator targetPackage="com.yishang.loan_api.tenant.domain" targetProject="/Volumes/data/code-sources/loan_api/loan_api_main/src/main/java" />
+		<sqlMapGenerator targetPackage="com.yishang.loan_api.tenant.mapper" targetProject="/Volumes/data/code-sources/loan_api/loan_api_main/src/main/java" />
+		<javaClientGenerator targetPackage="com.yishang.loan_api.tenant.mapper" targetProject="/Volumes/data/code-sources/loan_api/loan_api_main/src/main/java" type="XMLMAPPER" />
 		
-		<!-- sys table -->
-		<table domainObjectName="SysUser" tableName="sys_user" >
+		<!-- sys table
+		<table domainObjectName="TenantUser" tableName="tenant_user" >
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
-		<table domainObjectName="SysRole" tableName="sys_role" >
+		<table domainObjectName="Tenant" tableName="tenant" >
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
-		<table domainObjectName="SysAuthority" tableName="sys_authority" >
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		<table domainObjectName="SysUserRoleRel" tableName="sys_user_role_rel" >
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		<table domainObjectName="SysAuthorityRoleRel" tableName="sys_authority_role_rel" >
-			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
-		</table>
-		
-		<table domainObjectName="ZpTenant" tableName="zp_tenant" >
+		-->
+		<table domainObjectName="TenantContent" tableName="tenant_content" >
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		
