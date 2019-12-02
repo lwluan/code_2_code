@@ -2,7 +2,7 @@ package com.cd2cd.dom.java;
 
 public class TypeEnum {
 
-	public static enum FileTypeEnum {
+	public enum FileTypeEnum {
 		controller, service, vo, mapper, domain;
 		
 		public boolean eq(String name) {
@@ -10,24 +10,24 @@ public class TypeEnum {
 		}
 	}
 	
-	public static enum ProjectModulTypeEnum {
+	public enum ProjectModulTypeEnum {
 		standard, module
 	}
 	
-	public static enum PackageTypeEnum {
+	public enum PackageTypeEnum {
 		Flat,
 		Hierarchical;
 	}
 
-	public static enum FunArgType {
+	public enum FunArgType {
 		base,vo,pojo
 	}
 	
-	public static enum FieldDataType {
+	public enum FieldDataType {
 		base, vo, T
 	}
 	
-	public static enum CollectionType {
+	public enum CollectionType {
 		single, list, set, map
 	}
 }
