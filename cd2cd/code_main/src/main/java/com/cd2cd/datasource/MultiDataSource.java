@@ -44,8 +44,10 @@ public class MultiDataSource implements DataSource {
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}
-
 			try {
+
+				//
+
 				String _url = url.replaceAll("\\{databaseName\\}", tenantId);
 				BeanUtils.setProperty(dataSource, "driverClassName", driverClassName);
 				BeanUtils.setProperty(dataSource, "maxActive", driverClassName);

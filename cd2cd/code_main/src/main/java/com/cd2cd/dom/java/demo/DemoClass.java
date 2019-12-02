@@ -90,7 +90,7 @@ public class DemoClass extends DemoSuper implements TestInterface, TestInterface
         System.out.println("DemoClass....");
     }
 
-    @Value("${aaa.static.value}")
+    @Value("${spring.freemarker.suffix}")
     private String staticValue;
 
     /**
