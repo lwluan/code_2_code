@@ -14,6 +14,7 @@ public class TenantThreadLocal {
 
 	private static InheritableThreadLocal<HolderBean> idLocal;
 	protected static String defaulTenantId = "auto_code";
+	public String TENANT_PLACEHOLDER;
 	static {
 		idLocal = new InheritableThreadLocal<>();
 	}
@@ -23,9 +24,12 @@ public class TenantThreadLocal {
 
 	@PostConstruct
 	protected void initTenantThreadLocal() {
-		int i = multisourceUrl.indexOf("{")+1;
-		int e = multisourceUrl.indexOf("}");
-		defaulTenantId = multisourceUrl.substring(i, e);
+		int i = multisourceUrl.indexOf("{");
+		int e = multisourceUrl.indexOf("}") + 1;
+		TENANT_PLACEHOLDER = multisourceUrl.substring(i, e);
+		defaulTenantId = TENANT_PLACEHOLDER.substring(1, TENANT_PLACEHOLDER.length() - 1);
+
+		TENANT_PLACEHOLDER = TENANT_PLACEHOLDER.replaceAll("\\{", "\\\\{").replaceAll("\\}", "\\\\}");
 		log.info("defaulTenantId={}", defaulTenantId);
 	}
 

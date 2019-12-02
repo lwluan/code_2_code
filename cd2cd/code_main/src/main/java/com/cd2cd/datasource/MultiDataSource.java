@@ -7,6 +7,7 @@ import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.sql.DataSource;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Component;
 
 @Component("dataSource")
 public class MultiDataSource implements DataSource {
+
+	@Resource
+	private TenantThreadLocal tenantThreadLocal;
 
 	protected String dataSourceType;
 	public String driverClassName;
@@ -46,9 +50,7 @@ public class MultiDataSource implements DataSource {
 			}
 			try {
 
-				//
-
-				String _url = url.replaceAll("\\{databaseName\\}", tenantId);
+				String _url = url.replaceAll(tenantThreadLocal.TENANT_PLACEHOLDER, tenantId);
 				BeanUtils.setProperty(dataSource, "driverClassName", driverClassName);
 				BeanUtils.setProperty(dataSource, "maxActive", driverClassName);
 				BeanUtils.setProperty(dataSource, "maxIdle", maxIdle);
