@@ -14,13 +14,14 @@
 	</appender>
 
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOG_HOME}/${FILE_NAME}.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
 			<!-- rollover daily -->
-			<fileNamePattern>${LOG_HOME}/${FILE_NAME}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<fileNamePattern>${LOG_HOME}/${FILE_NAME}.%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
 			<!-- each file should be at most 100MB, keep 60 days worth of history, but at most 20GB -->
 			<maxFileSize>100MB</maxFileSize>
 			<maxHistory>30</maxHistory>
-			<totalSizeCap>5GB</totalSizeCap>
+			<totalSizeCap>2GB</totalSizeCap>
 			<cleanHistoryOnStart>true</cleanHistoryOnStart>
 		</rollingPolicy>
 		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -33,7 +34,7 @@
 		</filter>
 	</appender>
 
-	<logger name="com.yishang.admin" level="info"/>
+	<logger name="com.cd2cd.admin.mapper" level="info"/>
 	<logger name="org.springframework.web" level="info" additivity="true"/>
 	<logger name="org.apache.ibatis" level="info" additivity="true"/>
 	<logger name="org.springframework.boot" level="info" additivity="true"/>
