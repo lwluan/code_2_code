@@ -1,5 +1,7 @@
 package com.cd2cd.dom.java.interfase;
 
+import com.cd2cd.dom.java.InnerClassUtil;
+import com.cd2cd.dom.java.parse.InnerClassParser;
 import org.apache.commons.io.IOUtils;
 import org.mybatis.generator.api.dom.java.TopLevelClass;
 
@@ -24,7 +26,9 @@ public class ClassImplFormat {
     }
 
     private String getClassName() {
-        return "aaaa";
+        String classH = InnerClassParser.getClassHeader(this.code);
+        String className = InnerClassUtil.getInnerClassName(classH);
+        return className;
     }
 
     public TopLevelClass toTopLevelClass() {

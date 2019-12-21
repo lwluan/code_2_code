@@ -1,3 +1,6 @@
+/**
+ * 小明这是测试类
+ */
 package com.cd2cd.dom.java.demo;
 
 import com.cd2cd.mapper.ProProjectMapper;
@@ -23,7 +26,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Service
-public class DemoClass extends DemoSuper implements TestInterface, TestInterface2 {
+//public class DemoClass<T extends TestInterface2> extends DemoSuper implements TestInterface<TestInterface2>, TestInterface2 {
+public class DemoClass<T extends TestInterface2, E extends TestInterface2> extends DemoSuper<TestInterface2> implements TestInterface<TestInterface2>, TestInterface2 {
 
     private final static Logger LOG = LoggerFactory.getLogger(DemoClass.class);
 

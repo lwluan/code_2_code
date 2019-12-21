@@ -1,5 +1,6 @@
 package com.cd2cd.dom.java;
 
+import com.cd2cd.dom.java.parse.InnerClassParser;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.*;
@@ -17,14 +18,7 @@ public class InnerClassUtil {
 
     private static Logger log = LoggerFactory.getLogger(InnerClassUtil.class);
 
-    public static String getClassHeader(String code) {
-        Pattern p = Pattern.compile("(public|private|protected)?.*(static)?.*class.+\\{");
-        Matcher m = p.matcher(code);
-        if(m.find()) {
-            return m.group();
-        }
-        return null;
-    }
+
 
     public static String getInnerClassName(String classH) {
 
@@ -54,16 +48,7 @@ public class InnerClassUtil {
 
 
 
-    public static String getVisible(String classH) {
-        if(classH.indexOf("private") > -1) {
-            return "private";
-        } else if(classH.indexOf("public") > -1) {
-            return "public";
-        } else if(classH.indexOf("protected") > -1) {
-            return "protected";
-        }
-        return "DEFAULT";
-    }
+
 
     public static void setClassFiled(InnerClass innerClass, String code) {
         Pattern p = Pattern.compile("(public|private|protected)?.*(static)?.+;");
@@ -73,7 +58,7 @@ public class InnerClassUtil {
 
             String fieldStr = m.group();
 
-            String vis = getVisible(fieldStr);
+            String vis = InnerClassParser.getVisible(fieldStr);
             field.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
 
             boolean isStatic = fieldStr.indexOf(" static ") > -1;
@@ -271,119 +256,27 @@ public class InnerClassUtil {
         innerClass.getMethods().addAll(methods);
     }
 
-    public static void setSuperClass(InnerClass innerClass, String classH) {
-
-        /**
-         * static class dddd extends fff {}
-         * static class dddd<T> extends fff {}
-         * static class dddd extends fff<EE> {}
-         * public static class dddd<SysUserService>
-         * public static class dddd<T extends SysUser & SysUserService> extends BaseRes<SysUser> implements Serializable { }
-         *
-         * #**1; extends SysUser & SysUserService>
-         * #**2; extends BaseRes<SysUser> implements Serializable { }
-         */
-        String superC = null;
-        String[] ss = classH.split("extends");
-        int ssLen = ss.length;
-        if(ssLen == 3) { // xxxx extends xxxxx extends bbbb
-            superC = ss[2].trim();
-            int lastInt = (superC.indexOf("implements") > -1 ? superC.indexOf("implements")
-                    :(superC.indexOf("{")));
-            superC = superC.substring(0, lastInt);
-        } else if(ssLen == 2) {
-            superC = ss[1].trim();
-            if(superC.indexOf("<") > -1) { // #**2;
-                int lastInt = superC.indexOf("implements") > -1 ? superC.indexOf("implements")
-                        :superC.indexOf("{");
-                superC = superC.substring(0, lastInt);
-
-                // TODO className = classH.substring(classH.indexOf("class")+5, classH.indexOf(">"+1));
-            } else {
-
-            }
-        }
-
-        // 类范型
-        setClassTypes(classH, innerClass);
-
-        if(StringUtils.isNotBlank(superC)) {
-            innerClass.setSuperClass(superC);
-        }
-
-        // implements class
-        String ii = "implements";
-        if(classH.indexOf(ii) > -1) {
-
-            String interStr = classH.substring(classH.indexOf(ii) + ii.length(), classH.indexOf("{")).trim();
-            String[] isArr = interStr.split(",");
-            for(String is: isArr) {
-                innerClass.addSuperInterface(new FullyQualifiedJavaType(is.trim()));
-            }
 
 
-        }
-    }
 
-    /**
-     * 设置类型类型
-     * @param classH
-     * @param innerClass
-     */
-    private static void setClassTypes(String classH, InnerClass innerClass) {
-        String typeS = classH.split("class")[1];
-        int leftInt = typeS.indexOf("<");
-        int extendsInt = typeS.indexOf("extends");
-
-        String typeStrs = null;
-        if(leftInt > -1) {
-            if(extendsInt > -1) {
-                if(leftInt < extendsInt) {
-                    typeStrs = typeS.substring(leftInt+1, typeS.indexOf(">"));
-                }
-            } else {
-                typeStrs = typeS.substring(leftInt+1, typeS.indexOf(">"));
-            }
-        }
-        if(StringUtils.isNotBlank(typeStrs)) {
-            typeStrs = typeStrs.trim();
-
-            String[] sss = typeStrs.split(",");
-            for(String types: sss) {
-                String[] ssArr = types.split("extends");
-                String name = ssArr[0];
-                TypeParameter tp = new TypeParameter(name.trim());
-
-                if(ssArr.length > 1) {
-                    String extendStrs = ssArr[1].trim();
-                    String[] essArr = extendStrs.split("&");
-                    for(String eas: essArr) {
-                        tp.getExtendsTypes().add(new FullyQualifiedJavaType(eas.trim()));
-                    }
-                }
-                innerClass.getTypeParameters().add(tp);
-            }
-        }
-
-    }
 
     public static InnerClass formatInnerClass(String code) {
         code = code.trim();
 
-        String classH = getClassHeader(code);
+        String classH = "";//getClassHeader(code);
 
         // class name
         String className = getInnerClassName(classH);
         InnerClass innerClass = new InnerClass(className);
 
         // set superClass/superInterfaceTypes/typeParameters
-        setSuperClass(innerClass, classH);
+//        setSuperClass(innerClass, classH);
 
         // class comment
         setClassComment(innerClass, code);
 
         // class visible
-        String vis = getVisible(classH);
+        String vis = InnerClassParser.getVisible(classH);
         innerClass.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
         innerClass.setStatic(classH.indexOf(" static ") > -1);
         innerClass.setFinal(classH.indexOf(" final ") > -1);
