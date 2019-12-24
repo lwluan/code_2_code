@@ -24,10 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
  * 6、
  * {bbb}
  */
-@Transactional
-@Service
+@Transactional // aa
+@Service //fffvv
 //public class DemoClass<T extends TestInterface2> extends DemoSuper implements TestInterface<TestInterface2>, TestInterface2 {
 public class DemoClass<T extends TestInterface2, E extends TestInterface2> extends DemoSuper<TestInterface2> implements TestInterface<TestInterface2>, TestInterface2 {
+
 
     private final static Logger LOG = LoggerFactory.getLogger(DemoClass.class);
 
@@ -42,17 +43,51 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
 
     }
 
-    enum TestEnum{
+    enum TestEnum{ /** /** /**
+     测试
+     */
         aaa, bbb, ccc;
     }
 
-    class TestChild {
+    /**
+     * comment static
+     * {
+     */
+    static {
+        /**
+         * 静态块测试类
+         * {aa}, {bbb
+         */
+        System.out.println("is static ok now!");
+    }
+    /**
+     * }
+     */
+
+    /**
+     * init block...
+     */
+    {
+        /**
+         * test comment
+         */
+        System.out.println("DemoClass....");
+    }
+
+    @Value("${spring.freemarker.suffix}")
+    private String staticValue;
+
+    /**
+     * child file
+     */
+    @Transactional
+    class TestChild { // test
         private TestEnum testEnum;
         private String name;
         private String age;
         public TestChild() {
             super();
-        }
+        } // test { }
 
         public TestChild(TestEnum testEnum) {
             this.testEnum = testEnum;
@@ -82,20 +117,7 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
         }
     }
 
-    static {
-        /**
-         * 静态块测试类
-         * {aa}, {bbb}
-         */
-        System.out.println("is static ok now!");
-    }
 
-    {
-        System.out.println("DemoClass....");
-    }
-
-    @Value("${spring.freemarker.suffix}")
-    private String staticValue;
 
     /**
      * 名称
@@ -106,9 +128,16 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
 
     }
 
-    public DemoClass(String name) {
+    // /**
+    /**
+     * {name}
+     {name} {
+     * @param name
+
+     */
+    public DemoClass(String name) { // {
         this.name = name;
-    }
+    }// }}
 
     public BaseRes<DataPageWrapper<ProModuleVo>> productList() {
         return null;

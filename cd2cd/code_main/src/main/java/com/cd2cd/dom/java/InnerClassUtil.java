@@ -48,41 +48,6 @@ public class InnerClassUtil {
 
 
 
-
-
-    public static void setClassFiled(InnerClass innerClass, String code) {
-        Pattern p = Pattern.compile("(public|private|protected)?.*(static)?.+;");
-        Matcher m = p.matcher(code);
-        if(m.find()) {
-            Field field = new Field();
-
-            String fieldStr = m.group();
-
-            String vis = InnerClassParser.getVisible(fieldStr);
-            field.setVisibility(JavaVisibility.valueOf(vis.toUpperCase()));
-
-            boolean isStatic = fieldStr.indexOf(" static ") > -1;
-            boolean isFinal = fieldStr.indexOf(" final ") > -1;
-            boolean isTransient = fieldStr.indexOf(" transient ") > -1;
-            boolean isVolatile = fieldStr.indexOf(" volatile ") > -1;
-
-            field.setStatic(isStatic);
-            field.setFinal(isFinal);
-            field.setTransient(isTransient);
-            field.setVolatile(isVolatile);
-
-            String[] ss = fieldStr.split("=");
-            if(ss.length > 1) {
-                String initializationString = ss[1];
-                initializationString = initializationString.substring(0, initializationString.lastIndexOf(";"));
-                initializationString = initializationString.trim();
-                field.setInitializationString(initializationString);
-            }
-            innerClass.addField(field);
-
-        }
-    }
-
     public static void setClassComment(InnerClass innerClass, String code) {
         // TODO 类注释
     }
@@ -283,7 +248,7 @@ public class InnerClassUtil {
         innerClass.setAbstract(classH.indexOf(" abstract ") > -1);
 
         // class field
-        setClassFiled(innerClass, code);
+        InnerClassParser.setClassField(innerClass, code);
 
         // class method/initializationBlocks/innerClass/innerEnums
         setClassMethodAndProperties(innerClass, code);
