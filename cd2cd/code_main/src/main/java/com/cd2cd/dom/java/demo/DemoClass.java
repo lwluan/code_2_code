@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.Null;
+
 /**
  * 测试类
  * 1、类顶部有注解
@@ -50,6 +52,15 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
     }
 
     /**
+     * 特殊语句写法；一有多个分割 { } { 都是有效
+     */
+    private void aaa() {
+        if(true){ } else
+            {
+
+        }
+    }
+    /**
      * comment static
      * {
      */
@@ -71,9 +82,12 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
         /**
          * test comment
          */
-        System.out.println("DemoClass....");
+        System.out.println(" {{ DemoClass.... } ");
+        char a = '{';
+//        System.out.println(a);
     }
 
+    @Null(groups = {NotNullOne.class})
     @Value("${spring.freemarker.suffix}")
     private String staticValue;
 
@@ -118,6 +132,7 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
     }
 
 
+    interface NotNullOne { }
 
     /**
      * 名称

@@ -47,22 +47,44 @@ public class InnerClassParser {
         List<String> blocks = getBlocksFromCode(block);
 
 
+        List<String> methodList = new ArrayList<>();
         for(String bb: blocks) {
             System.out.println(bb +"***************\n\n");
+
+
         }
+
+        // 过滤出方法
+
+        // 过滤出inner内部类
+
+        // inner interface
+
+        // inner enum
+
+        // 过滤出 static block
+
+        // 过滤出 init block
+
+        // 成员变量
+
 
         // 设置成员变量 + 注解 + @Value("${aa.ba.val}")
 //        setClassField(innerClass, code);
-
 
     }
 
     private static List<String> getBlocksFromCode(String block) {
         List<String> blocks = new ArrayList<>();
 
+        boolean debug = false;
+
         // fetch {} block
         char sChar = '{';
         char eChar = '}';
+        char aChar = '@'; // 注解
+        char strChar = '"'; // 双引号
+
         Stack<Character> stack = new Stack<>();
         StringBuilder bStr = new StringBuilder();
         String[] lines = block.split("\n");
@@ -74,20 +96,70 @@ public class InnerClassParser {
 
             int sCharIndex = line.indexOf(sChar);
             int eCharIndex = line.indexOf(eChar);
+            int aCharIndex = line.indexOf(aChar);
+            int strCharIndex = line.indexOf(strChar);
             int commSIndex = line.indexOf("/*");
             int commEIndex = line.indexOf("*/");
             int commLIndex = line.indexOf("//");
 
-            boolean hasSChar = sCharIndex > -1;
-            boolean hasEChar = eCharIndex > -1;
 
+            boolean hasSChar = sCharIndex > -1 && !commOpen;
+            boolean hasEChar = eCharIndex > -1 && !commOpen;
+
+            // 未在注释中
+            if(!commOpen) {
+
+                // 注解中是否有 { }
+                if (aCharIndex > -1) {
+                    hasSChar = false;
+                    hasEChar = false;
+                }
+
+                // 字符【串】中是否有 "{" "}"
+                if(strCharIndex > -1) {
+                    int hasNum = 0;
+                    if (hasSChar) {
+                        hasNum = 0;
+                        for (int i = 0; i < sCharIndex; i++) {
+                            if (line.charAt(i) == strChar) {
+                                hasNum++;
+                            }
+                        }
+                        if (hasNum % 2 != 0) {
+                            hasSChar = false;
+                        }
+                    }
+                    if (hasEChar) {
+                        hasNum = 0;
+                        for (int i = 0; i < eCharIndex; i++) {
+                            if (line.charAt(i) == strChar) {
+                                hasNum++;
+                            }
+                        }
+                        if (hasNum % 2 != 0) {
+                            hasEChar = false;
+                        }
+                    }
+                }
+
+                // 字符中是否有 '{' '}'
+                if(line.indexOf("'{'") +1 == sCharIndex) {
+                    hasSChar = false;
+                }
+
+                if(line.indexOf("'}'") + 1 == eCharIndex) {
+                    hasEChar = false;
+                }
+            }
             /**
              * 检查标记是否有效:
              * 1、是否在 （/** * /）内部
              * 2、是否在 // 行上
+             * 3、@Null(groups={A.class}) @Value("${aa.cc.value}")
+             * 4、String a = "{{";
+             * 5、char aa = '{';
+             * 6、一行多个分割 if(true){ } else {  单个字符去判断
              */
-
-//            System.out.println("line=" + line);
 
             //  // { }
             if(commLIndex > -1) {
@@ -127,6 +199,9 @@ public class InnerClassParser {
 
             // 在注释内部，忽略
             // } // test { }
+            if(debug) {
+                System.out.println("line=" + line + "\t\t\t\t **** commOpen=" + commOpen + "，hasSChar=" + hasSChar + "，hasEChar=" + hasEChar);
+            }
             if(commOpen) {
                 if( !hasSChar)
                 {
@@ -135,21 +210,26 @@ public class InnerClassParser {
             }
 
             if(hasSChar) {
-                System.out.println("push *****");
+                if(debug) {
+                    System.out.println("push ++++++++++++++++++");
+                }
                 stack.push(sChar);
             }
 
 
 
             if(hasEChar) {
-                System.out.println(line);
+
                 String bb = bStr.toString();
-                System.out.println("pop *****");
+                if(debug) {
+                    System.out.println("pop -------------------");
+                }
                 stack.pop();
 
                 if(stack.isEmpty()) {
-
-                    System.out.println("*********************************************");
+                    if(debug) {
+                        System.out.println("*********************************************");
+                    }
                     // end block
                     blocks.add(bb);
                     bStr.delete(0, bStr.length());
