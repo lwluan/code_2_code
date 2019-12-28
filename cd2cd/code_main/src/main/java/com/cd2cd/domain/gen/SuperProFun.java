@@ -51,9 +51,6 @@ public class SuperProFun implements Serializable {
      */
     private String todoContent;
 
-    /**
-     * yes;no
-     */
     private String genService;
 
     private Date createTime;
@@ -208,16 +205,10 @@ public class SuperProFun implements Serializable {
         this.todoContent = todoContent;
     }
 
-    /**
-     * yes;no
-     */
     public String getGenService() {
         return genService;
     }
 
-    /**
-     * yes;no
-     */
     public void setGenService(String genService) {
         this.genService = genService;
     }

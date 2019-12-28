@@ -26,12 +26,12 @@
 		</commentGenerator>
 		
 		 <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-			connectionURL="jdbc:mysql://127.0.0.1:3306/auto_code" userId="root" password="root" >
+			connectionURL="jdbc:mysql://192.168.31.20:3306/auto_code" userId="root" password="123456" >
 		</jdbcConnection>
 		
-		<javaModelGenerator targetPackage="com.cd2cd.domain" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" />
-		<sqlMapGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" />
-		<javaClientGenerator targetPackage="com.cd2cd.mapper" targetProject="/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/" type="XMLMAPPER" />
+		<javaModelGenerator targetPackage="com.cd2cd.domain" targetProject="/Volumes/data/code-sources/java-source/code_2_code/cd2cd/code_main/src/main/java/" />
+		<sqlMapGenerator targetPackage="com.cd2cd.mapper" targetProject="/Volumes/data/code-sources/java-source/code_2_code/cd2cd/code_main/src/main/java/" />
+		<javaClientGenerator targetPackage="com.cd2cd.mapper" targetProject="/Volumes/data/code-sources/java-source/code_2_code/cd2cd/code_main/src/main/java/" type="XMLMAPPER" />
 		
 		<!-- sys table -->
 		<table domainObjectName="SysUser" tableName="sys_user" >
@@ -96,6 +96,10 @@
 		</table>
 		
 		<table domainObjectName="CommValidate" tableName="comm_validate" >
+			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
+		</table>
+
+		<table domainObjectName="ProMicroService" tableName="pro_micro_service" >
 			<generatedKey column="id" sqlStatement="MySql" identity="true"/>
 		</table>
 		

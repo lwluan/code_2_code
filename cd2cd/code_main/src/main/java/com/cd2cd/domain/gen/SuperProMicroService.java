@@ -3,7 +3,7 @@ package com.cd2cd.domain.gen;
 import java.io.Serializable;
 import java.util.Date;
 
-public class SuperProModule implements Serializable {
+public class SuperProMicroService implements Serializable {
     private Long id;
 
     /**
@@ -12,24 +12,31 @@ public class SuperProModule implements Serializable {
     private Long projectId;
 
     /**
-     * 微服务ID
-     */
-    private Long microId;
-
-    /**
-     * 程序名称
+     * 服务名称
      */
     private String name;
 
     /**
-     * 显示名称
-     */
-    private String showName;
-
-    /**
-     * 描述
+     * 服务介绍
      */
     private String description;
+
+    /**
+     * 版本号
+     */
+    private String version;
+
+    /**
+     * com.test
+     */
+    private String groupId;
+
+    private String artifactId;
+
+    /**
+     * 访问路径
+     */
+    private String contextPath;
 
     private Date createTime;
 
@@ -60,59 +67,81 @@ public class SuperProModule implements Serializable {
     }
 
     /**
-     * 微服务ID
-     */
-    public Long getMicroId() {
-        return microId;
-    }
-
-    /**
-     * 微服务ID
-     */
-    public void setMicroId(Long microId) {
-        this.microId = microId;
-    }
-
-    /**
-     * 程序名称
+     * 服务名称
      */
     public String getName() {
         return name;
     }
 
     /**
-     * 程序名称
+     * 服务名称
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     * 显示名称
-     */
-    public String getShowName() {
-        return showName;
-    }
-
-    /**
-     * 显示名称
-     */
-    public void setShowName(String showName) {
-        this.showName = showName;
-    }
-
-    /**
-     * 描述
+     * 服务介绍
      */
     public String getDescription() {
         return description;
     }
 
     /**
-     * 描述
+     * 服务介绍
      */
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    /**
+     * 版本号
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * 版本号
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * com.test
+     */
+    public String getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * com.test
+     */
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getArtifactId() {
+        return artifactId;
+    }
+
+    public void setArtifactId(String artifactId) {
+        this.artifactId = artifactId;
+    }
+
+    /**
+     * 访问路径
+     */
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    /**
+     * 访问路径
+     */
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
     }
 
     public Date getCreateTime() {
@@ -139,10 +168,12 @@ public class SuperProModule implements Serializable {
         sb.append("Hash = ").append(hashCode());
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
-        sb.append(", microId=").append(microId);
         sb.append(", name=").append(name);
-        sb.append(", showName=").append(showName);
         sb.append(", description=").append(description);
+        sb.append(", version=").append(version);
+        sb.append(", groupId=").append(groupId);
+        sb.append(", artifactId=").append(artifactId);
+        sb.append(", contextPath=").append(contextPath);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -161,13 +192,15 @@ public class SuperProModule implements Serializable {
         if (getClass() != that.getClass()) {
             return false;
         }
-        SuperProModule other = (SuperProModule) that;
+        SuperProMicroService other = (SuperProMicroService) that;
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
-            && (this.getMicroId() == null ? other.getMicroId() == null : this.getMicroId().equals(other.getMicroId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getShowName() == null ? other.getShowName() == null : this.getShowName().equals(other.getShowName()))
             && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+            && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
+            && (this.getGroupId() == null ? other.getGroupId() == null : this.getGroupId().equals(other.getGroupId()))
+            && (this.getArtifactId() == null ? other.getArtifactId() == null : this.getArtifactId().equals(other.getArtifactId()))
+            && (this.getContextPath() == null ? other.getContextPath() == null : this.getContextPath().equals(other.getContextPath()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -178,10 +211,12 @@ public class SuperProModule implements Serializable {
         int result = 1;
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
-        result = prime * result + ((getMicroId() == null) ? 0 : getMicroId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getShowName() == null) ? 0 : getShowName().hashCode());
         result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
+        result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
+        result = prime * result + ((getGroupId() == null) ? 0 : getGroupId().hashCode());
+        result = prime * result + ((getArtifactId() == null) ? 0 : getArtifactId().hashCode());
+        result = prime * result + ((getContextPath() == null) ? 0 : getContextPath().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

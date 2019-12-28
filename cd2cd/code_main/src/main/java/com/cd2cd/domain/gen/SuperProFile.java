@@ -17,6 +17,11 @@ public class SuperProFile implements Serializable {
     private Long moduleId;
 
     /**
+     * 微服务ID
+     */
+    private Long microId;
+
+    /**
      * 父类ID
      */
     private Long superId;
@@ -88,6 +93,20 @@ public class SuperProFile implements Serializable {
      */
     public void setModuleId(Long moduleId) {
         this.moduleId = moduleId;
+    }
+
+    /**
+     * 微服务ID
+     */
+    public Long getMicroId() {
+        return microId;
+    }
+
+    /**
+     * 微服务ID
+     */
+    public void setMicroId(Long microId) {
+        this.microId = microId;
     }
 
     /**
@@ -207,6 +226,7 @@ public class SuperProFile implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", projectId=").append(projectId);
         sb.append(", moduleId=").append(moduleId);
+        sb.append(", microId=").append(microId);
         sb.append(", superId=").append(superId);
         sb.append(", name=").append(name);
         sb.append(", comment=").append(comment);
@@ -236,6 +256,7 @@ public class SuperProFile implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getProjectId() == null ? other.getProjectId() == null : this.getProjectId().equals(other.getProjectId()))
             && (this.getModuleId() == null ? other.getModuleId() == null : this.getModuleId().equals(other.getModuleId()))
+            && (this.getMicroId() == null ? other.getMicroId() == null : this.getMicroId().equals(other.getMicroId()))
             && (this.getSuperId() == null ? other.getSuperId() == null : this.getSuperId().equals(other.getSuperId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getComment() == null ? other.getComment() == null : this.getComment().equals(other.getComment()))
@@ -254,6 +275,7 @@ public class SuperProFile implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getProjectId() == null) ? 0 : getProjectId().hashCode());
         result = prime * result + ((getModuleId() == null) ? 0 : getModuleId().hashCode());
+        result = prime * result + ((getMicroId() == null) ? 0 : getMicroId().hashCode());
         result = prime * result + ((getSuperId() == null) ? 0 : getSuperId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getComment() == null) ? 0 : getComment().hashCode());

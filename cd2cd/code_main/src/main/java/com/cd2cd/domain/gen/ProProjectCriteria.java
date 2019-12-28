@@ -555,6 +555,76 @@ public class ProProjectCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andProTypeIsNull() {
+            addCriterion("pro_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeIsNotNull() {
+            addCriterion("pro_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeEqualTo(String value) {
+            addCriterion("pro_type =", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeNotEqualTo(String value) {
+            addCriterion("pro_type <>", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeGreaterThan(String value) {
+            addCriterion("pro_type >", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("pro_type >=", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeLessThan(String value) {
+            addCriterion("pro_type <", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeLessThanOrEqualTo(String value) {
+            addCriterion("pro_type <=", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeLike(String value) {
+            addCriterion("pro_type like", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeNotLike(String value) {
+            addCriterion("pro_type not like", value, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeIn(List<String> values) {
+            addCriterion("pro_type in", values, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeNotIn(List<String> values) {
+            addCriterion("pro_type not in", values, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeBetween(String value1, String value2) {
+            addCriterion("pro_type between", value1, value2, "proType");
+            return (Criteria) this;
+        }
+
+        public Criteria andProTypeNotBetween(String value1, String value2) {
+            addCriterion("pro_type not between", value1, value2, "proType");
+            return (Criteria) this;
+        }
+
         public Criteria andVersionIsNull() {
             addCriterion("version is null");
             return (Criteria) this;

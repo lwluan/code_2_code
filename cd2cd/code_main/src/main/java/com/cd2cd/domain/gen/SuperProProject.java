@@ -32,6 +32,11 @@ public class SuperProProject implements Serializable {
     private String packageType;
 
     /**
+     * micro:微服务，simple:单应用
+     */
+    private String proType;
+
+    /**
      * 项目版本
      */
     private String version;
@@ -51,19 +56,10 @@ public class SuperProProject implements Serializable {
      */
     private String ignoreTables;
 
-    /**
-     * git仓库
-     */
     private String gitUrl;
 
-    /**
-     * git账号
-     */
     private String gitAccount;
 
-    /**
-     * git密码
-     */
     private String gitPassword;
 
     private Date createTime;
@@ -151,6 +147,20 @@ public class SuperProProject implements Serializable {
     }
 
     /**
+     * micro:微服务，simple:单应用
+     */
+    public String getProType() {
+        return proType;
+    }
+
+    /**
+     * micro:微服务，simple:单应用
+     */
+    public void setProType(String proType) {
+        this.proType = proType;
+    }
+
+    /**
      * 项目版本
      */
     public String getVersion() {
@@ -206,44 +216,26 @@ public class SuperProProject implements Serializable {
         this.ignoreTables = ignoreTables;
     }
 
-    /**
-     * git仓库
-     */
     public String getGitUrl() {
         return gitUrl;
     }
 
-    /**
-     * git仓库
-     */
     public void setGitUrl(String gitUrl) {
         this.gitUrl = gitUrl;
     }
 
-    /**
-     * git账号
-     */
     public String getGitAccount() {
         return gitAccount;
     }
 
-    /**
-     * git账号
-     */
     public void setGitAccount(String gitAccount) {
         this.gitAccount = gitAccount;
     }
 
-    /**
-     * git密码
-     */
     public String getGitPassword() {
         return gitPassword;
     }
 
-    /**
-     * git密码
-     */
     public void setGitPassword(String gitPassword) {
         this.gitPassword = gitPassword;
     }
@@ -276,6 +268,7 @@ public class SuperProProject implements Serializable {
         sb.append(", groupId=").append(groupId);
         sb.append(", artifactId=").append(artifactId);
         sb.append(", packageType=").append(packageType);
+        sb.append(", proType=").append(proType);
         sb.append(", version=").append(version);
         sb.append(", contextPath=").append(contextPath);
         sb.append(", localPath=").append(localPath);
@@ -308,6 +301,7 @@ public class SuperProProject implements Serializable {
             && (this.getGroupId() == null ? other.getGroupId() == null : this.getGroupId().equals(other.getGroupId()))
             && (this.getArtifactId() == null ? other.getArtifactId() == null : this.getArtifactId().equals(other.getArtifactId()))
             && (this.getPackageType() == null ? other.getPackageType() == null : this.getPackageType().equals(other.getPackageType()))
+            && (this.getProType() == null ? other.getProType() == null : this.getProType().equals(other.getProType()))
             && (this.getVersion() == null ? other.getVersion() == null : this.getVersion().equals(other.getVersion()))
             && (this.getContextPath() == null ? other.getContextPath() == null : this.getContextPath().equals(other.getContextPath()))
             && (this.getLocalPath() == null ? other.getLocalPath() == null : this.getLocalPath().equals(other.getLocalPath()))
@@ -329,6 +323,7 @@ public class SuperProProject implements Serializable {
         result = prime * result + ((getGroupId() == null) ? 0 : getGroupId().hashCode());
         result = prime * result + ((getArtifactId() == null) ? 0 : getArtifactId().hashCode());
         result = prime * result + ((getPackageType() == null) ? 0 : getPackageType().hashCode());
+        result = prime * result + ((getProType() == null) ? 0 : getProType().hashCode());
         result = prime * result + ((getVersion() == null) ? 0 : getVersion().hashCode());
         result = prime * result + ((getContextPath() == null) ? 0 : getContextPath().hashCode());
         result = prime * result + ((getLocalPath() == null) ? 0 : getLocalPath().hashCode());

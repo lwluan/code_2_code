@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.cd2cd.mapper.gen.SuperProModuleMapper">
-  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProModule">
+<mapper namespace="com.cd2cd.mapper.gen.SuperProMicroServiceMapper">
+  <resultMap id="BaseResultMap" type="com.cd2cd.domain.ProMicroService">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="project_id" jdbcType="BIGINT" property="projectId" />
-    <result column="micro_id" jdbcType="BIGINT" property="microId" />
     <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="show_name" jdbcType="VARCHAR" property="showName" />
     <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="version" jdbcType="VARCHAR" property="version" />
+    <result column="group_id" jdbcType="VARCHAR" property="groupId" />
+    <result column="artifact_id" jdbcType="VARCHAR" property="artifactId" />
+    <result column="context_path" jdbcType="VARCHAR" property="contextPath" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -70,15 +72,16 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, project_id, micro_id, name, show_name, description, create_time, update_time
+    id, project_id, name, description, version, group_id, artifact_id, context_path, 
+    create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProModuleCriteria" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProMicroServiceCriteria" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from pro_module
+    from pro_micro_service
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -92,50 +95,58 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from pro_module
+    from pro_micro_service
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from pro_module
+    delete from pro_micro_service
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProModuleCriteria">
-    delete from pro_module
+  <delete id="deleteByExample" parameterType="com.cd2cd.domain.gen.ProMicroServiceCriteria">
+    delete from pro_micro_service
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.cd2cd.domain.ProModule">
+  <insert id="insert" parameterType="com.cd2cd.domain.ProMicroService">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_module (project_id, micro_id, name, 
-      show_name, description, create_time, 
-      update_time)
-    values (#{projectId,jdbcType=BIGINT}, #{microId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, 
-      #{showName,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into pro_micro_service (project_id, name, description, 
+      version, group_id, artifact_id, 
+      context_path, create_time, update_time
+      )
+    values (#{projectId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
+      #{version,jdbcType=VARCHAR}, #{groupId,jdbcType=VARCHAR}, #{artifactId,jdbcType=VARCHAR}, 
+      #{contextPath,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProModule">
+  <insert id="insertSelective" parameterType="com.cd2cd.domain.ProMicroService">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into pro_module
+    insert into pro_micro_service
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="projectId != null">
         project_id,
       </if>
-      <if test="microId != null">
-        micro_id,
-      </if>
       <if test="name != null">
         name,
       </if>
-      <if test="showName != null">
-        show_name,
-      </if>
       <if test="description != null">
         description,
+      </if>
+      <if test="version != null">
+        version,
+      </if>
+      <if test="groupId != null">
+        group_id,
+      </if>
+      <if test="artifactId != null">
+        artifact_id,
+      </if>
+      <if test="contextPath != null">
+        context_path,
       </if>
       <if test="createTime != null">
         create_time,
@@ -148,17 +159,23 @@
       <if test="projectId != null">
         #{projectId,jdbcType=BIGINT},
       </if>
-      <if test="microId != null">
-        #{microId,jdbcType=BIGINT},
-      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
-      <if test="showName != null">
-        #{showName,jdbcType=VARCHAR},
-      </if>
       <if test="description != null">
         #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="artifactId != null">
+        #{artifactId,jdbcType=VARCHAR},
+      </if>
+      <if test="contextPath != null">
+        #{contextPath,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -168,14 +185,14 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProModuleCriteria" resultType="java.lang.Long">
-    select count(*) from pro_module
+  <select id="countByExample" parameterType="com.cd2cd.domain.gen.ProMicroServiceCriteria" resultType="java.lang.Long">
+    select count(*) from pro_micro_service
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update pro_module
+    update pro_micro_service
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -183,17 +200,23 @@
       <if test="record.projectId != null">
         project_id = #{record.projectId,jdbcType=BIGINT},
       </if>
-      <if test="record.microId != null">
-        micro_id = #{record.microId,jdbcType=BIGINT},
-      </if>
       <if test="record.name != null">
         name = #{record.name,jdbcType=VARCHAR},
       </if>
-      <if test="record.showName != null">
-        show_name = #{record.showName,jdbcType=VARCHAR},
-      </if>
       <if test="record.description != null">
         description = #{record.description,jdbcType=VARCHAR},
+      </if>
+      <if test="record.version != null">
+        version = #{record.version,jdbcType=VARCHAR},
+      </if>
+      <if test="record.groupId != null">
+        group_id = #{record.groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.artifactId != null">
+        artifact_id = #{record.artifactId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.contextPath != null">
+        context_path = #{record.contextPath,jdbcType=VARCHAR},
       </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
@@ -207,36 +230,44 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update pro_module
+    update pro_micro_service
     set id = #{record.id,jdbcType=BIGINT},
       project_id = #{record.projectId,jdbcType=BIGINT},
-      micro_id = #{record.microId,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
-      show_name = #{record.showName,jdbcType=VARCHAR},
       description = #{record.description,jdbcType=VARCHAR},
+      version = #{record.version,jdbcType=VARCHAR},
+      group_id = #{record.groupId,jdbcType=VARCHAR},
+      artifact_id = #{record.artifactId,jdbcType=VARCHAR},
+      context_path = #{record.contextPath,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProModule">
-    update pro_module
+  <update id="updateByPrimaryKeySelective" parameterType="com.cd2cd.domain.ProMicroService">
+    update pro_micro_service
     <set>
       <if test="projectId != null">
         project_id = #{projectId,jdbcType=BIGINT},
       </if>
-      <if test="microId != null">
-        micro_id = #{microId,jdbcType=BIGINT},
-      </if>
       <if test="name != null">
         name = #{name,jdbcType=VARCHAR},
       </if>
-      <if test="showName != null">
-        show_name = #{showName,jdbcType=VARCHAR},
-      </if>
       <if test="description != null">
         description = #{description,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null">
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="groupId != null">
+        group_id = #{groupId,jdbcType=VARCHAR},
+      </if>
+      <if test="artifactId != null">
+        artifact_id = #{artifactId,jdbcType=VARCHAR},
+      </if>
+      <if test="contextPath != null">
+        context_path = #{contextPath,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -247,13 +278,15 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProModule">
-    update pro_module
+  <update id="updateByPrimaryKey" parameterType="com.cd2cd.domain.ProMicroService">
+    update pro_micro_service
     set project_id = #{projectId,jdbcType=BIGINT},
-      micro_id = #{microId,jdbcType=BIGINT},
       name = #{name,jdbcType=VARCHAR},
-      show_name = #{showName,jdbcType=VARCHAR},
       description = #{description,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      group_id = #{groupId,jdbcType=VARCHAR},
+      artifact_id = #{artifactId,jdbcType=VARCHAR},
+      context_path = #{contextPath,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

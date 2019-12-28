@@ -265,6 +265,66 @@ public class ProModuleCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andMicroIdIsNull() {
+            addCriterion("micro_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdIsNotNull() {
+            addCriterion("micro_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdEqualTo(Long value) {
+            addCriterion("micro_id =", value, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdNotEqualTo(Long value) {
+            addCriterion("micro_id <>", value, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdGreaterThan(Long value) {
+            addCriterion("micro_id >", value, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdGreaterThanOrEqualTo(Long value) {
+            addCriterion("micro_id >=", value, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdLessThan(Long value) {
+            addCriterion("micro_id <", value, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdLessThanOrEqualTo(Long value) {
+            addCriterion("micro_id <=", value, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdIn(List<Long> values) {
+            addCriterion("micro_id in", values, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdNotIn(List<Long> values) {
+            addCriterion("micro_id not in", values, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdBetween(Long value1, Long value2) {
+            addCriterion("micro_id between", value1, value2, "microId");
+            return (Criteria) this;
+        }
+
+        public Criteria andMicroIdNotBetween(Long value1, Long value2) {
+            addCriterion("micro_id not between", value1, value2, "microId");
+            return (Criteria) this;
+        }
+
         public Criteria andNameIsNull() {
             addCriterion("name is null");
             return (Criteria) this;
