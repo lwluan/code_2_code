@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import com.cd2cd.vo.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,10 +17,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.service.ProProjectService;
-import com.cd2cd.vo.BaseRes;
-import com.cd2cd.vo.DataPageWrapper;
-import com.cd2cd.vo.ProModuleVo;
-import com.cd2cd.vo.ProProjectVo;
 
 @Controller
 @RequestMapping("proProject")
@@ -162,6 +159,27 @@ public class ProProjectController extends BaseController {
 		ServiceCode serviceCode = proProjectService.modifyModule(proModuleVo);
 		res.setServiceCode(serviceCode);
 		return res;
+	}
+
+	/** - - - - - -- - -micro service - - - - - - */
+	@RequestMapping(value = "projectMicroServiceList", method = RequestMethod.GET)
+	public @ResponseBody BaseRes<List<ProMicroServiceVo>> projectMicroServiceList(Long projectId) {
+		return proProjectService.projectMicroServiceList(projectId);
+	}
+
+	@RequestMapping(value = "microServiceInfo", method = RequestMethod.DELETE)
+	public @ResponseBody BaseRes<String> delMicroService(Long id) {
+		return proProjectService.delMicroService(id);
+	}
+
+	@RequestMapping(value = "microServiceInfo", method = RequestMethod.POST)
+	public @ResponseBody BaseRes<String> addMicroService(@Validated(ProMicroServiceVo.AddMicroService.class) @RequestBody ProMicroServiceVo proMicroServiceVo, BindingResult bindingResult) {
+		return proProjectService.addMicroService(proMicroServiceVo);
+	}
+
+	@RequestMapping(value = "microServiceInfo", method = RequestMethod.PUT)
+	public @ResponseBody BaseRes<String> modifyMicroServiceInfo(@Validated(ProMicroServiceVo.UpdateMicroService.class) @RequestBody ProMicroServiceVo proMicroServiceVo, BindingResult bindingResult) {
+		return proProjectService.modifyMicroService(proMicroServiceVo);
 	}
 
 }

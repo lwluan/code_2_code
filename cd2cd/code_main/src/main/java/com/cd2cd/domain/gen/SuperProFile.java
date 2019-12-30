@@ -53,6 +53,11 @@ public class SuperProFile implements Serializable {
      */
     private String classType;
 
+    /**
+     * 1删除；0正常
+     */
+    private Integer delFlag;
+
     private Date createTime;
 
     private Date updateTime;
@@ -201,6 +206,20 @@ public class SuperProFile implements Serializable {
         this.classType = classType;
     }
 
+    /**
+     * 1删除；0正常
+     */
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    /**
+     * 1删除；0正常
+     */
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -234,6 +253,7 @@ public class SuperProFile implements Serializable {
         sb.append(", fileType=").append(fileType);
         sb.append(", paradigm=").append(paradigm);
         sb.append(", classType=").append(classType);
+        sb.append(", delFlag=").append(delFlag);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -264,6 +284,7 @@ public class SuperProFile implements Serializable {
             && (this.getFileType() == null ? other.getFileType() == null : this.getFileType().equals(other.getFileType()))
             && (this.getParadigm() == null ? other.getParadigm() == null : this.getParadigm().equals(other.getParadigm()))
             && (this.getClassType() == null ? other.getClassType() == null : this.getClassType().equals(other.getClassType()))
+            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -283,6 +304,7 @@ public class SuperProFile implements Serializable {
         result = prime * result + ((getFileType() == null) ? 0 : getFileType().hashCode());
         result = prime * result + ((getParadigm() == null) ? 0 : getParadigm().hashCode());
         result = prime * result + ((getClassType() == null) ? 0 : getClassType().hashCode());
+        result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

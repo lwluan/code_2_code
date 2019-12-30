@@ -38,6 +38,11 @@ public class SuperProMicroService implements Serializable {
      */
     private String contextPath;
 
+    /**
+     * 1删除；0正常
+     */
+    private Integer delFlag;
+
     private Date createTime;
 
     private Date updateTime;
@@ -144,6 +149,20 @@ public class SuperProMicroService implements Serializable {
         this.contextPath = contextPath;
     }
 
+    /**
+     * 1删除；0正常
+     */
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    /**
+     * 1删除；0正常
+     */
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -174,6 +193,7 @@ public class SuperProMicroService implements Serializable {
         sb.append(", groupId=").append(groupId);
         sb.append(", artifactId=").append(artifactId);
         sb.append(", contextPath=").append(contextPath);
+        sb.append(", delFlag=").append(delFlag);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -201,6 +221,7 @@ public class SuperProMicroService implements Serializable {
             && (this.getGroupId() == null ? other.getGroupId() == null : this.getGroupId().equals(other.getGroupId()))
             && (this.getArtifactId() == null ? other.getArtifactId() == null : this.getArtifactId().equals(other.getArtifactId()))
             && (this.getContextPath() == null ? other.getContextPath() == null : this.getContextPath().equals(other.getContextPath()))
+            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -217,6 +238,7 @@ public class SuperProMicroService implements Serializable {
         result = prime * result + ((getGroupId() == null) ? 0 : getGroupId().hashCode());
         result = prime * result + ((getArtifactId() == null) ? 0 : getArtifactId().hashCode());
         result = prime * result + ((getContextPath() == null) ? 0 : getContextPath().hashCode());
+        result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

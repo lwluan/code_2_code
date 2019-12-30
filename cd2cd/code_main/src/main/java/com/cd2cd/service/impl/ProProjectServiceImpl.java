@@ -13,10 +13,15 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.cd2cd.domain.*;
+import com.cd2cd.domain.gen.*;
+import com.cd2cd.mapper.*;
+import com.cd2cd.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
@@ -26,46 +31,12 @@ import com.cd2cd.comm.ServiceCode;
 import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
 import com.cd2cd.dom.java.TypeEnum.FunArgType;
-import com.cd2cd.domain.CommValidate;
-import com.cd2cd.domain.ProDatabase;
-import com.cd2cd.domain.ProField;
-import com.cd2cd.domain.ProFile;
-import com.cd2cd.domain.ProFun;
-import com.cd2cd.domain.ProFunArg;
-import com.cd2cd.domain.ProModule;
-import com.cd2cd.domain.ProProject;
-import com.cd2cd.domain.ProProjectDatabaseRel;
-import com.cd2cd.domain.ProTable;
-import com.cd2cd.domain.ProTableColumn;
-import com.cd2cd.domain.gen.CommValidateCriteria;
-import com.cd2cd.domain.gen.ProDatabaseCriteria;
-import com.cd2cd.domain.gen.ProFieldCriteria;
-import com.cd2cd.domain.gen.ProFileCriteria;
-import com.cd2cd.domain.gen.ProFunArgCriteria;
-import com.cd2cd.domain.gen.ProFunCriteria;
-import com.cd2cd.domain.gen.ProModuleCriteria;
-import com.cd2cd.domain.gen.ProProjectCriteria;
 import com.cd2cd.domain.gen.ProProjectCriteria.Criteria;
-import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
-import com.cd2cd.domain.gen.ProTableColumnCriteria;
-import com.cd2cd.mapper.CommValidateMapper;
-import com.cd2cd.mapper.ProDatabaseMapper;
-import com.cd2cd.mapper.ProFieldMapper;
-import com.cd2cd.mapper.ProFileMapper;
-import com.cd2cd.mapper.ProFunArgMapper;
-import com.cd2cd.mapper.ProFunMapper;
-import com.cd2cd.mapper.ProModuleMapper;
-import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
-import com.cd2cd.mapper.ProProjectMapper;
-import com.cd2cd.mapper.ProTableColumnMapper;
-import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProProjectService;
 import com.cd2cd.util.BeanUtil;
 import com.cd2cd.util.ProjectGenUtil;
-import com.cd2cd.vo.BaseRes;
-import com.cd2cd.vo.DataPageWrapper;
-import com.cd2cd.vo.ProModuleVo;
-import com.cd2cd.vo.ProProjectVo;
+
+import javax.annotation.Resource;
 
 
 @Service
@@ -105,6 +76,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 	
 	@Autowired
 	private CommValidateMapper commValidateMapper;
+
+	@Resource
+	private ProMicroServiceMapper microServiceMapper;
 	
 	@Override
 	public BaseRes<DataPageWrapper<ProProjectVo>> list(Integer currPage, Integer pageSize, ProProjectVo proProjectVo) {
@@ -627,19 +601,46 @@ public class ProProjectServiceImpl implements ProProjectService {
 		BaseRes<List<ProModuleVo>> res = new BaseRes<List<ProModuleVo>>();
 		ProModuleCriteria mProModuleCriteria = new ProModuleCriteria();
 		mProModuleCriteria.createCriteria().andProjectIdEqualTo(projectId);
-		List<ProModule> proProjectList = proModuleMapper.selectByExample(mProModuleCriteria);
-		List<ProModuleVo> rows = new ArrayList<ProModuleVo>();
-		for(ProModule module: proProjectList) {
-			ProModuleVo mProModuleVo = new ProModuleVo();
-			mProModuleVo.setId(module.getId());
-			mProModuleVo.setName(module.getName());
-			mProModuleVo.setShowName(module.getShowName());
-			mProModuleVo.setDescription(module.getDescription());
-			rows.add(mProModuleVo);
-		}
-		res.setServiceCode(ServiceCode.SUCCESS);
-		res.setData(rows);
-		return res;
+		List<ProModule> proProjectList = proModuleMapper.projectModuleList(projectId);
+		List<ProModuleVo> rows = BeanUtil.voConvertListIgnore(proProjectList, ProModuleVo.class, "createTime", "updateTime");
+		return new BaseRes<>(rows, ServiceCode.SUCCESS);
+	}
+
+	/** -----微服务 --*/
+
+	@Override
+	public BaseRes<List<ProMicroServiceVo>> projectMicroServiceList(Long projectId) {
+		ProMicroServiceCriteria example = new ProMicroServiceCriteria();
+		example.createCriteria().andDelFlagEqualTo(0);
+		List<ProMicroService> list = microServiceMapper.selectByExample(example);
+		List<ProMicroServiceVo> voList = BeanUtil.voConvertListIgnore(list, ProMicroServiceVo.class);
+		return new BaseRes<>(voList, ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> delMicroService(Long id) {
+		ProMicroService record = new ProMicroService();
+		record.setId(id);
+		record.setDelFlag(1);
+		record.setUpdateTime(new Date());
+		microServiceMapper.updateByPrimaryKeySelective(record);
+		return new BaseRes<>(ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> addMicroService(ProMicroServiceVo proMicroServiceVo) {
+		Date d = new Date();
+		proMicroServiceVo.setUpdateTime(d);
+		proMicroServiceVo.setCreateTime(d);
+		microServiceMapper.insertSelective(proMicroServiceVo);
+		return new BaseRes<>(ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> modifyMicroService(ProMicroServiceVo proMicroServiceVo) {
+		proMicroServiceVo.setUpdateTime(new Date());
+		microServiceMapper.updateByPrimaryKeySelective(proMicroServiceVo);
+		return new BaseRes<>(ServiceCode.SUCCESS);
 	}
 
 }

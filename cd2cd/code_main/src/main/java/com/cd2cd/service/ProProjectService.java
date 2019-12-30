@@ -3,10 +3,7 @@ package com.cd2cd.service;
 import java.util.List;
 
 import com.cd2cd.comm.ServiceCode;
-import com.cd2cd.vo.BaseRes;
-import com.cd2cd.vo.DataPageWrapper;
-import com.cd2cd.vo.ProModuleVo;
-import com.cd2cd.vo.ProProjectVo;
+import com.cd2cd.vo.*;
 
 public interface ProProjectService {
 
@@ -39,5 +36,13 @@ public interface ProProjectService {
 	BaseRes<List<ProProjectVo>> projectList();
 
 	BaseRes<List<ProModuleVo>> projectModuleList(Long projectId);
-	
+
+	/** 微服务 */
+    BaseRes<List<ProMicroServiceVo>> projectMicroServiceList(Long projectId);
+
+	BaseRes<String> delMicroService(Long id);
+
+	BaseRes<String> addMicroService(ProMicroServiceVo proMicroServiceVo);
+
+	BaseRes<String> modifyMicroService(ProMicroServiceVo proMicroServiceVo);
 }

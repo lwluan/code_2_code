@@ -5,9 +5,9 @@
 # http://www.sequelpro.com/
 # https://github.com/sequelpro/sequelpro
 #
-# Host: 127.0.0.1 (MySQL 5.7.22)
+# Host: 192.168.31.20 (MySQL 5.7.27-0ubuntu0.18.04.1)
 # Database: auto_code
-# Generation Time: 2019-04-16 11:57:50 +0000
+# Generation Time: 2019-12-30 09:58:25 +0000
 # ************************************************************
 
 
@@ -28,7 +28,7 @@ DROP TABLE IF EXISTS `comm_validate`;
 CREATE TABLE `comm_validate` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL COMMENT '验证名：max,min,notnull',
-  `class_path` varchar(100) DEFAULT NULL COMMENT '类路径',  
+  `class_path` varchar(100) DEFAULT NULL COMMENT '类路径',
   `comment` varchar(200) DEFAULT NULL COMMENT '验证说明： 不可为空',
   `args` varchar(300) DEFAULT NULL COMMENT '验证参数：["type:int","name:String"]',
   `pro_id` bigint(11) DEFAULT NULL COMMENT '项目ID； 值为0时为对所有项目公开使用',
@@ -86,6 +86,7 @@ CREATE TABLE `pro_file` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` bigint(11) unsigned DEFAULT NULL COMMENT '项目ID',
   `module_id` bigint(11) unsigned DEFAULT NULL COMMENT '模块ID',
+  `micro_id` bigint(20) DEFAULT NULL COMMENT '微服务ID',
   `super_id` bigint(11) unsigned DEFAULT NULL COMMENT '父类ID',
   `name` varchar(100) DEFAULT NULL COMMENT '文件名称',
   `comment` varchar(500) DEFAULT NULL,
@@ -93,6 +94,7 @@ CREATE TABLE `pro_file` (
   `file_type` varchar(20) DEFAULT NULL COMMENT '文件类型：controller|service|vo|dao|domain|',
   `paradigm` varchar(5) NOT NULL DEFAULT 'no' COMMENT '是否为范型:no\\yes',
   `class_type` varchar(10) NOT NULL DEFAULT 'class' COMMENT '类类型：class|generics|enum|interface|abstruct',
+  `del_flag` int(11) NOT NULL DEFAULT '0' COMMENT '1删除；0正常',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -124,6 +126,7 @@ CREATE TABLE `pro_fun` (
   `return_vo` varchar(150) DEFAULT NULL,
   `return_show` varchar(100) DEFAULT NULL COMMENT '在方法中显示使用',
   `todo_content` varchar(500) DEFAULT NULL COMMENT 'todo',
+  `gen_service` varchar(10) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -171,6 +174,28 @@ CREATE TABLE `pro_fun_retval` (
 
 
 
+# Dump of table pro_micro_service
+# ------------------------------------------------------------
+
+DROP TABLE IF EXISTS `pro_micro_service`;
+
+CREATE TABLE `pro_micro_service` (
+  `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+  `project_id` bigint(11) DEFAULT NULL COMMENT '项目ID',
+  `name` varchar(100) DEFAULT NULL COMMENT '服务名称',
+  `description` varchar(500) DEFAULT NULL COMMENT '服务介绍',
+  `version` varchar(20) DEFAULT NULL COMMENT '版本号',
+  `group_id` varchar(100) DEFAULT NULL COMMENT 'com.test',
+  `artifact_id` varchar(100) DEFAULT NULL,
+  `context_path` varchar(100) DEFAULT NULL COMMENT '访问路径',
+  `del_flag` int(11) NOT NULL DEFAULT '0' COMMENT '1删除；0正常',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='微服务子项目';
+
+
+
 # Dump of table pro_module
 # ------------------------------------------------------------
 
@@ -179,9 +204,11 @@ DROP TABLE IF EXISTS `pro_module`;
 CREATE TABLE `pro_module` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` bigint(11) unsigned NOT NULL COMMENT '项目ID',
+  `micro_id` bigint(20) DEFAULT NULL COMMENT '微服务ID',
   `name` varchar(80) DEFAULT NULL COMMENT '程序名称',
   `show_name` varchar(80) DEFAULT NULL COMMENT '显示名称',
   `description` varchar(300) DEFAULT NULL COMMENT '描述',
+  `del_flag` int(11) NOT NULL DEFAULT '0' COMMENT '1删除；0正常',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -233,6 +260,7 @@ CREATE TABLE `pro_project` (
   `group_id` varchar(50) NOT NULL DEFAULT '' COMMENT '项目组织',
   `artifact_id` varchar(50) NOT NULL DEFAULT '' COMMENT '项目名',
   `package_type` varchar(10) NOT NULL DEFAULT '' COMMENT '包结构类型：standard、module',
+  `pro_type` varchar(20) NOT NULL DEFAULT 'simple' COMMENT '项目类型：micro:微服务，simple:单应用',
   `version` varchar(30) NOT NULL DEFAULT '' COMMENT '项目版本',
   `context_path` varchar(50) NOT NULL DEFAULT '' COMMENT '访问路径',
   `local_path` varchar(300) DEFAULT NULL COMMENT '本地路径，用于本地开发使用',
@@ -240,6 +268,7 @@ CREATE TABLE `pro_project` (
   `git_url` varchar(150) DEFAULT NULL,
   `git_account` varchar(30) DEFAULT NULL,
   `git_password` varchar(20) DEFAULT NULL,
+  `del_flag` int(11) NOT NULL DEFAULT '0' COMMENT '1删除；0正常',
   `create_time` datetime NOT NULL,
   `update_time` datetime NOT NULL,
   PRIMARY KEY (`id`)
@@ -295,7 +324,7 @@ CREATE TABLE `pro_table_column` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `table_id` bigint(11) DEFAULT NULL,
   `name` varchar(50) DEFAULT NULL COMMENT '字段名称',
-  `comment` varchar(100) DEFAULT NULL COMMENT '注释',
+  `comment` varchar(500) DEFAULT NULL COMMENT '注释',
   `mysql_type` varchar(50) DEFAULT NULL COMMENT '数据类型',
   `default_value` varchar(100) DEFAULT NULL COMMENT '默认值',
   `allow_null` varchar(11) DEFAULT NULL COMMENT '是否充许为空',
@@ -400,11 +429,15 @@ CREATE TABLE `sys_user_role_rel` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户角色关联表';
 
 
-# Dump of table sys_authority
-# ------------------------------------------------------------
 
-LOCK TABLES `sys_authority` WRITE;
-/*!40000 ALTER TABLE `sys_authority` DISABLE KEYS */;
+
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
 
 INSERT INTO `sys_authority` (`id`, `pid`, `guid`, `name`, `url`, `create_time`, `update_time`)
 VALUES

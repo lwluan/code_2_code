@@ -31,6 +31,11 @@ public class SuperProModule implements Serializable {
      */
     private String description;
 
+    /**
+     * 1删除；0正常
+     */
+    private Integer delFlag;
+
     private Date createTime;
 
     private Date updateTime;
@@ -115,6 +120,20 @@ public class SuperProModule implements Serializable {
         this.description = description;
     }
 
+    /**
+     * 1删除；0正常
+     */
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    /**
+     * 1删除；0正常
+     */
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -143,6 +162,7 @@ public class SuperProModule implements Serializable {
         sb.append(", name=").append(name);
         sb.append(", showName=").append(showName);
         sb.append(", description=").append(description);
+        sb.append(", delFlag=").append(delFlag);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -168,6 +188,7 @@ public class SuperProModule implements Serializable {
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
             && (this.getShowName() == null ? other.getShowName() == null : this.getShowName().equals(other.getShowName()))
             && (this.getDescription() == null ? other.getDescription() == null : this.getDescription().equals(other.getDescription()))
+            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -182,6 +203,7 @@ public class SuperProModule implements Serializable {
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
         result = prime * result + ((getShowName() == null) ? 0 : getShowName().hashCode());
         result = prime * result + ((getDescription() == null) ? 0 : getDescription().hashCode());
+        result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

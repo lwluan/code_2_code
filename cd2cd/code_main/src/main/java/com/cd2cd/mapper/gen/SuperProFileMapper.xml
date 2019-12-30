@@ -13,6 +13,7 @@
     <result column="file_type" jdbcType="VARCHAR" property="fileType" />
     <result column="paradigm" jdbcType="VARCHAR" property="paradigm" />
     <result column="class_type" jdbcType="VARCHAR" property="classType" />
+    <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -76,7 +77,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, project_id, module_id, micro_id, super_id, name, comment, req_path, file_type, 
-    paradigm, class_type, create_time, update_time
+    paradigm, class_type, del_flag, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFileCriteria" resultMap="BaseResultMap">
     select
@@ -118,13 +119,13 @@
     insert into pro_file (project_id, module_id, micro_id, 
       super_id, name, comment, 
       req_path, file_type, paradigm, 
-      class_type, create_time, update_time
-      )
+      class_type, del_flag, create_time, 
+      update_time)
     values (#{projectId,jdbcType=BIGINT}, #{moduleId,jdbcType=BIGINT}, #{microId,jdbcType=BIGINT}, 
       #{superId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
       #{reqPath,jdbcType=VARCHAR}, #{fileType,jdbcType=VARCHAR}, #{paradigm,jdbcType=VARCHAR}, 
-      #{classType,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{classType,jdbcType=VARCHAR}, #{delFlag,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProFile">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -161,6 +162,9 @@
       </if>
       <if test="classType != null">
         class_type,
+      </if>
+      <if test="delFlag != null">
+        del_flag,
       </if>
       <if test="createTime != null">
         create_time,
@@ -199,6 +203,9 @@
       </if>
       <if test="classType != null">
         #{classType,jdbcType=VARCHAR},
+      </if>
+      <if test="delFlag != null">
+        #{delFlag,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -250,6 +257,9 @@
       <if test="record.classType != null">
         class_type = #{record.classType,jdbcType=VARCHAR},
       </if>
+      <if test="record.delFlag != null">
+        del_flag = #{record.delFlag,jdbcType=INTEGER},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -274,6 +284,7 @@
       file_type = #{record.fileType,jdbcType=VARCHAR},
       paradigm = #{record.paradigm,jdbcType=VARCHAR},
       class_type = #{record.classType,jdbcType=VARCHAR},
+      del_flag = #{record.delFlag,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -313,6 +324,9 @@
       <if test="classType != null">
         class_type = #{classType,jdbcType=VARCHAR},
       </if>
+      <if test="delFlag != null">
+        del_flag = #{delFlag,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -334,6 +348,7 @@
       file_type = #{fileType,jdbcType=VARCHAR},
       paradigm = #{paradigm,jdbcType=VARCHAR},
       class_type = #{classType,jdbcType=VARCHAR},
+      del_flag = #{delFlag,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

@@ -9,9 +9,12 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.cd2cd.domain.*;
+import com.cd2cd.domain.gen.*;
+import com.cd2cd.mapper.*;
 import com.cd2cd.service.SysUserService;
 import com.cd2cd.vo.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.annotations.ResultMap;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,32 +35,14 @@ import com.cd2cd.dom.java.TypeEnum.FieldDataType;
 import com.cd2cd.dom.java.TypeEnum.FileTypeEnum;
 import com.cd2cd.dom.java.TypeEnum.FunArgType;
 import com.cd2cd.dom.java.TypeEnum.PackageTypeEnum;
-import com.cd2cd.domain.gen.CommValidateCriteria;
-import com.cd2cd.domain.gen.ProFieldCriteria;
 import com.cd2cd.domain.gen.ProFileCriteria;
-import com.cd2cd.domain.gen.ProFunArgCriteria;
-import com.cd2cd.domain.gen.ProFunCriteria;
-import com.cd2cd.domain.gen.ProModuleCriteria;
-import com.cd2cd.domain.gen.ProPageCriteria;
-import com.cd2cd.domain.gen.ProProjectDatabaseRelCriteria;
-import com.cd2cd.domain.gen.ProTableColumnCriteria;
-import com.cd2cd.domain.gen.ProTableCriteria;
-import com.cd2cd.mapper.CommValidateMapper;
-import com.cd2cd.mapper.ProFieldMapper;
-import com.cd2cd.mapper.ProFileMapper;
-import com.cd2cd.mapper.ProFunArgMapper;
-import com.cd2cd.mapper.ProFunMapper;
-import com.cd2cd.mapper.ProModuleMapper;
-import com.cd2cd.mapper.ProPageMapper;
-import com.cd2cd.mapper.ProProjectDatabaseRelMapper;
-import com.cd2cd.mapper.ProProjectMapper;
-import com.cd2cd.mapper.ProTableColumnMapper;
-import com.cd2cd.mapper.ProTableMapper;
 import com.cd2cd.service.ProjectService;
 import com.cd2cd.util.BeanUtil;
 import com.cd2cd.util.Constants.ProjectModuleTypeEnum;
 import com.cd2cd.util.ObjectTypeUtil;
 import com.cd2cd.util.mbg.Constants;
+
+import javax.annotation.Resource;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
@@ -85,6 +70,8 @@ public class ProjectServiceImpl implements ProjectService {
 	@Autowired
 	CommValidateMapper commValidateMapper;
 
+	@Resource
+	ProMicroServiceMapper microServiceMapper;
 	/**
 	 * fdfdsafa
 	 */
@@ -111,8 +98,7 @@ public class ProjectServiceImpl implements ProjectService {
 	 * @param moduleId
 	 * @return
 	 */
-	@Override
-	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
+	public BaseRes<String> fetchProjectFileTreeOld(Long projectId, String packageType, Long moduleId) {
 
 		ProProject mProProject = proProjectMapper.selectByPrimaryKey(projectId);
 
@@ -120,8 +106,11 @@ public class ProjectServiceImpl implements ProjectService {
 			return new BaseRes<>(ServiceCode.NOT_EXISTS_PROJECT);
 		}
 
-		ProModule commProModule = new ProModule();
 
+		/** 微服务项目 */
+
+
+		ProModule commProModule = new ProModule();
 		/**
 		 * moduleId: -1:为公共模块, 0:全部 example: com.test.controller
 		 */
@@ -166,6 +155,94 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 
 		return new BaseRes<>(rootArray.toString(), ServiceCode.SUCCESS);
+	}
+
+	@Override
+	public BaseRes<String> fetchProjectFileTree(Long projectId, String packageType, Long moduleId) {
+
+		ProProject mProProject = proProjectMapper.selectByPrimaryKey(projectId);
+
+		if (mProProject == null) {
+			return new BaseRes<>(ServiceCode.NOT_EXISTS_PROJECT);
+		}
+
+		TreeId treeId = new TreeId();
+		JSONArray rootArray = new JSONArray();
+
+		/** 微服务项目 */
+		if("micro".equalsIgnoreCase(mProProject.getProType())) {
+			ProMicroServiceCriteria example = new ProMicroServiceCriteria();
+			example.createCriteria().andDelFlagEqualTo(0).andProjectIdEqualTo(projectId);
+			example.setOrderByClause(" name asc ");
+			List<ProMicroService> micros = microServiceMapper.selectByExample(example);
+
+			for(ProMicroService ms: micros) {
+				JSONObject project = getProjectTreeBy(treeId, mProProject, packageType, moduleId, rootArray, ms);
+				rootArray.put(project);
+			}
+
+		} else {
+			JSONObject project = getProjectTreeBy(treeId, mProProject, packageType, moduleId, rootArray, null);
+			rootArray.put(project);
+		}
+
+		return new BaseRes<>(rootArray.toString(), ServiceCode.SUCCESS);
+	}
+
+	private JSONObject getProjectTreeBy(TreeId treeId, ProProject mProProject, String packageType, Long moduleId, JSONArray rootArray, ProMicroService microService) {
+
+		Long projectId = mProProject.getId();
+
+		ProModule commProModule = new ProModule();
+		/**
+		 * moduleId: -1:为公共模块, 0:全部 example: com.test.controller
+		 */
+		List<ProModule> modules = new ArrayList<ProModule>();
+		if (moduleId == null || moduleId == 0) {
+			// fetch All module
+			ProModuleCriteria mProModuleCriteria = new ProModuleCriteria();
+			ProModuleCriteria.Criteria mCriteria = mProModuleCriteria.createCriteria();
+			mCriteria.andProjectIdEqualTo(projectId);
+
+			if(null != microService) {
+				mCriteria.andMicroIdEqualTo(microService.getId());
+			}
+
+			modules = proModuleMapper.selectByExample(mProModuleCriteria);
+			modules.add(commProModule);
+
+		} else if (moduleId == -1) {
+
+			modules.add(commProModule);
+
+		} else {
+			// fetch one module
+			modules = new ArrayList<ProModule>();
+			ProModule mProModule = proModuleMapper.selectByPrimaryKey(moduleId);
+			modules.add(mProModule);
+		}
+
+		try {
+
+			String srcName = "src";
+			if(null != microService) {
+				srcName = microService.getArtifactId()+"("+microService.getName()+")";
+			}
+
+			JSONObject src = newJson(treeId, null, srcName, "folder");
+			src.put("open", true);
+
+			if (PackageTypeEnum.Flat.name().equals(packageType)) {
+				processProjectByFlat(rootArray, treeId, src, mProProject, modules);
+			} else {
+				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules);
+			}
+
+			return src;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	/** Package Type Hierarchical */
@@ -490,7 +567,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 		BaseRes<String> res = new BaseRes<String>();
 
-		int effect = proFileMapper.insert(proFileVo);
+		int effect = proFileMapper.insertSelective(proFileVo);
 		if (effect > 0) {
 			res.setServiceCode(ServiceCode.SUCCESS);
 		} else {

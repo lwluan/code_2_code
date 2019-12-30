@@ -32,7 +32,7 @@ public class SuperProProject implements Serializable {
     private String packageType;
 
     /**
-     * micro:微服务，simple:单应用
+     * 项目类型：micro:微服务，simple:单应用
      */
     private String proType;
 
@@ -61,6 +61,11 @@ public class SuperProProject implements Serializable {
     private String gitAccount;
 
     private String gitPassword;
+
+    /**
+     * 1删除；0正常
+     */
+    private Integer delFlag;
 
     private Date createTime;
 
@@ -147,14 +152,14 @@ public class SuperProProject implements Serializable {
     }
 
     /**
-     * micro:微服务，simple:单应用
+     * 项目类型：micro:微服务，simple:单应用
      */
     public String getProType() {
         return proType;
     }
 
     /**
-     * micro:微服务，simple:单应用
+     * 项目类型：micro:微服务，simple:单应用
      */
     public void setProType(String proType) {
         this.proType = proType;
@@ -240,6 +245,20 @@ public class SuperProProject implements Serializable {
         this.gitPassword = gitPassword;
     }
 
+    /**
+     * 1删除；0正常
+     */
+    public Integer getDelFlag() {
+        return delFlag;
+    }
+
+    /**
+     * 1删除；0正常
+     */
+    public void setDelFlag(Integer delFlag) {
+        this.delFlag = delFlag;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -276,6 +295,7 @@ public class SuperProProject implements Serializable {
         sb.append(", gitUrl=").append(gitUrl);
         sb.append(", gitAccount=").append(gitAccount);
         sb.append(", gitPassword=").append(gitPassword);
+        sb.append(", delFlag=").append(delFlag);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -309,6 +329,7 @@ public class SuperProProject implements Serializable {
             && (this.getGitUrl() == null ? other.getGitUrl() == null : this.getGitUrl().equals(other.getGitUrl()))
             && (this.getGitAccount() == null ? other.getGitAccount() == null : this.getGitAccount().equals(other.getGitAccount()))
             && (this.getGitPassword() == null ? other.getGitPassword() == null : this.getGitPassword().equals(other.getGitPassword()))
+            && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -331,6 +352,7 @@ public class SuperProProject implements Serializable {
         result = prime * result + ((getGitUrl() == null) ? 0 : getGitUrl().hashCode());
         result = prime * result + ((getGitAccount() == null) ? 0 : getGitAccount().hashCode());
         result = prime * result + ((getGitPassword() == null) ? 0 : getGitPassword().hashCode());
+        result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;
