@@ -86,6 +86,7 @@ import com.cd2cd.util.mbg.h2.H2DatabaseUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.google.common.collect.Sets;
 
+
 public class ProjectGenUtil {
 	private static String code_path = "code_template";
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectGenUtil.class);
@@ -99,15 +100,15 @@ public class ProjectGenUtil {
 	
 	private ProProject project;
 	String contextPath;			// 项目访问地址
-	String artifactId;			// test_main
-	String artifactIdName;		// artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
+	String artifactId;			// test_main； e-commerce-customer; file path
+	String artifactIdName;		// artifactId.replaceAll("\\.", "/").replaceAll("-", "_"); // e_commerce_customer
 	String groupId;				// 包名 com.test
-	String name;				// 项目; crm-admin英文名称
+	String name;				// 项目; crm-admin中文/英文 名称
 	String packageType;  		// 包结构类型：standard、module
 	String version;				// 项目版本号
 	String description;			// 项目描述
 	String localPath;			// 本地生成路径
-	String basePkgname;			// groupId + artifactId
+	String basePkgname;			// groupId + artifactIdName
 	
 	public ProjectGenUtil(ProProject project) {
 		this.project = project;
@@ -584,15 +585,15 @@ public class ProjectGenUtil {
 			
 			// ${driverClass} com.mysql.jdbc.Driver
 			// ${connectionURL} jdbc:mysql://127.0.0.1:3306/auto_code
-			
+
 			// ${javaModel}com.cd2cd.domain
 			// ${sqlMap} com.cd2cd.mapper
 			// ${javaClient} com.cd2cd.mapper
-			
+
 			// ${targetProject}/src
-			
+
 			// table
-			
+
 			String sqlMap = groupId + "." + artifactId + ".mapper";
 			String javaModel = groupId + "." + artifactId + ".domain";;
 //			String connectionURL = "jdbc:mysql://" + database.getHostname() + ":" + database.getPort() + "/" + database.getDbName();
@@ -614,7 +615,9 @@ public class ProjectGenUtil {
 			dataObj.put("javaModel", javaModel);
 			dataObj.put("sqlMap", sqlMap);
 			dataObj.put("javaClient", sqlMap);
-			dataObj.put("targetProject", localPath);
+			dataObj.put("javaModelPath", localPath);
+			dataObj.put("sqlMapPath", localPath);
+			dataObj.put("javaClientPath", localPath);
 			
 			
 			/**
@@ -1067,7 +1070,7 @@ public class ProjectGenUtil {
 		}
 	}
 
-	/**
+	/**getFieldValidAnnotation
 	 * 生成 vo类
 	 * @param proProject
 	 * @param voList

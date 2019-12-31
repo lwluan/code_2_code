@@ -30,9 +30,9 @@
 			connectionURL="${connectionURL}" userId="${userId}" password="${password}" >
 		</jdbcConnection>
 		
-		<javaModelGenerator targetPackage="${javaModel}" targetProject="${targetProject}src/main/java/" />
-		<sqlMapGenerator targetPackage="${sqlMap}" targetProject="${targetProject}src/main/java/" />
-		<javaClientGenerator targetPackage="${javaClient}" targetProject="${targetProject}src/main/java/" type="XMLMAPPER" />
+		<javaModelGenerator targetPackage="${javaModel}" targetProject="${javaModelPath}src/main/java/" />
+		<sqlMapGenerator targetPackage="${sqlMap}" targetProject="${sqlMapPath}src/main/java/" />
+		<javaClientGenerator targetPackage="${javaClient}" targetProject="${javaClientPath}src/main/java/" type="XMLMAPPER" />
 		
 		<!-- sys table -->
 		<#list tables as table>

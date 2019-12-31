@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 import com.cd2cd.domain.*;
 import com.cd2cd.domain.gen.*;
 import com.cd2cd.mapper.*;
+import com.cd2cd.util.SpringContextUtil;
+import com.cd2cd.util.project.ProjectGenerate;
+import com.cd2cd.util.project.SimpleProjectGenerate;
 import com.cd2cd.vo.*;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -196,7 +199,26 @@ public class ProProjectServiceImpl implements ProProjectService {
 
 	@Override
 	public BaseRes<String> genProject(ProProjectVo proProjectVo) {
-		
+
+
+//		ProjectGenerate proGen = null;
+//
+//		if("micro".equalsIgnoreCase(proProjectVo.getProType())) {
+//			proGen = SpringContextUtil.getBean(SimpleProjectGenerate.class);
+//		} else if("simple".equalsIgnoreCase(proProjectVo.getProType())) {
+//			proGen = SpringContextUtil.getBean(SimpleProjectGenerate.class);
+//		}
+//
+//		if(null != proGen) {
+//			try {
+//				return proGen.genProject(proProjectVo);
+//			} catch (Exception e) {
+//				BaseRes<String> res = new BaseRes<>();
+//				res.setServiceCode(ServiceCode.FAILED);
+//				res.setMsg(e.getMessage());
+//			}
+//		}
+
 		Long id = proProjectVo.getId();
 		
 		LOG.info("id={}", id);
