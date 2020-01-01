@@ -12,12 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Title;
 import javax.xml.parsers.DocumentBuilder;
@@ -671,7 +666,7 @@ public class ProjectGenUtil {
 
 	public void genController(ProProject proProject, List<ProFile> controllerList, Map<String, String> commValidMap) throws Exception {
 		
-		Map<Long, Method> methodMap = new HashMap<>();
+		Map<Long, Method> methodMap = new TreeMap<>();
 		
 		for(ProFile file : controllerList) {
 			
@@ -680,8 +675,8 @@ public class ProjectGenUtil {
 			if(module != null) {
 				moduleName = module.getName();
 			}
-			String fgp = proProject.getClassRootPath();
-			String fcp = proProject.getClassRootPkg();
+			String fgp = proProject.getClassRootPath(null);
+			String fcp = proProject.getClassRootPkg(null);
 			String packageType = proProject.getPackageType();
 			String pkgName = "controller";
 			String className = file.getName();
@@ -866,6 +861,9 @@ public class ProjectGenUtil {
 				for(Long funId: methodMap.keySet()) {
 					
 					String iden = CodeUtils.getFunIdenStr(funId+"");
+
+					System.out.println("iden=" +iden);
+
 					Method m = methodMap.get(funId);
 					if(classTxt.indexOf(iden) > -1) {
 						// update fun
@@ -898,16 +896,17 @@ public class ProjectGenUtil {
 							
 							int funEndIndex = CodeUtils.findFunEndIndex(eTmpStr) + 1;
 							String preFunBody = eTmpStr.substring(0, funEndIndex);
-							eTmpStr = eTmpStr.substring(funEndIndex, eTmpStr.length());
+							eTmpStr = eTmpStr.substring(funEndIndex);
 							classTxt = sTmpStr + preFunBody + NEW_LINE + mStr + eTmpStr;
 						}
 					}
 					
 					preFunIden = iden;
 				}
-				
+
 				// 回写内容
 				IOUtils.write(classTxt, new FileOutputStream(new File(fileGenPath)), "utf-8");
+
 			}
 		}		
 	}
@@ -927,8 +926,8 @@ public class ProjectGenUtil {
 				moduleName = module.getName();
 			}
 			
-			String fgp = project.getClassRootPath();
-			String fcp = project.getClassRootPkg();
+			String fgp = project.getClassRootPath(null);
+			String fcp = project.getClassRootPkg(null);
 			String packageType = project.getPackageType();
 			String pkgName = "service";
 			String className = file.getName();

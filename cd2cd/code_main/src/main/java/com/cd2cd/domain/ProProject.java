@@ -11,21 +11,30 @@ public class ProProject extends SuperProProject implements Serializable {
      * - /Users/lwl/java_sources/project_name/project_name_main/src/main/java/com.company.project_name_main
      * @return
      */
-    public String getClassRootPath() {
+    public String getClassRootPath(ProMicroService micro) {
     	String localPath = getLocalPath();
-    	String artifactId = getArtifactId().replaceAll("\\.", "/").replaceAll("-", "_");
+    	String rootPro = getArtifactId();
+    	String artifactId = rootPro.replaceAll("\\.", "/").replaceAll("-", "_");
     	
     	String groupId = getGroupId();
-    	
-    	String classRootPath = String.format("%s/%s/%s_main/src/main/java/%s/%s/", localPath, artifactId, artifactId, groupId, artifactId).replaceAll("\\.", "/");
-    	return classRootPath;
+
+    	if(null != micro) {
+            artifactId = micro.getArtifactId().replaceAll("\\.", "/").replaceAll("-", "_");
+            return String.format("%s/%s/%s/src/main/java/%s/%s/", localPath, rootPro, micro.getArtifactId(), groupId, artifactId).replaceAll("\\.", "/");
+        } else {
+            return String.format("%s/%s/%s_main/src/main/java/%s/%s/", localPath, rootPro, artifactId, groupId, artifactId).replaceAll("\\.", "/");
+        }
     }
     
     /**
      * com.company.project_name
      * @return
      */
-    public String getClassRootPkg() {
-    	return getGroupId() + "." + getArtifactId().replaceAll("-", "_");
+    public String getClassRootPkg(ProMicroService micro) {
+        String artifactId = getArtifactId();
+        if(null != micro) {
+            artifactId = micro.getArtifactId();
+        }
+    	return getGroupId() + "." + artifactId.replaceAll("-", "_");
     }
 }

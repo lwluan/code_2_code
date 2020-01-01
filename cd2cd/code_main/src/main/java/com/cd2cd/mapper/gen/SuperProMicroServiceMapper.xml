@@ -11,6 +11,7 @@
     <result column="artifact_id" jdbcType="VARCHAR" property="artifactId" />
     <result column="context_path" jdbcType="VARCHAR" property="contextPath" />
     <result column="del_flag" jdbcType="INTEGER" property="delFlag" />
+    <result column="api_project" jdbcType="INTEGER" property="apiProject" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -74,7 +75,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, project_id, name, description, version, group_id, artifact_id, context_path, 
-    del_flag, create_time, update_time
+    del_flag, api_project, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProMicroServiceCriteria" resultMap="BaseResultMap">
     select
@@ -115,12 +116,12 @@
     </selectKey>
     insert into pro_micro_service (project_id, name, description, 
       version, group_id, artifact_id, 
-      context_path, del_flag, create_time, 
-      update_time)
+      context_path, del_flag, api_project, 
+      create_time, update_time)
     values (#{projectId,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, 
       #{version,jdbcType=VARCHAR}, #{groupId,jdbcType=VARCHAR}, #{artifactId,jdbcType=VARCHAR}, 
-      #{contextPath,jdbcType=VARCHAR}, #{delFlag,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{contextPath,jdbcType=VARCHAR}, #{delFlag,jdbcType=INTEGER}, #{apiProject,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProMicroService">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -151,6 +152,9 @@
       </if>
       <if test="delFlag != null">
         del_flag,
+      </if>
+      <if test="apiProject != null">
+        api_project,
       </if>
       <if test="createTime != null">
         create_time,
@@ -183,6 +187,9 @@
       </if>
       <if test="delFlag != null">
         #{delFlag,jdbcType=INTEGER},
+      </if>
+      <if test="apiProject != null">
+        #{apiProject,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -228,6 +235,9 @@
       <if test="record.delFlag != null">
         del_flag = #{record.delFlag,jdbcType=INTEGER},
       </if>
+      <if test="record.apiProject != null">
+        api_project = #{record.apiProject,jdbcType=INTEGER},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -250,6 +260,7 @@
       artifact_id = #{record.artifactId,jdbcType=VARCHAR},
       context_path = #{record.contextPath,jdbcType=VARCHAR},
       del_flag = #{record.delFlag,jdbcType=INTEGER},
+      api_project = #{record.apiProject,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -283,6 +294,9 @@
       <if test="delFlag != null">
         del_flag = #{delFlag,jdbcType=INTEGER},
       </if>
+      <if test="apiProject != null">
+        api_project = #{apiProject,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -302,6 +316,7 @@
       artifact_id = #{artifactId,jdbcType=VARCHAR},
       context_path = #{contextPath,jdbcType=VARCHAR},
       del_flag = #{delFlag,jdbcType=INTEGER},
+      api_project = #{apiProject,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

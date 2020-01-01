@@ -1,8 +1,6 @@
 package com.cd2cd.dom.java.parse;
 
-import com.sun.javaws.IconUtil;
 import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.mybatis.generator.api.dom.java.*;
 
 import java.io.File;

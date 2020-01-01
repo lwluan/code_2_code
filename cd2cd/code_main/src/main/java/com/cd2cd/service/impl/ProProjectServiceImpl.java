@@ -17,6 +17,7 @@ import com.cd2cd.domain.*;
 import com.cd2cd.domain.gen.*;
 import com.cd2cd.mapper.*;
 import com.cd2cd.util.SpringContextUtil;
+import com.cd2cd.util.project.MicroProjectGenerate;
 import com.cd2cd.util.project.ProjectGenerate;
 import com.cd2cd.util.project.SimpleProjectGenerate;
 import com.cd2cd.vo.*;
@@ -201,74 +202,77 @@ public class ProProjectServiceImpl implements ProProjectService {
 	public BaseRes<String> genProject(ProProjectVo proProjectVo) {
 
 
-//		ProjectGenerate proGen = null;
+		ProjectGenerate proGen = null;
+
+		if("micro".equalsIgnoreCase(proProjectVo.getProType())) {
+			proGen = SpringContextUtil.getBean(MicroProjectGenerate.class);
+		} else if("simple".equalsIgnoreCase(proProjectVo.getProType())) {
+			proGen = SpringContextUtil.getBean(SimpleProjectGenerate.class);
+		}
+
+		if(null != proGen) {
+			try {
+				return proGen.genProject(proProjectVo);
+			} catch (Exception e) {
+				e.printStackTrace();
+				BaseRes<String> res = new BaseRes<>();
+				res.setServiceCode(ServiceCode.FAILED);
+				res.setMsg(e.getMessage());
+			}
+		}
+
+		return new BaseRes<>(ServiceCode.SUCCESS);
 //
-//		if("micro".equalsIgnoreCase(proProjectVo.getProType())) {
-//			proGen = SpringContextUtil.getBean(SimpleProjectGenerate.class);
-//		} else if("simple".equalsIgnoreCase(proProjectVo.getProType())) {
-//			proGen = SpringContextUtil.getBean(SimpleProjectGenerate.class);
+//		Long id = proProjectVo.getId();
+//
+//		LOG.info("id={}", id);
+//		ProProject proProject = proProjectMapper.selectByPrimaryKey(id);
+//
+//		LOG.info("proProject={}", JSONObject.toJSONString(proProject));
+//
+//		// 使用本传入地址生成
+//		if(StringUtils.isNotEmpty(proProjectVo.getLocalPath())) {
+//			proProject.setLocalPath(proProjectVo.getLocalPath());
 //		}
 //
-//		if(null != proGen) {
-//			try {
-//				return proGen.genProject(proProjectVo);
-//			} catch (Exception e) {
-//				BaseRes<String> res = new BaseRes<>();
-//				res.setServiceCode(ServiceCode.FAILED);
-//				res.setMsg(e.getMessage());
-//			}
+//		BaseRes<String> res = new BaseRes<String>();
+//
+//		try {
+//			Map<String, String> commValidMap = getValidAndClassPath(proProject);
+//			// 创建util
+//			ProjectGenUtil projectGenUtil = new ProjectGenUtil(proProject);
+//
+//			/**
+//			 * 初始被创建项目
+//			 */
+//			projectGenUtil.genProjectBase();
+//			LOG.info("projectGenUtil.genProjectBase() ...");
+//
+//			/**
+//			 * 生成 domain
+//			 */
+//			genDomain(projectGenUtil, proProject);
+//			LOG.info("genDomain(projectGenUtil, proProject) ...");
+//
+//			/**
+//			 * 生成Controller 控制器 和 Service
+//			 */
+//			genControllerAndService(projectGenUtil, proProject, commValidMap);
+//			LOG.info("genControllerAndService(projectGenUtil, proProject, commValidMap) ...");
+//
+//			/**
+//			 * 生成 vo 类
+//			 */
+//			getVo(projectGenUtil, proProject, commValidMap);
+//			LOG.info("getVo(projectGenUtil, proProject, commValidMap) ...");
+//
+//			res.setServiceCode(ServiceCode.SUCCESS);
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//			res.setServiceCode(ServiceCode.FAILED);
+//			res.setMsg(e.getMessage());
 //		}
-
-		Long id = proProjectVo.getId();
-		
-		LOG.info("id={}", id);
-		ProProject proProject = proProjectMapper.selectByPrimaryKey(id);
-		
-		LOG.info("proProject={}", JSONObject.toJSONString(proProject));
-		
-		// 使用本传入地址生成 
-		if(StringUtils.isNotEmpty(proProjectVo.getLocalPath())) {
-			proProject.setLocalPath(proProjectVo.getLocalPath());
-		}
-		
-		BaseRes<String> res = new BaseRes<String>();
-
-		try {
-			Map<String, String> commValidMap = getValidAndClassPath(proProject);
-			// 创建util
-			ProjectGenUtil projectGenUtil = new ProjectGenUtil(proProject);
-			
-			/**
-			 * 初始被创建项目
-			 */
-			projectGenUtil.genProjectBase();
-			LOG.info("projectGenUtil.genProjectBase() ...");
-			
-			/**
-			 * 生成 domain
-			 */
-			genDomain(projectGenUtil, proProject);
-			LOG.info("genDomain(projectGenUtil, proProject) ...");
-			
-			/**
-			 * 生成Controller 控制器 和 Service
-			 */
-			genControllerAndService(projectGenUtil, proProject, commValidMap);
-			LOG.info("genControllerAndService(projectGenUtil, proProject, commValidMap) ...");
-			
-			/**
-			 * 生成 vo 类
-			 */
-			getVo(projectGenUtil, proProject, commValidMap);
-			LOG.info("getVo(projectGenUtil, proProject, commValidMap) ...");
-			
-			res.setServiceCode(ServiceCode.SUCCESS);
-		} catch (Exception e) {
-			e.printStackTrace();
-			res.setServiceCode(ServiceCode.FAILED);
-			res.setMsg(e.getMessage());
-		}
-		return res;
+//		return res;
 		// replace package name from project file, folder
 
 	}

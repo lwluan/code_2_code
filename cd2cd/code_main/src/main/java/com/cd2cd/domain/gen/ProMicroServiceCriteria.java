@@ -745,6 +745,66 @@ public class ProMicroServiceCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andApiProjectIsNull() {
+            addCriterion("api_project is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectIsNotNull() {
+            addCriterion("api_project is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectEqualTo(Integer value) {
+            addCriterion("api_project =", value, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectNotEqualTo(Integer value) {
+            addCriterion("api_project <>", value, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectGreaterThan(Integer value) {
+            addCriterion("api_project >", value, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectGreaterThanOrEqualTo(Integer value) {
+            addCriterion("api_project >=", value, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectLessThan(Integer value) {
+            addCriterion("api_project <", value, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectLessThanOrEqualTo(Integer value) {
+            addCriterion("api_project <=", value, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectIn(List<Integer> values) {
+            addCriterion("api_project in", values, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectNotIn(List<Integer> values) {
+            addCriterion("api_project not in", values, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectBetween(Integer value1, Integer value2) {
+            addCriterion("api_project between", value1, value2, "apiProject");
+            return (Criteria) this;
+        }
+
+        public Criteria andApiProjectNotBetween(Integer value1, Integer value2) {
+            addCriterion("api_project not between", value1, value2, "apiProject");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;

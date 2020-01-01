@@ -32,7 +32,7 @@
 		
 		<javaModelGenerator targetPackage="${javaModel}" targetProject="${javaModelPath}src/main/java/" />
 		<sqlMapGenerator targetPackage="${sqlMap}" targetProject="${sqlMapPath}src/main/java/" />
-		<javaClientGenerator targetPackage="${javaClient}" targetProject="${javaClientPath}src/main/java/" type="XMLMAPPER" />
+		<javaClientGenerator targetPackage="${sqlMap}" targetProject="${sqlMapPath}src/main/java/" type="XMLMAPPER" />
 		
 		<!-- sys table -->
 		<#list tables as table>

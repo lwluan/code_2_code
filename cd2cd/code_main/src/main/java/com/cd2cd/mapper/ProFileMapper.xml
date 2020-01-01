@@ -36,4 +36,24 @@
 
 	</select>
 
+	<select id="selectFileAndModuleByMicro" resultMap="FileResultMap">
+
+		select
+			<include refid="Base_Column_List" />,
+		(select name from pro_module where pro_module.id=pro_file.module_id)
+		module_name,
+		(select show_name from pro_module where
+		pro_module.id=pro_file.module_id) module_showname,
+		(select description
+		from pro_module where pro_module.id=pro_file.module_id)
+		module_description,
+		(select name from pro_table where pro_table.id=pro_file.super_id) superName
+		from pro_file
+		where
+		del_flag = 0
+		and file_type = #{fileType}
+		and micro_id= #{microId}
+
+	</select>
+
 </mapper>

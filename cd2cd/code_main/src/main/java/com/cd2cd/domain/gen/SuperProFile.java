@@ -17,7 +17,7 @@ public class SuperProFile implements Serializable {
     private Long moduleId;
 
     /**
-     * 微服务ID
+     * 服务ID
      */
     private Long microId;
 
@@ -101,14 +101,14 @@ public class SuperProFile implements Serializable {
     }
 
     /**
-     * 微服务ID
+     * 服务ID
      */
     public Long getMicroId() {
         return microId;
     }
 
     /**
-     * 微服务ID
+     * 服务ID
      */
     public void setMicroId(Long microId) {
         this.microId = microId;

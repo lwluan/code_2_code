@@ -65,7 +65,7 @@ public abstract class ProjectGenerate {
     protected static String NEW_LINE = System.getProperty("line.separator");
 
     protected static Set<String> IGNORE_VO_GEN = Sets.newHashSet("BaseRes", "BaseReq");
-    protected static Set<String> _n = Sets.newHashSet(".DS_Store", ".project", ".settings", "target", "node_modules");
+    protected static Set<String> _n = Sets.newHashSet(".DS_Store", ".project", ".settings", ".idea", "target", "node_modules");
 
     protected ProProject project;
     protected String contextPath;			// 项目访问地址
@@ -290,32 +290,34 @@ public abstract class ProjectGenerate {
         }
     }
 
-    protected void listAllFile(String filePath, List<File> files) {
+    protected void listAllFile(String filePath, List<File> files, Set<String> exts) {
         File file = new File(filePath);
 
         // 不替目录下的文件
         if(_n.contains(file.getName())) {
             return;
         }
-        File[] files2 = file.listFiles(new FileFilter() {
-            public boolean accept(File file) {
-                if (file.isDirectory())
-                    return true;
-                else {
-                    String name = file.getName();
-                    if (name.endsWith(".java") || name.endsWith(".xml") || name.endsWith(".html")
-                            || name.endsWith(".properties"))
+        File[] files2 = file.listFiles(file1 -> {
+            if (file1.isDirectory()) {
+                return true;
+            } else {
+
+                String name = file1.getName();
+                int endIdx = name.lastIndexOf(".");
+                if(endIdx > -1) {
+                    String ext = name.substring(endIdx+1);
+                    if(exts.contains(ext)) {
                         return true;
-                    else
-                        return false;
+                    }
                 }
+                return false;
             }
         });
 
         if (files2 != null) {
             for (File fi : files2) {
                 if (fi.isDirectory()) {
-                    listAllFile(fi.getAbsolutePath(), files);
+                    listAllFile(fi.getAbsolutePath(), files, exts);
                 }
                 if (fi.isFile()) {
                     files.add(fi);
@@ -369,14 +371,15 @@ public abstract class ProjectGenerate {
         }
     }
 
-    protected void genJavaFromDb(List<ProTable> tables, ProDatabase database, String javaModelPath, String sqlMapPath, String javaClientPath) {
+    protected void genJavaFromDb(List<ProTable> tables, ProDatabase database, String javaModelPath, String sqlMapPath, boolean doDbName) {
         try {
-            String artifactId = project.getArtifactId();
-            String groupId = project.getGroupId();
 
-            String sqlMap = groupId + "." + artifactId + ".mapper";
-            String javaModel = groupId + "." + artifactId + ".domain";;
+            // 添加db名称
+            String dbName = database.getDbName().replaceAll("-", "_");
+            String sqlMap = groupId + "." + artifactIdName +"."+ (doDbName?dbName:"") + ".mapper";
+            String javaModel = groupId + "." + artifactIdName +"."+ (doDbName?dbName:"") + ".domain";;
 
+//            log.info("\nsqlMap={}, \njavaModel={}, \nsqlMapPath={} \n javaModelPath={}", sqlMap, javaModel, sqlMapPath, javaModelPath);
             // h2
             String connectionURL = "jdbc:h2:"+H2_DB_PATH+"/" + database.getDbName();
 
@@ -392,10 +395,8 @@ public abstract class ProjectGenerate {
             dataObj.put("connectionURL", connectionURL);
             dataObj.put("javaModel", javaModel);
             dataObj.put("sqlMap", sqlMap);
-            dataObj.put("javaClient", sqlMap);
             dataObj.put("javaModelPath", javaModelPath);
             dataObj.put("sqlMapPath", sqlMapPath);
-            dataObj.put("javaClientPath", javaClientPath);
 
 
             /**
@@ -507,7 +508,7 @@ public abstract class ProjectGenerate {
         }
     }
 
-    protected void importTypeToFile(List<Long> voIds, ProFile file) {
+    protected void importTypeToFile(List<Long> voIds, ProFile file, ProMicroService micro) {
         // 提取
         if( ! org.springframework.util.CollectionUtils.isEmpty(voIds)) {
             ProFileCriteria fileCriteria = new ProFileCriteria();
@@ -516,7 +517,7 @@ public abstract class ProjectGenerate {
 
             LOG.info("fileList={}", fileList.size());
 
-            Set<String> fileTypes = getFileTypes(fileList);
+            Set<String> fileTypes = getFileTypes(fileList, micro);
             file.getImportTypes().addAll(fileTypes);
         }
     }
@@ -526,8 +527,11 @@ public abstract class ProjectGenerate {
      * @param fileList
      * @return
      */
-    protected Set<String> getFileTypes(List<ProFile> fileList) {
-        Set<String> types = new HashSet<String>();
+    protected Set<String> getFileTypes(List<ProFile> fileList, ProMicroService micro) {
+        Set<String> types = new HashSet<>();
+
+        // 添加微服务 micro - 生成到 common项目中
+
         for(ProFile f : fileList) {
 
             // f.getFileType() controller|service|vo|dao|domain
@@ -542,7 +546,12 @@ public abstract class ProjectGenerate {
         return types;
     }
 
-    protected void genController(List<ProFile> controllerList) throws Exception {
+    protected void genController(List<ProFile> controllerList, ProMicroService micro) throws Exception {
+
+        // 跟据 micro生成位置
+        String fgp = this.project.getClassRootPath(micro);
+        String fcp = this.project.getClassRootPkg(micro);
+        String packageType = this.project.getPackageType();
 
         Map<Long, Method> methodMap = new HashMap<>();
 
@@ -553,9 +562,7 @@ public abstract class ProjectGenerate {
             if(module != null) {
                 moduleName = module.getName();
             }
-            String fgp = this.project.getClassRootPath();
-            String fcp = this.project.getClassRootPkg();
-            String packageType = this.project.getPackageType();
+
             String pkgName = "controller";
             String className = file.getName();
             ClassFile mClassFile = new ClassFile(fgp, fcp, moduleName, packageType, pkgName, className);
@@ -790,7 +797,7 @@ public abstract class ProjectGenerate {
      * @throws FileNotFoundException
      *
      */
-    protected void genService(List<ProFile> controllerList) throws FileNotFoundException, IOException {
+    protected void genService(List<ProFile> controllerList, ProMicroService micro) throws FileNotFoundException, IOException {
 
         for(ProFile file : controllerList) {
 
@@ -800,8 +807,8 @@ public abstract class ProjectGenerate {
                 moduleName = module.getName();
             }
 
-            String fgp = project.getClassRootPath();
-            String fcp = project.getClassRootPkg();
+            String fgp = project.getClassRootPath(micro);
+            String fcp = project.getClassRootPkg(micro);
             String packageType = project.getPackageType();
             String pkgName = "service";
             String className = file.getName();
@@ -843,7 +850,7 @@ public abstract class ProjectGenerate {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    protected void toDogenVo(List<ProFile> voList) throws Exception {
+    protected void toDogenVo(List<ProFile> voList, ProMicroService micro) throws Exception {
         for(ProFile file : voList) {
 
             // ignore vo BaseRes BaseReq
@@ -853,20 +860,38 @@ public abstract class ProjectGenerate {
             String fileGenPath = (localPath + "/" + artifactId + "/"+artifactId+"_main/src/main/java/" + groupId + "." + artifactId).replaceAll("\\.", "/");
             String filePkg = groupId + "." + artifactId;
 
-            String fileClassPath = filePkg + ".vo.gen.Super" + file.getName();
-            String fileTargetPath = fileGenPath + "/vo/gen/Super" + file.getName() + ".java";
-
-            String childClassPath = filePkg + ".vo." + file.getName();
-            String childTargetPath = fileGenPath + "/vo/" + file.getName() + ".java";
-
+            // 是否有模块名称
+            String modulePathName = "";
+            String modulePkgName = "";
             if( TypeEnum.ProjectModulTypeEnum.module.name().equals(packageType) ) {
-                if(null != module && StringUtils.isNotBlank(module.getName())) { // 模块化
-                    fileTargetPath = fileGenPath + "/" + module.getName() + "/vo/gen/Super" + file.getName() + ".java";
-                    fileClassPath = filePkg + "." + module.getName() + ".vo.gen.Super" + file.getName();
-
-                    childTargetPath = fileGenPath + "/" + module.getName() + "/vo/" + file.getName() + ".java";
-                    childClassPath = filePkg + "." + module.getName() + ".vo." + file.getName();
+                if (null != module && StringUtils.isNotBlank(module.getName())) {
+                    modulePathName = "/" + module.getName();
+                    modulePkgName = "." + module.getName();
                 }
+            }
+
+            String fileTargetPath = fileGenPath + modulePathName + "/vo/gen/Super" + file.getName() + ".java";
+            String fileClassPath = filePkg + modulePkgName + ".vo.gen.Super" + file.getName();
+
+            String childTargetPath = fileGenPath + modulePathName+ "/vo/" + file.getName() + ".java";
+            String childClassPath = filePkg + modulePkgName + ".vo." + file.getName();
+
+            // -common/com.*/-module-/vo
+            // 微服务
+            if(micro != null) {
+                String microArti = micro.getArtifactId();
+                String proName = artifactId+"-common";
+                String microArtiPkg = microArti.replaceAll("\\.", "/").replaceAll("-", "_");
+                fileGenPath = (localPath + "/" + artifactId + "/"+proName+"/src/main/java/" + groupId + "." + microArtiPkg).replaceAll("\\.", "/");
+                filePkg = groupId + "." + microArtiPkg;
+
+                fileTargetPath = fileGenPath + modulePathName + "/vo/gen/Super" + file.getName() + ".java";
+                fileClassPath = filePkg + modulePkgName + ".vo.gen.Super" + file.getName();
+
+
+                childTargetPath = fileGenPath + modulePathName + "/vo/" + file.getName() + ".java";
+                childClassPath = filePkg + modulePkgName + ".vo." + file.getName();
+
             }
 
             /**

@@ -1085,6 +1085,136 @@ public class ProFunCriteria {
             return (Criteria) this;
         }
 
+        public Criteria andGenClientIsNull() {
+            addCriterion("gen_client is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientIsNotNull() {
+            addCriterion("gen_client is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientEqualTo(String value) {
+            addCriterion("gen_client =", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientNotEqualTo(String value) {
+            addCriterion("gen_client <>", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientGreaterThan(String value) {
+            addCriterion("gen_client >", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientGreaterThanOrEqualTo(String value) {
+            addCriterion("gen_client >=", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientLessThan(String value) {
+            addCriterion("gen_client <", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientLessThanOrEqualTo(String value) {
+            addCriterion("gen_client <=", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientLike(String value) {
+            addCriterion("gen_client like", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientNotLike(String value) {
+            addCriterion("gen_client not like", value, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientIn(List<String> values) {
+            addCriterion("gen_client in", values, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientNotIn(List<String> values) {
+            addCriterion("gen_client not in", values, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientBetween(String value1, String value2) {
+            addCriterion("gen_client between", value1, value2, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andGenClientNotBetween(String value1, String value2) {
+            addCriterion("gen_client not between", value1, value2, "genClient");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgIsNull() {
+            addCriterion("del_falg is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgIsNotNull() {
+            addCriterion("del_falg is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgEqualTo(Integer value) {
+            addCriterion("del_falg =", value, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgNotEqualTo(Integer value) {
+            addCriterion("del_falg <>", value, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgGreaterThan(Integer value) {
+            addCriterion("del_falg >", value, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgGreaterThanOrEqualTo(Integer value) {
+            addCriterion("del_falg >=", value, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgLessThan(Integer value) {
+            addCriterion("del_falg <", value, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgLessThanOrEqualTo(Integer value) {
+            addCriterion("del_falg <=", value, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgIn(List<Integer> values) {
+            addCriterion("del_falg in", values, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgNotIn(List<Integer> values) {
+            addCriterion("del_falg not in", values, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgBetween(Integer value1, Integer value2) {
+            addCriterion("del_falg between", value1, value2, "delFalg");
+            return (Criteria) this;
+        }
+
+        public Criteria andDelFalgNotBetween(Integer value1, Integer value2) {
+            addCriterion("del_falg not between", value1, value2, "delFalg");
+            return (Criteria) this;
+        }
+
         public Criteria andCreateTimeIsNull() {
             addCriterion("create_time is null");
             return (Criteria) this;

@@ -37,7 +37,9 @@ public class CodeUtils {
 		if(funEndI < 0) {
 			funEndI = endTmpStr.indexOf("){");
 		}
-		String endStr = endTmpStr.substring(0, funEndI + eIden.length() + 1);
+
+		int endIndex = funEndI + eIden.length() + 1;
+		String endStr = endTmpStr.substring(0, endIndex);
 		
 		return endStr;
 	}

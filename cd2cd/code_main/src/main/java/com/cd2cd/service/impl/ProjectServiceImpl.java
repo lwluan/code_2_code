@@ -139,15 +139,15 @@ public class ProjectServiceImpl implements ProjectService {
 		JSONArray rootArray = new JSONArray();
 		try {
 
-			JSONObject src = newJson(treeId, null, "src", "folder");
+			JSONObject src = newJson(treeId, null, "src", "folder", 0L);
 			src.put("open", true);
 
 			rootArray.put(src);
 
 			if (PackageTypeEnum.Flat.name().equals(packageType)) {
-				processProjectByFlat(rootArray, treeId, src, mProProject, modules);
+				processProjectByFlat(rootArray, treeId, src, mProProject, modules, 0L);
 			} else {
-				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules);
+				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules, 0L);
 			}
 
 		} catch (JSONException e) {
@@ -197,6 +197,7 @@ public class ProjectServiceImpl implements ProjectService {
 		/**
 		 * moduleId: -1:为公共模块, 0:全部 example: com.test.controller
 		 */
+		Long microId = 0L;
 		List<ProModule> modules = new ArrayList<ProModule>();
 		if (moduleId == null || moduleId == 0) {
 			// fetch All module
@@ -206,6 +207,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 			if(null != microService) {
 				mCriteria.andMicroIdEqualTo(microService.getId());
+				microId = microService.getId();
 			}
 
 			modules = proModuleMapper.selectByExample(mProModuleCriteria);
@@ -229,13 +231,13 @@ public class ProjectServiceImpl implements ProjectService {
 				srcName = microService.getArtifactId()+"("+microService.getName()+")";
 			}
 
-			JSONObject src = newJson(treeId, null, srcName, "folder");
+			JSONObject src = newJson(treeId, null, srcName, "folder", microId);
 			src.put("open", true);
 
 			if (PackageTypeEnum.Flat.name().equals(packageType)) {
-				processProjectByFlat(rootArray, treeId, src, mProProject, modules);
+				processProjectByFlat(rootArray, treeId, src, mProProject, modules, microId);
 			} else {
-				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules);
+				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules, microId);
 			}
 
 			return src;
@@ -246,7 +248,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	/** Package Type Hierarchical */
-	private void processProjectByHierarchical(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules) throws JSONException {
+	private void processProjectByHierarchical(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules, Long microId) throws JSONException {
 
 		// root module-_package
 		Long projectId = proProject.getId();
@@ -257,7 +259,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 		int pId = src.getInt("id");
 
-		JSONObject artifctIdNode = newJson(treeId, pId, basePkgName, "package");
+		JSONObject artifctIdNode = newJson(treeId, pId, basePkgName, "package", microId);
 		artifctIdNode.put("open", true);
 		pId = artifctIdNode.getInt("id");
 		rootArray.put(artifctIdNode);
@@ -297,11 +299,11 @@ public class ProjectServiceImpl implements ProjectService {
 			// package -_ file
 			if (ProjectModuleTypeEnum.standard.name().equals(proProject.getPackageType())) {
 				if (controllerNode == null) {
-					controllerNode = newJson(treeId, modulePid, "controller", "package");
-					serviceNode = newJson(treeId, modulePid, "service", "package");
-					mapperNode = newJson(treeId, modulePid, "mapper", "package");
-					voNode = newJson(treeId, modulePid, "vo", "package");
-					domainNode = newJson(treeId, modulePid, "domain", "package");
+					controllerNode = newJson(treeId, modulePid, "controller", "package", microId);
+					serviceNode = newJson(treeId, modulePid, "service", "package", microId);
+					mapperNode = newJson(treeId, modulePid, "mapper", "package", microId);
+					voNode = newJson(treeId, modulePid, "vo", "package", microId);
+					domainNode = newJson(treeId, modulePid, "domain", "package", microId);
 
 					rootArray.put(controllerNode);
 					rootArray.put(serviceNode);
@@ -312,21 +314,21 @@ public class ProjectServiceImpl implements ProjectService {
 			} else {
 				String _module = module.getName();
 				if (StringUtils.isNotEmpty(_module)) {
-					JSONObject moduleNode = newJson(treeId, pId, _module, "package");
+					JSONObject moduleNode = newJson(treeId, pId, _module, "package", microId);
 					modulePid = moduleNode.getInt("id");
 					rootArray.put(moduleNode);
 				} else {
 					_module = "";
 				}
 
-				controllerNode = newJson(treeId, modulePid, _module, "controller", "package");
+				controllerNode = newJson(treeId, modulePid, _module, "controller", "package", microId);
 				
 				LOG.info("_module={}", _module);
 				
-				serviceNode = newJson(treeId, modulePid, _module, "service", "package");
-				mapperNode = newJson(treeId, modulePid, _module, "mapper", "package");
-				voNode = newJson(treeId, modulePid, _module, "vo", "package");
-				domainNode = newJson(treeId, modulePid, _module, "domain", "package");
+				serviceNode = newJson(treeId, modulePid, _module, "service", "package", microId);
+				mapperNode = newJson(treeId, modulePid, _module, "mapper", "package", microId);
+				voNode = newJson(treeId, modulePid, _module, "vo", "package", microId);
+				domainNode = newJson(treeId, modulePid, _module, "domain", "package", microId);
 
 				rootArray.put(controllerNode);
 				rootArray.put(serviceNode);
@@ -363,7 +365,7 @@ public class ProjectServiceImpl implements ProjectService {
 					_pId = domainNodeId;
 				}
 
-				temp = newJson(treeId, _pId, file.getName() + ".java", fileType, file.getId());
+				temp = newJson(treeId, _pId, file.getName() + ".java", fileType, file.getId(), microId);
 				temp.put("classType", classType);
 				rootArray.put(temp);
 			}
@@ -372,7 +374,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	/** Package Type Flat */
-	private void processProjectByFlat(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules)
+	private void processProjectByFlat(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules, Long microId)
 			throws JSONException {
 
 		Long projectId = proProject.getId();
@@ -414,11 +416,11 @@ public class ProjectServiceImpl implements ProjectService {
 
 			if (ProjectModuleTypeEnum.standard.name().equals(proProject.getPackageType())) {
 				if (controllerNode == null) {
-					controllerNode = newJson(treeId, srcId, basePkgName + ".controller", "package");
-					serviceNode = newJson(treeId, srcId, basePkgName + ".service", "package");
-					mapperNode = newJson(treeId, srcId, basePkgName + ".mapper", "package");
-					voNode = newJson(treeId, srcId, basePkgName + ".vo", "package");
-					domainNode = newJson(treeId, srcId, basePkgName + ".domain", "package");
+					controllerNode = newJson(treeId, srcId, basePkgName + ".controller", "package", microId);
+					serviceNode = newJson(treeId, srcId, basePkgName + ".service", "package", microId);
+					mapperNode = newJson(treeId, srcId, basePkgName + ".mapper", "package", microId);
+					voNode = newJson(treeId, srcId, basePkgName + ".vo", "package", microId);
+					domainNode = newJson(treeId, srcId, basePkgName + ".domain", "package", microId);
 
 					rootArray.put(controllerNode);
 					rootArray.put(serviceNode);
@@ -432,11 +434,11 @@ public class ProjectServiceImpl implements ProjectService {
 					_basePkgName = _basePkgName + "." + module.getName();
 				}
 
-				controllerNode = newJson(treeId, srcId, _basePkgName + ".controller", "package");
-				serviceNode = newJson(treeId, srcId, _basePkgName + ".service", "package");
-				mapperNode = newJson(treeId, srcId, _basePkgName + ".mapper", "package");
-				voNode = newJson(treeId, srcId, _basePkgName + ".vo", "package");
-				domainNode = newJson(treeId, srcId, _basePkgName + ".domain", "package");
+				controllerNode = newJson(treeId, srcId, _basePkgName + ".controller", "package", microId);
+				serviceNode = newJson(treeId, srcId, _basePkgName + ".service", "package", microId);
+				mapperNode = newJson(treeId, srcId, _basePkgName + ".mapper", "package", microId);
+				voNode = newJson(treeId, srcId, _basePkgName + ".vo", "package", microId);
+				domainNode = newJson(treeId, srcId, _basePkgName + ".domain", "package", microId);
 
 				rootArray.put(controllerNode);
 				rootArray.put(serviceNode);
@@ -473,22 +475,22 @@ public class ProjectServiceImpl implements ProjectService {
 					pId = domainNodeId;
 				}
 
-				temp = newJson(treeId, pId, file.getName() + ".java", fileType, file.getId());
+				temp = newJson(treeId, pId, file.getName() + ".java", fileType, file.getId(), microId);
 				temp.put("classType", classType);
 				rootArray.put(temp);
 			}
 		}
 	}
 
-	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType) throws JSONException {
-		return this.newJson(treeId, pId, "", name, fileType, 0l);
+	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType, Long microId) throws JSONException {
+		return this.newJson(treeId, pId, "", name, fileType, 0l, microId);
 	}
 
-	private JSONObject newJson(TreeId treeId, Integer pId, String moduleName, String name, String fileType) throws JSONException {
-		return this.newJson(treeId, pId, moduleName, name, fileType, 0L);
+	private JSONObject newJson(TreeId treeId, Integer pId, String moduleName, String name, String fileType, Long microId) throws JSONException {
+		return this.newJson(treeId, pId, moduleName, name, fileType, 0L, microId);
 	}
 
-	private JSONObject newJson(TreeId treeId, Integer pId, String moduleName, String name, String fileType, Long fileId)
+	private JSONObject newJson(TreeId treeId, Integer pId, String moduleName, String name, String fileType, Long fileId, Long microId)
 			throws JSONException {
 		treeId.index++;
 
@@ -499,12 +501,13 @@ public class ProjectServiceImpl implements ProjectService {
 		packageNode.put("fileId", fileId);
 		packageNode.put("name", name);
 		packageNode.put("fileType", fileType);
+		packageNode.put("microId", microId);
 		return packageNode;
 
 	}
 
-	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType, Long fileId) throws JSONException {
-		return this.newJson(treeId, pId, "", name, fileType, fileId);
+	private JSONObject newJson(TreeId treeId, Integer pId, String name, String fileType, Long fileId, Long microId) throws JSONException {
+		return this.newJson(treeId, pId, "", name, fileType, fileId, microId);
 	}
 
 	static class cccc {

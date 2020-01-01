@@ -16,6 +16,8 @@
     <result column="return_show" jdbcType="VARCHAR" property="returnShow" />
     <result column="todo_content" jdbcType="VARCHAR" property="todoContent" />
     <result column="gen_service" jdbcType="VARCHAR" property="genService" />
+    <result column="gen_client" jdbcType="VARCHAR" property="genClient" />
+    <result column="del_falg" jdbcType="INTEGER" property="delFalg" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -79,7 +81,8 @@
   </sql>
   <sql id="Base_Column_List">
     id, cid, name, comment, fun_name, req_method, req_path, res_type, res_vo_id, res_page_id, 
-    return_vo, return_show, todo_content, gen_service, create_time, update_time
+    return_vo, return_show, todo_content, gen_service, gen_client, del_falg, create_time, 
+    update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProFunCriteria" resultMap="BaseResultMap">
     select
@@ -122,14 +125,14 @@
       fun_name, req_method, req_path, 
       res_type, res_vo_id, res_page_id, 
       return_vo, return_show, todo_content, 
-      gen_service, create_time, update_time
-      )
+      gen_service, gen_client, del_falg, 
+      create_time, update_time)
     values (#{cid,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{comment,jdbcType=VARCHAR}, 
       #{funName,jdbcType=VARCHAR}, #{reqMethod,jdbcType=VARCHAR}, #{reqPath,jdbcType=VARCHAR}, 
       #{resType,jdbcType=VARCHAR}, #{resVoId,jdbcType=BIGINT}, #{resPageId,jdbcType=BIGINT}, 
       #{returnVo,jdbcType=VARCHAR}, #{returnShow,jdbcType=VARCHAR}, #{todoContent,jdbcType=VARCHAR}, 
-      #{genService,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+      #{genService,jdbcType=VARCHAR}, #{genClient,jdbcType=VARCHAR}, #{delFalg,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProFun">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -175,6 +178,12 @@
       </if>
       <if test="genService != null">
         gen_service,
+      </if>
+      <if test="genClient != null">
+        gen_client,
+      </if>
+      <if test="delFalg != null">
+        del_falg,
       </if>
       <if test="createTime != null">
         create_time,
@@ -222,6 +231,12 @@
       </if>
       <if test="genService != null">
         #{genService,jdbcType=VARCHAR},
+      </if>
+      <if test="genClient != null">
+        #{genClient,jdbcType=VARCHAR},
+      </if>
+      <if test="delFalg != null">
+        #{delFalg,jdbcType=INTEGER},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -282,6 +297,12 @@
       <if test="record.genService != null">
         gen_service = #{record.genService,jdbcType=VARCHAR},
       </if>
+      <if test="record.genClient != null">
+        gen_client = #{record.genClient,jdbcType=VARCHAR},
+      </if>
+      <if test="record.delFalg != null">
+        del_falg = #{record.delFalg,jdbcType=INTEGER},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -309,6 +330,8 @@
       return_show = #{record.returnShow,jdbcType=VARCHAR},
       todo_content = #{record.todoContent,jdbcType=VARCHAR},
       gen_service = #{record.genService,jdbcType=VARCHAR},
+      gen_client = #{record.genClient,jdbcType=VARCHAR},
+      del_falg = #{record.delFalg,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -357,6 +380,12 @@
       <if test="genService != null">
         gen_service = #{genService,jdbcType=VARCHAR},
       </if>
+      <if test="genClient != null">
+        gen_client = #{genClient,jdbcType=VARCHAR},
+      </if>
+      <if test="delFalg != null">
+        del_falg = #{delFalg,jdbcType=INTEGER},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -381,6 +410,8 @@
       return_show = #{returnShow,jdbcType=VARCHAR},
       todo_content = #{todoContent,jdbcType=VARCHAR},
       gen_service = #{genService,jdbcType=VARCHAR},
+      gen_client = #{genClient,jdbcType=VARCHAR},
+      del_falg = #{delFalg,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

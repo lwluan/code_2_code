@@ -53,6 +53,16 @@ public class SuperProFun implements Serializable {
 
     private String genService;
 
+    /**
+     * true;false
+     */
+    private String genClient;
+
+    /**
+     * 1:删除，0:正常
+     */
+    private Integer delFalg;
+
     private Date createTime;
 
     private Date updateTime;
@@ -213,6 +223,34 @@ public class SuperProFun implements Serializable {
         this.genService = genService;
     }
 
+    /**
+     * true;false
+     */
+    public String getGenClient() {
+        return genClient;
+    }
+
+    /**
+     * true;false
+     */
+    public void setGenClient(String genClient) {
+        this.genClient = genClient;
+    }
+
+    /**
+     * 1:删除，0:正常
+     */
+    public Integer getDelFalg() {
+        return delFalg;
+    }
+
+    /**
+     * 1:删除，0:正常
+     */
+    public void setDelFalg(Integer delFalg) {
+        this.delFalg = delFalg;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -249,6 +287,8 @@ public class SuperProFun implements Serializable {
         sb.append(", returnShow=").append(returnShow);
         sb.append(", todoContent=").append(todoContent);
         sb.append(", genService=").append(genService);
+        sb.append(", genClient=").append(genClient);
+        sb.append(", delFalg=").append(delFalg);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -282,6 +322,8 @@ public class SuperProFun implements Serializable {
             && (this.getReturnShow() == null ? other.getReturnShow() == null : this.getReturnShow().equals(other.getReturnShow()))
             && (this.getTodoContent() == null ? other.getTodoContent() == null : this.getTodoContent().equals(other.getTodoContent()))
             && (this.getGenService() == null ? other.getGenService() == null : this.getGenService().equals(other.getGenService()))
+            && (this.getGenClient() == null ? other.getGenClient() == null : this.getGenClient().equals(other.getGenClient()))
+            && (this.getDelFalg() == null ? other.getDelFalg() == null : this.getDelFalg().equals(other.getDelFalg()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -304,6 +346,8 @@ public class SuperProFun implements Serializable {
         result = prime * result + ((getReturnShow() == null) ? 0 : getReturnShow().hashCode());
         result = prime * result + ((getTodoContent() == null) ? 0 : getTodoContent().hashCode());
         result = prime * result + ((getGenService() == null) ? 0 : getGenService().hashCode());
+        result = prime * result + ((getGenClient() == null) ? 0 : getGenClient().hashCode());
+        result = prime * result + ((getDelFalg() == null) ? 0 : getDelFalg().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

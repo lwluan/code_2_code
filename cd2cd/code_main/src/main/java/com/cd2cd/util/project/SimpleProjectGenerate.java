@@ -5,6 +5,7 @@ import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum;
 import com.cd2cd.domain.*;
 import com.cd2cd.domain.gen.*;
+import com.google.common.collect.ImmutableSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -61,43 +62,6 @@ public class SimpleProjectGenerate extends ProjectGenerate {
      */
     private void replaceProject() throws Exception {
 
-        String groupIdName = groupId.replaceAll("\\.", "/").replaceAll("-", "_");
-        String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
-
-        String mainProjectName = artifactIdName + "_main";
-        String parentProjectName = artifactIdName + "_parent";
-
-        // 项目模板地址
-        String projectPath = localPath + "/" + code_path;
-        String targetRootPath = localPath + "/" + artifactIdName;
-        reNameFile(projectPath, targetRootPath);
-        projectPath = targetRootPath;
-
-        String projectMainPath = projectPath + "/" + code_path + "_main";
-        String targetMainPath = projectPath + "/" + mainProjectName;
-        reNameFile(projectMainPath, targetMainPath);
-        projectMainPath = targetMainPath;
-
-        String projectParentPath = projectPath + "/" + code_path + "_parent";
-        String targetParentPath = projectPath + "/" + parentProjectName;
-        reNameFile(projectParentPath, targetParentPath);
-        projectParentPath = targetParentPath;
-
-        // 重命名项目包名
-        String projectMainSrcGroupIdPath = targetMainPath + "/src/main/java/com/cd2cd";
-        String targetMainSrcGroupIdPath = targetMainPath + "/src/main/java/" + groupIdName;
-
-        // rename group id
-        reNameFile(projectMainSrcGroupIdPath, targetMainSrcGroupIdPath);
-        projectMainSrcGroupIdPath = targetMainSrcGroupIdPath;
-
-        // rename artifact id
-        String projectMainSrcArtifactIdPath = projectMainSrcGroupIdPath + "/admin";
-        String targetMainSrcArtifactIdPaht = projectMainSrcGroupIdPath + "/" + artifactIdName;
-
-        reNameFile(projectMainSrcArtifactIdPath, targetMainSrcArtifactIdPaht);
-        projectMainSrcArtifactIdPath = targetMainSrcArtifactIdPaht;
-
         reNameFolder();
         replacePomXml();
         replaceJavaAndMapperXml();
@@ -109,8 +73,9 @@ public class SimpleProjectGenerate extends ProjectGenerate {
         String artifactIdName = artifactId.replaceAll("\\.", "/").replaceAll("-", "_");
         String projectPath = localPath + "/" + artifactIdName;
 
-        List<File> files = new ArrayList<File>();
-        listAllFile(projectPath, files);
+        Set<String> exts = ImmutableSet.of("java", "xml", "html", "properties");
+        List<File> files = new ArrayList<>();
+        listAllFile(projectPath, files, exts);
 
         String packageSrc = "package com.cd2cd.admin";
         String packageDesc = "package " + groupId + "." + artifactIdName;
@@ -299,7 +264,7 @@ public class SimpleProjectGenerate extends ProjectGenerate {
                 localPath = localPath + artifactId + "/" + artifactId + "_main/";
 
                 initH2Database(tables, database);
-                genJavaFromDb(tables, database, localPath, localPath, localPath);
+                genJavaFromDb(tables, database, localPath, localPath, false);
             }
         }
     }
@@ -316,7 +281,9 @@ public class SimpleProjectGenerate extends ProjectGenerate {
         // 加载方法列表
         for(ProFile file : controllerList) {
             ProFunCriteria mProFunCriteria = new ProFunCriteria();
-            mProFunCriteria.createCriteria().andCidEqualTo(file.getId());
+            mProFunCriteria.createCriteria()
+                    .andDelFalgEqualTo(0)
+                    .andCidEqualTo(file.getId());
             mProFunCriteria.setOrderByClause("id");
             List<ProFun> funs = funMapper.selectByExample(mProFunCriteria);
 
@@ -353,14 +320,14 @@ public class SimpleProjectGenerate extends ProjectGenerate {
                     voIds.add(fun.getResVoId());
 
                     // 导入import
-                    importTypeToFile(voIds, file);
+                    importTypeToFile(voIds, file, null);
                 }
             }
 
             file.setFuns(funs);
         }
-        genController(controllerList);
-        genService(controllerList);
+        genController(controllerList, null);
+        genService(controllerList, null);
     }
 
     @Override
@@ -386,7 +353,7 @@ public class SimpleProjectGenerate extends ProjectGenerate {
             file.getImportTypes().addAll(frt.getTypePaths());
 
             // 导入import
-            importTypeToFile(frt.getTypeIds(), file);
+            importTypeToFile(frt.getTypeIds(), file, null);
 
             List<ProField> validateMethods = new ArrayList<>();
             file.setValidateMethods(validateMethods);
@@ -501,6 +468,6 @@ public class SimpleProjectGenerate extends ProjectGenerate {
                 });
             });
         }
-        toDogenVo(voList);
+        toDogenVo(voList, null);
     }
 }

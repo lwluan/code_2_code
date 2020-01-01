@@ -43,6 +43,11 @@ public class SuperProMicroService implements Serializable {
      */
     private Integer delFlag;
 
+    /**
+     * 0:微服务项目，1:api项目
+     */
+    private Integer apiProject;
+
     private Date createTime;
 
     private Date updateTime;
@@ -163,6 +168,20 @@ public class SuperProMicroService implements Serializable {
         this.delFlag = delFlag;
     }
 
+    /**
+     * 0:微服务项目，1:api项目
+     */
+    public Integer getApiProject() {
+        return apiProject;
+    }
+
+    /**
+     * 0:微服务项目，1:api项目
+     */
+    public void setApiProject(Integer apiProject) {
+        this.apiProject = apiProject;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -194,6 +213,7 @@ public class SuperProMicroService implements Serializable {
         sb.append(", artifactId=").append(artifactId);
         sb.append(", contextPath=").append(contextPath);
         sb.append(", delFlag=").append(delFlag);
+        sb.append(", apiProject=").append(apiProject);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -222,6 +242,7 @@ public class SuperProMicroService implements Serializable {
             && (this.getArtifactId() == null ? other.getArtifactId() == null : this.getArtifactId().equals(other.getArtifactId()))
             && (this.getContextPath() == null ? other.getContextPath() == null : this.getContextPath().equals(other.getContextPath()))
             && (this.getDelFlag() == null ? other.getDelFlag() == null : this.getDelFlag().equals(other.getDelFlag()))
+            && (this.getApiProject() == null ? other.getApiProject() == null : this.getApiProject().equals(other.getApiProject()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -239,6 +260,7 @@ public class SuperProMicroService implements Serializable {
         result = prime * result + ((getArtifactId() == null) ? 0 : getArtifactId().hashCode());
         result = prime * result + ((getContextPath() == null) ? 0 : getContextPath().hashCode());
         result = prime * result + ((getDelFlag() == null) ? 0 : getDelFlag().hashCode());
+        result = prime * result + ((getApiProject() == null) ? 0 : getApiProject().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;
