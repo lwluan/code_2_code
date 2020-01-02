@@ -6,7 +6,7 @@ public class StringUtil extends StringUtils {
 
 	/** 首字母大小 */
 	public static String firstUpCase(String value) {
-		return value.substring(0, 1).toUpperCase() + value.substring(1, value.length()); 
+		return value.substring(0, 1).toUpperCase() + value.substring(1);
 	}
 	
 	/**
@@ -18,9 +18,17 @@ public class StringUtil extends StringUtils {
 		String newName = "";
 		String[] ss = name.split("_");
 		for (String s : ss) {
-			s = s.substring(0, 1).toUpperCase() + s.substring(1);
-			newName = newName + s;
+			newName = newName + firstUpCase(s);
+		}
+		ss = newName.split("-");
+		newName = "";
+		for (String s : ss) {
+			newName = newName + firstUpCase(s);
 		}
 		return newName;
+	}
+
+	public static void main(String args[]) {
+		System.out.println(getJavaTableName("e_aa_baa-jfkd"));
 	}
 }

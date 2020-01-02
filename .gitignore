@@ -22,6 +22,8 @@ code_template/code_template_parent/.project
 code_template/code_template_parent/.settings
 
 **/.idea
+**/*.db
+**/logs
 
 # Compiled class file
 *.class

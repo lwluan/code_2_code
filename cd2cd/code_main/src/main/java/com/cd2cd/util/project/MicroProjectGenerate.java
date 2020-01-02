@@ -1,27 +1,38 @@
 package com.cd2cd.util.project;
 
 import com.alibaba.fastjson.JSONArray;
+import com.cd2cd.dom.java.CodeUtils;
 import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum;
 import com.cd2cd.domain.*;
 import com.cd2cd.domain.gen.*;
 import com.cd2cd.domain.gen.ProFileCriteria;
 import com.cd2cd.mapper.ProMicroServiceMapper;
+import com.cd2cd.util.GenFileByFtl;
+import com.cd2cd.util.StringUtil;
 import com.google.common.collect.ImmutableSet;
+import freemarker.template.TemplateException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.mybatis.generator.api.dom.java.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,6 +42,8 @@ public class MicroProjectGenerate extends ProjectGenerate {
 
     private static Logger log = LoggerFactory.getLogger(MicroProjectGenerate.class);
     protected static String code_path = "code-microservice";
+    String feignSStr = "feign-client-qualifier:";
+    String feignEStr = "#feign-client-qualifier-end";
 
     @Resource
     private ProMicroServiceMapper microServiceMapper;
@@ -50,14 +63,297 @@ public class MicroProjectGenerate extends ProjectGenerate {
         // 1、项目复制
         File src = new File(tpPath);
         File dest = new File(localPath + "/" + code_path);
-        if (!new File(localPath + "/" + artifactIdName).exists()) {
+        String proPath = localPath + "/" + artifactId;
+        if ( ! new File(proPath).exists()) {
             copyFolder(src, dest);
         }
         // 2、项目替换
         log.info("replaceProject ...");
         replaceProject();
+
+        // 生成-服务项目
+        genMicoServiceProject();
     }
 
+    private void genMicoServiceProject() throws Exception {
+        ProMicroServiceCriteria mProMicroServiceCriteria = new ProMicroServiceCriteria();
+        mProMicroServiceCriteria.setOrderByClause(" id ");
+        mProMicroServiceCriteria.createCriteria()
+                .andProjectIdEqualTo(this.project.getId())
+                .andDelFlagEqualTo(0);
+        List<ProMicroService>  micros = microServiceMapper.selectByExample(mProMicroServiceCriteria);
+
+
+        String targetPath = localPath + "/" + artifactId;
+
+        log.info("micro-size={}", micros.size());
+
+
+        for(int i=0; i<micros.size(); i++){
+            ProMicroService micro = micros.get(i);
+
+            int isApi = micro.getApiProject(); // 0:微服务项目，1:api项目
+            String microArtifactId = micro.getArtifactId();
+
+            /**
+             * 1、服务文件夹
+             * 2、pom.xml 文件
+             * 3、StartApp.java: 注解文件
+             * 4、root pom.xml添加 module + api-pro
+             * 5、resources/application.yml: port
+             * 6、cloud模块添加各服务
+             * 7、
+             */
+
+            String microArtifactIdName = microArtifactId.replaceAll("-", "_");
+            String microProPath = targetPath + "/" + micro.getArtifactId();
+            new File(microProPath).mkdirs();
+
+            // 2、micro-pom.xml
+            createMicroPomFile(microProPath, microArtifactId);
+
+            // 3、e_commerce_order ECommerceOrderApplication.java
+            genStarterAppClass(microProPath, microArtifactId, microArtifactIdName);
+
+            // 4、module of micro add to root pom.xml
+            addModuleOfMicroToRootPom(targetPath, microArtifactId);
+
+            // 5、add resources/application.yml or micro
+            addApplicationYmlFileToMicroRes(targetPath, microArtifactId, i+1);
+
+            // 6、micro for depend to pom of cloud module
+            addMicroToCloudForDepend(targetPath, micro);
+
+            // 7、gen micro client
+            genMicroClientConfig(targetPath, microArtifactId, micros);
+
+        }
+    }
+
+    private void genMicroClientConfig(String targetPath, String microArtifactId, List<ProMicroService> micros) throws Exception {
+
+        // 生成 controller - client Feign-client
+        // FeignClient name(microName+moduleName+ControllerName) qualifier
+        StringBuilder dev = new StringBuilder();
+        StringBuilder prod = new StringBuilder();
+        dev.append(feignSStr).append("\n");
+        prod.append(feignSStr).append("\n");
+        for(ProMicroService micro: micros) {
+//            e-commerce-order: e-commerce-cloud
+            dev.append("  ").append(micro.getArtifactId()).append(": ").append(this.groupId).append("-cloud\n");
+            prod.append("  ").append(micro.getArtifactId()).append(": ").append(micro.getArtifactId()).append("\n");
+        }
+
+        dev.append(feignEStr);
+        prod.append(feignEStr);
+
+        String resourcePath = targetPath + "/" + microArtifactId + "/src/main/resources/";
+
+        File appYmlFileDev = new File(resourcePath+"/application-dev.yml");
+        File appYmlFileProd = new File(resourcePath+"/application-prod.yml");
+
+        updateMicroConfig(appYmlFileDev, dev.toString());
+        updateMicroConfig(appYmlFileProd, prod.toString());
+
+    }
+
+    private void updateMicroConfig(File f, String str) throws Exception {
+        String txt = IOUtils.toString(new FileInputStream(f), "utf-8");
+        String orgStr = txt.substring(txt.indexOf(feignSStr), txt.indexOf(feignEStr)+feignEStr.length());
+        txt = txt.replaceAll(orgStr, str);
+        writeFile(txt, f);
+    }
+
+    private void addMicroToCloudForDepend(String targetPath, ProMicroService micro) throws Exception {
+        String cloudProPath = targetPath + "/" + this.artifactId+"-cloud";
+        String pomFile = cloudProPath + "/pom.xml";
+
+        Document document = getDocumentByFilePath(pomFile);
+        Element rootElement = document.getDocumentElement();
+
+        Node dependenciesNode = rootElement.getElementsByTagName("dependencies").item(0);
+        NodeList childNodes = dependenciesNode.getChildNodes();
+
+        Node nowDependency = null;
+
+        boolean toRunFor = true;
+        BREAK_LABEL:
+        {
+            if (toRunFor) {
+                for (int i = 0; i < childNodes.getLength(); i++) {
+                    Node dependency = childNodes.item(i);
+                    NodeList deps = dependency.getChildNodes();
+                    for (int j = 0; j < deps.getLength(); j++) {
+                        if ("artifactId".equals(deps.item(j).getNodeName()) && micro.getArtifactId().equals(deps.item(j).getTextContent())) {
+                            nowDependency = dependency;
+                            toRunFor = false;
+                            break BREAK_LABEL;
+                        }
+                    }
+                }
+            }
+
+            if (nowDependency == null) {
+                nowDependency = document.createElement("dependency");
+                dependenciesNode.appendChild(nowDependency);
+            }
+        }
+        cleanNodeChilds(nowDependency);
+        Node groupIdNode = document.createElement("groupId");
+        groupIdNode.setTextContent(this.groupId);
+        nowDependency.appendChild(groupIdNode);
+
+        Node artifactIdNode = document.createElement("artifactId");
+        artifactIdNode.setTextContent(micro.getArtifactId());
+        nowDependency.appendChild(artifactIdNode);
+
+        Node versionNode = document.createElement("version");
+        versionNode.setTextContent(micro.getVersion());
+        nowDependency.appendChild(versionNode);
+
+        saveDocument(document, pomFile);
+    }
+
+    private void addApplicationYmlFileToMicroRes(String targetPath, String microArtifactId, int index) throws Exception {
+
+        String resourcePath = targetPath + "/" + microArtifactId + "/src/main/resources/";
+
+        File appYmlFile = new File(resourcePath+"/application.yml");
+        File appYmlFileDev = new File(resourcePath+"/application-dev.yml");
+        File appYmlFileProd = new File(resourcePath+"/application-prod.yml");
+
+        // application.yml
+        // application-dev.yml
+        // application-prod.yml
+
+        // 获取最大的port值
+        int cloudPort = 8090;
+
+        /**
+         * port
+         * name
+         * host
+         */
+        if( ! appYmlFile.exists()) {
+            // first add file
+            StringBuilder content = new StringBuilder();
+            content.append("spring:\n");
+            content.append("  profiles:\n");
+            content.append("    active: dev\n");
+
+            writeFile(content.toString(), appYmlFile);
+
+            int port = cloudPort + index;
+
+            StringBuilder appContent = new StringBuilder();
+            appContent.append("spring:\n");
+            appContent.append("  application:\n");
+            appContent.append("    name: ").append(microArtifactId).append("\n");
+            appContent.append("\n");
+
+            appContent.append("server:\n");
+            appContent.append("  port: ").append(port).append("\n");
+            appContent.append("\n");
+
+            appContent.append("eureka:\n");
+            appContent.append("  instance:\n");
+            appContent.append("    hostname: 127.0.0.1\n");
+            appContent.append("  client:\n");
+            appContent.append("    registerWithEureka: true\n");
+            appContent.append("    fetchRegistry: true\n");
+            appContent.append("    serviceUrl: \n");
+            appContent.append("      defaultZone: http://${eureka.instance.hostname}:8090/eureka/\n");
+            appContent.append("\n");
+
+            // client
+            appContent.append(feignSStr).append("\n");
+            appContent.append(feignEStr).append("\n");
+
+            writeFile(appContent.toString(), appYmlFileDev);
+            writeFile(appContent.toString(), appYmlFileProd);
+        }
+    }
+
+    private void addModuleOfMicroToRootPom(String targetPath, String microArtifactId) throws Exception {
+        String pomFilePath = targetPath + "/pom.xml";
+        Document document = getDocumentByFilePath(pomFilePath);
+        Element rootElement = document.getDocumentElement();
+
+        Node modulesNode = getChildsByTagName(rootElement, "modules").get(0);
+
+        boolean noModule = true;
+        NodeList nodeList = modulesNode.getChildNodes();
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            String moduleName = nodeList.item(i).getTextContent();
+            if(microArtifactId.equals(moduleName)) {
+                noModule = false;
+                break;
+            }
+        }
+
+        if(noModule) {
+            Node moduleNode = document.createElement("module");
+            moduleNode.setTextContent(microArtifactId);
+            modulesNode.appendChild(moduleNode);
+            saveDocument(document, pomFilePath);
+        }
+    }
+
+    private void createMicroPomFile(String microProPath, String microArtifactId) throws Exception {
+        String microPom = microProPath + "/pom.xml";
+        File microPomFile = new File(microPom);
+        if( ! microPomFile.exists()) {
+            ByteArrayOutputStream bai = new ByteArrayOutputStream();
+            Map<String, Object> dataObj = new HashMap<String, Object>();
+
+            dataObj.put("groupId", this.groupId);
+            dataObj.put("artifactId", artifactId);
+            dataObj.put("microArtifactId", microArtifactId);
+
+            GenFileByFtl mGenFileByFtl = new GenFileByFtl();
+            mGenFileByFtl.fetchResourcesFromJar("micro.pom.xml", dataObj, bai);
+            IOUtils.write(bai.toByteArray(), new FileOutputStream(microPomFile));
+        }
+    }
+
+    private void genStarterAppClass(String microProPath, String microArtifactId, String microArtifactIdName) throws Exception {
+        String applicationClassName = StringUtil.getJavaTableName(microArtifactId) + "Application"; // e_commerce_order to ECommerceOrder
+
+        String applicationClassPath = (microProPath+"/src/main/java/"+this.groupId+"."+microArtifactIdName).replaceAll("\\.", "/");
+        applicationClassPath += "/"+applicationClassName+".java";
+
+        File starterFile = new File(applicationClassPath);
+        if( ! starterFile.exists()) {
+            TopLevelClass appClass = new TopLevelClass(this.groupId + "." + microArtifactIdName + "." + applicationClassName);
+            appClass.setVisibility(JavaVisibility.PUBLIC);
+
+            appClass.addAnnotation("@EnableFeignClients(basePackages = \"" + this.groupId + "\")");
+            appClass.addAnnotation("@EnableDiscoveryClient");
+            appClass.addAnnotation("@SpringBootApplication(scanBasePackages = \"" + this.groupId + "\")");
+
+            appClass.addImportedType("org.springframework.boot.SpringApplication");
+            appClass.addImportedType("org.springframework.boot.autoconfigure.SpringBootApplication");
+            appClass.addImportedType("org.springframework.cloud.client.discovery.EnableDiscoveryClient");
+            appClass.addImportedType("org.springframework.cloud.netflix.eureka.server.EnableEurekaServer");
+            appClass.addImportedType("org.springframework.cloud.openfeign.EnableFeignClients");
+            appClass.addImportedType("org.springframework.web.bind.annotation.GetMapping");
+            appClass.addImportedType("org.springframework.web.bind.annotation.RestController");
+
+            Method mainMethod = new Method();
+            mainMethod.setVisibility(JavaVisibility.PUBLIC);
+            mainMethod.setStatic(true);
+            mainMethod.setName("main");
+
+            Parameter parameter = new Parameter(new FullyQualifiedJavaType("String[]"), "args");
+            mainMethod.addParameter(parameter);
+            appClass.addMethod(mainMethod);
+
+            mainMethod.addBodyLine("SpringApplication.run("+applicationClassName+".class, args);");
+
+            String classTxt = appClass.getFormattedContent();
+            writeFile(classTxt, starterFile);
+        }
+    }
     /**
      * 替换文件内容
      * @throws Exception
@@ -296,6 +592,137 @@ public class MicroProjectGenerate extends ProjectGenerate {
             }
             genController(controllerList, micro);
             genService(controllerList, micro);
+            genMicroFeignClient(controllerList, micro);
+        }
+    }
+
+    private void genMicroFeignClient(List<ProFile> controllerList, ProMicroService micro) throws Exception {
+
+        // -common/src/main/java/com.test.test_order.module.Client.java
+        String microArtifactId = micro.getArtifactId();
+        String microArtifactIdName = microArtifactId.replaceAll("-", "_");
+        String clientPkg = this.groupId+"."+microArtifactIdName+".client";
+        String classPath = this.localPath+"/"+ this.artifactId + "/"+ this.artifactId + "-common/src/main/java/"+clientPkg;
+        classPath = classPath.replaceAll("\\.", "/"); // common
+
+        for(ProFile file : controllerList) {
+
+            String modueName = "";
+            String moduePath = "";
+            if(file.getModule() != null) {
+                modueName = "." + file.getModule().getName();
+                moduePath = "/" + file.getModule().getName();;
+            }
+
+            String className = file.getName().replaceAll("Controller", "Client").replaceAll("Rest", "Client");
+            String qualifier = micro.getArtifactId()+modueName+className;
+
+            String genClassName = clientPkg+modueName+".gen.Super"+className;
+            String childClassName = clientPkg+modueName+"."+className;
+
+            String genClassPath = classPath + moduePath + "/gen/Super"+className + ".java";
+            String childClassPath = classPath + moduePath + "/"+className + ".java";
+
+            File genClassFile = new File(genClassPath);
+            File childClassFile = new File(childClassPath);
+
+            // extends gen
+            Interface clientInterface = new Interface(genClassName);
+            clientInterface.setVisibility(JavaVisibility.PUBLIC);
+            clientInterface.addImportedType(new FullyQualifiedJavaType(RequestMapping.class.getName()));
+            clientInterface.addImportedType(new FullyQualifiedJavaType(Controller.class.getName()));
+            clientInterface.addImportedType(new FullyQualifiedJavaType(RequestBody.class.getName()));
+            clientInterface.addImportedType(new FullyQualifiedJavaType(RequestParam.class.getName()));
+
+            if(StringUtils.isNotBlank(file.getReqPath())) {
+                clientInterface.addAnnotation("@RequestMapping(\"" + file.getReqPath() + "\")");
+            }
+
+            LOG.info("file.getImportTypes()={}", String.join(",", file.getImportTypes()));
+            Map<String, String> importTypePath = new HashMap<>();
+            for(String importedType : file.getImportTypes()) {
+                clientInterface.addImportedType(new FullyQualifiedJavaType(importedType));
+                importTypePath.put(importedType.substring(importedType.lastIndexOf(".")+1), importedType);
+            }
+
+            // method
+            for(ProFun fun : file.getFuns()) {
+                Method m = new Method(fun.getFunName());
+
+                m.addJavaDocLine("/**");
+                m.addJavaDocLine(" * "+fun.getName());
+                m.addJavaDocLine(" * "+fun.getComment());
+
+                /**
+                 * 方法注解
+                 */
+//                m.addAnnotation("@ResponseBody");
+                m.addAnnotation("@RequestMapping(value=\""+fun.getReqPath()+"\", method=RequestMethod."+fun.getReqMethod()+")");
+
+                /**
+                 * 方法参数
+                 */
+                List<ProFunArg> args = fun.getArgs();
+                for(ProFunArg arg : args) {
+
+                    String paramName = arg.getName();
+                    paramName = paramName.replace("{", "").replace("}", "");
+                    Parameter mp = new Parameter(new FullyQualifiedJavaType(arg.getArgTypeName()), paramName);
+
+                    m.addJavaDocLine(" * @param "+paramName);
+
+                    /**
+                     * add (Valid RequestBody Validated) if arg type is Vo<br>
+                     * base Valid if arg type of base
+                     */
+                    if(TypeEnum.FunArgType.vo.name().equals(arg.getArgType())) {
+                        if(HttpMethod.POST.name().equalsIgnoreCase(fun.getReqMethod()) ||
+                                HttpMethod.PUT.name().equalsIgnoreCase(fun.getReqMethod()) ||
+                                HttpMethod.DELETE.name().equalsIgnoreCase(fun.getReqMethod())) {
+                            mp.addAnnotation("@RequestBody");
+                        }
+                    } else if(TypeEnum.FunArgType.base.name().equals(arg.getArgType())
+                        // && StringUtils.isNotEmpty(arg.getValid())
+                    ) {
+
+                        /**
+                         * rest full直持 例: /aap/{id} @PathVariable("id") String id
+                         */
+                        if(arg.getName().startsWith("{")) {
+                            mp.addAnnotation(String.format("@PathVariable(\"%s\")", paramName));
+                            clientInterface.addImportedType(new FullyQualifiedJavaType(PathVariable.class.getName()));
+                        } else {
+                            mp.addAnnotation(String.format("@RequestParam(\"%s\")", paramName));
+                            clientInterface.addImportedType(new FullyQualifiedJavaType(PathVariable.class.getName()));
+                        }
+                    }
+                    m.addParameter(mp);
+                }
+
+                m.addJavaDocLine(" */ ");
+                /**
+                 * 方法返回值
+                 */
+                if(StringUtils.isNotBlank(fun.getReturnShow())) {
+                    LOG.info("returnShow={}", fun.getReturnShow());
+                    m.setReturnType(new FullyQualifiedJavaType(fun.getReturnShow()));
+                }
+                clientInterface.addMethod(m);
+            }
+
+            // child class
+            if( ! childClassFile.exists()) {
+                Interface childInterface = new Interface(childClassName);
+                childInterface.setVisibility(JavaVisibility.PUBLIC);
+                childInterface.addAnnotation("@FeignClient(name=\"${feign-client-qualifier."+microArtifactId+"}\", qualifier=\""+qualifier+"\")");
+
+                childInterface.addSuperInterface(new FullyQualifiedJavaType(genClassName));
+                childInterface.addStaticImport("org.springframework.cloud.openfeign.FeignClient");
+                writeFile(childInterface.getFormattedContent(), childClassFile);
+            }
+
+            // write file
+            writeFile(clientInterface.getFormattedContent(), genClassFile);
         }
     }
 

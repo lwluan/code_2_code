@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>${groupId}</groupId>
+        <artifactId>${artifactId}-parent</artifactId>
+        <version>1.0</version>
+        <relativePath>../${artifactId}-parent</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>${microArtifactId}</artifactId>
+    <packaging>jar</packaging>
+    <name>${microArtifactId}</name>
+
+    <build>
+        <finalName>${microArtifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>${groupId}</groupId>
+            <artifactId>${artifactId}-common</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
+</project>

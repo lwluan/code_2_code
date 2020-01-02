@@ -1101,6 +1101,14 @@ public abstract class ProjectGenerate {
         return sb.toString();
     }
 
+    protected void writeFile(String content, File file) throws Exception {
+        if( ! file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        IOUtils.write(content, new FileOutputStream(file), "utf-8");
+    }
+
+
     protected abstract void genProjectBase() throws Exception;
 
     protected abstract void genDomain() throws Exception;
