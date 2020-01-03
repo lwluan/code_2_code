@@ -1,4 +1,4 @@
-package com.boyu.code_microservice_common.code;
+package com.boyu.code;
 
 public enum ServiceCode {
     ___GEN_CODE_START___(-20000, "自动生成内容【开始】不要编辑"),

@@ -637,7 +637,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 	@Override
 	public BaseRes<List<ProMicroServiceVo>> projectMicroServiceList(Long projectId) {
 		ProMicroServiceCriteria example = new ProMicroServiceCriteria();
-		example.createCriteria().andDelFlagEqualTo(0);
+		example.createCriteria().andDelFlagEqualTo(0).andProjectIdEqualTo(projectId);
 		List<ProMicroService> list = microServiceMapper.selectByExample(example);
 		List<ProMicroServiceVo> voList = BeanUtil.voConvertListIgnore(list, ProMicroServiceVo.class);
 		return new BaseRes<>(voList, ServiceCode.SUCCESS);

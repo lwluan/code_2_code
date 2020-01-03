@@ -145,9 +145,9 @@ public class ProjectServiceImpl implements ProjectService {
 			rootArray.put(src);
 
 			if (PackageTypeEnum.Flat.name().equals(packageType)) {
-				processProjectByFlat(rootArray, treeId, src, mProProject, modules, 0L);
+				processProjectByFlat(rootArray, treeId, src, mProProject, modules, null);
 			} else {
-				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules, 0L);
+				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules, null);
 			}
 
 		} catch (JSONException e) {
@@ -198,6 +198,11 @@ public class ProjectServiceImpl implements ProjectService {
 		 * moduleId: -1:为公共模块, 0:全部 example: com.test.controller
 		 */
 		Long microId = 0L;
+		if(null != microService) {
+			microId = microService.getId();
+			commProModule.setMicroId(microId);
+		}
+
 		List<ProModule> modules = new ArrayList<ProModule>();
 		if (moduleId == null || moduleId == 0) {
 			// fetch All module
@@ -235,9 +240,9 @@ public class ProjectServiceImpl implements ProjectService {
 			src.put("open", true);
 
 			if (PackageTypeEnum.Flat.name().equals(packageType)) {
-				processProjectByFlat(rootArray, treeId, src, mProProject, modules, microId);
+				processProjectByFlat(rootArray, treeId, src, mProProject, modules, microService);
 			} else {
-				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules, microId);
+				processProjectByHierarchical(rootArray, treeId, src, mProProject, modules, microService);
 			}
 
 			return src;
@@ -248,15 +253,19 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	/** Package Type Hierarchical */
-	private void processProjectByHierarchical(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules, Long microId) throws JSONException {
+	private void processProjectByHierarchical(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules, ProMicroService microService) throws JSONException {
 
 		// root module-_package
 		Long projectId = proProject.getId();
 		String groupId = proProject.getGroupId();
 		String artifctId = proProject.getArtifactId();
 
+		Long microId = 0L;
 		String basePkgName = groupId + "." + artifctId;
-
+		if(microService != null) {
+			microId = microService.getId();
+			basePkgName = groupId + "." + microService.getArtifactId().replaceAll("-", "_");
+		}
 		int pId = src.getInt("id");
 
 		JSONObject artifctIdNode = newJson(treeId, pId, basePkgName, "package", microId);
@@ -278,16 +287,34 @@ public class ProjectServiceImpl implements ProjectService {
 			// query file list, the same controller\service\vo\dmain\mapper\page
 			ProFileCriteria mProFileCriteria = new ProFileCriteria();
 			ProFileCriteria.Criteria mCriteria = mProFileCriteria.createCriteria();
+
+			Long moduleMicroId = module.getMicroId();
+
+
 			if (null != moduleId && moduleId > 0) {
 				mCriteria.andProjectIdEqualTo(projectId);
 				mCriteria.andModuleIdEqualTo(moduleId);
+				if(moduleMicroId != null) {
+					// 单项目为空
+					mCriteria.andMicroIdEqualTo(moduleMicroId);
+				}
 			} else {
+
+				// 或者是当前项目的模块ID为空 - - - 多服务问题
+				ProFileCriteria.Criteria orCriteria1 = mProFileCriteria.or();
+//				ProFileCriteria.Criteria orCriteria2 = mProFileCriteria.or();
 
 				// 所有项目公用 projectId为空
 				mCriteria.andProjectIdIsNull();
 
-				// 或者是当前项目的模块ID为空
-				mProFileCriteria.or().andModuleIdIsNull().andProjectIdEqualTo(projectId);
+
+				orCriteria1.andModuleIdIsNull().andProjectIdEqualTo(projectId);
+
+				if(moduleMicroId != null) {
+					// 单项目为空
+					orCriteria1.andMicroIdEqualTo(moduleMicroId);
+//					orCriteria2.andMicroIdEqualTo(moduleMicroId);
+				}
 			}
 
 			List<ProFile> proFiles = proFileMapper.selectByExample(mProFileCriteria);
@@ -374,14 +401,19 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	/** Package Type Flat */
-	private void processProjectByFlat(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules, Long microId)
+	private void processProjectByFlat(JSONArray rootArray, TreeId treeId, JSONObject src, ProProject proProject, List<ProModule> modules, ProMicroService microService)
 			throws JSONException {
 
+		Long microId = 0L;
 		Long projectId = proProject.getId();
 		String groupId = proProject.getGroupId();
 		String artifctId = proProject.getArtifactId();
 
 		String basePkgName = groupId + "." + artifctId;
+		if(microService != null) {
+			microId = microService.getId();
+			basePkgName = groupId + "." + microService.getArtifactId().replaceAll("-", "_");
+		}
 
 		int srcId = src.getInt("id");
 
@@ -398,6 +430,13 @@ public class ProjectServiceImpl implements ProjectService {
 			// query file list, the same controller\service\vo\dmain\mapper\page
 			ProFileCriteria mProFileCriteria = new ProFileCriteria();
 			ProFileCriteria.Criteria mCriteria = mProFileCriteria.createCriteria();
+
+			Long moduleMicroId = module.getMicroId();
+			if(moduleMicroId != null) {
+				// 单项目为空
+				mCriteria.andMicroIdEqualTo(moduleMicroId);
+			}
+
 			if (moduleId != null && moduleId > 0) {
 				mCriteria.andProjectIdEqualTo(projectId);
 				mCriteria.andModuleIdEqualTo(moduleId);

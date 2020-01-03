@@ -1,4 +1,4 @@
-package com.boyu.code_microservice_repository.vo;
+package com.boyu.vo;
 
 import javax.validation.Valid;
 

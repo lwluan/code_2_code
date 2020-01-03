@@ -7,10 +7,16 @@
 		<result column="superName" property="superName" />
 		<association property="module" javaType="com.cd2cd.domain.ProModule">
 			<id column="module_id" property="id"></id>
-
-			<id column="module_name" property="name"></id>
+			<result column="module_name" property="name" />
 			<result column="module_showname" property="showName" />
 			<result column="module_description" property="description" />
+		</association>
+
+		<association property="microService" javaType="com.cd2cd.domain.ProMicroService">
+			<id column="micro_id" property="id"></id>
+			<result column="micro_artifact_id" property="artifactId" />
+			<result column="micro_group_id" property="groupId" />
+			<result column="micro_name" property="name" />
 		</association>
 
 	</resultMap>
@@ -23,12 +29,14 @@
 		,
 		(select name from pro_module where pro_module.id=pro_file.module_id)
 		module_name,
-		(select show_name from pro_module where
-		pro_module.id=pro_file.module_id) module_showname,
-		(select description
-		from pro_module where pro_module.id=pro_file.module_id)
-		module_description,
-		(select name from pro_table where pro_table.id=pro_file.super_id) superName
+		(select show_name from pro_module where pro_module.id=pro_file.module_id) module_showname,
+		(select description from pro_module where pro_module.id=pro_file.module_id) module_description,
+		(select name from pro_table where pro_table.id=pro_file.super_id) superName,
+
+		(select artifact_id from pro_micro_service where pro_micro_service.id=pro_file.micro_id) micro_artifact_id,
+		(select group_id from pro_micro_service where pro_micro_service.id=pro_file.micro_id) micro_group_id,
+		(select name from pro_micro_service where pro_micro_service.id=pro_file.micro_id) micro_name
+
 		from pro_file
 		<if test="_parameter != null">
 			<include refid="Example_Where_Clause" />
@@ -47,7 +55,12 @@
 		(select description
 		from pro_module where pro_module.id=pro_file.module_id)
 		module_description,
-		(select name from pro_table where pro_table.id=pro_file.super_id) superName
+		(select name from pro_table where pro_table.id=pro_file.super_id) superName,
+
+		(select artifact_id from pro_micro_service where pro_micro_service.id=pro_file.micro_id) micro_artifact_id,
+		(select group_id from pro_micro_service where pro_micro_service.id=pro_file.micro_id) micro_group_id,
+		(select name from pro_micro_service where pro_micro_service.id=pro_file.micro_id) micro_name
+
 		from pro_file
 		where
 		del_flag = 0

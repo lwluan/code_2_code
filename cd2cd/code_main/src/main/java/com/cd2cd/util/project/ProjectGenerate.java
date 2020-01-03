@@ -517,6 +517,7 @@ public abstract class ProjectGenerate {
 
             LOG.info("fileList={}", fileList.size());
 
+
             Set<String> fileTypes = getFileTypes(fileList, micro);
             file.getImportTypes().addAll(fileTypes);
         }
@@ -535,12 +536,24 @@ public abstract class ProjectGenerate {
         for(ProFile f : fileList) {
 
             // f.getFileType() controller|service|vo|dao|domain
-            String pkgName = basePkgname;
-            if( TypeEnum.ProjectModulTypeEnum.module.name().equals(packageType) && f.getModule() != null) {
-                pkgName += "." + f.getModule().getName() + "."+f.getFileType()+"." + f.getName();
-            } else {
-                pkgName += "."+f.getFileType()+"." + f.getName();
+            String moduleName = "";
+            if(TypeEnum.ProjectModulTypeEnum.module.name().equals(packageType) && f.getModule() != null) {
+                moduleName = "." + f.getModule().getName();
             }
+            String pkgName = basePkgname + moduleName + "."+f.getFileType()+"." + f.getName();
+
+            if(micro !=null) {
+                // --common/micro/module/vo
+                // --common/micro/vo
+                // vo 的microArtifactId中
+                String microStr = "";
+                if(f.getMicroService() != null) {
+                    microStr = "." + f.getMicroService().getArtifactId();
+                }
+                pkgName = this.groupId + microStr + moduleName + "."+f.getFileType()+"." + f.getName();
+                pkgName = pkgName.replaceAll("-", "_");
+            }
+
             types.add(pkgName);
         }
         return types;
@@ -919,7 +932,18 @@ public abstract class ProjectGenerate {
              */
             if(StringUtils.isNotBlank(file.getSuperName())) {
                 String superClass = StringUtil.getJavaTableName(file.getSuperName());
-                topClass.addImportedType(filePkg + ".domain." +superClass);
+
+                String superTypePath = filePkg + ".domain." +superClass;
+                if(micro != null) {
+                    // TODO artifactId+dbName+domain
+
+                    Long superId = file.getSuperId();
+                    // select db_name from pro_database where id = (select database_id from pro_table where id=266);
+                    String dbName = proDatabaseMapper.selectDbNameByTableId(superId);
+                    superTypePath = (groupId + "." + artifactId+"."+dbName+".domain.").replaceAll("-", "_") +superClass;
+                }
+
+                topClass.addImportedType(superTypePath);
                 topClass.setSuperClass(superClass);
             }
 

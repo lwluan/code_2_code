@@ -14,3 +14,5 @@ eureka:
     serviceUrl: #服务注册中心的配置内容，指定服务注册中心的位置
       defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
 
+feign-qualifier:
+#feign-client-qualifier-end

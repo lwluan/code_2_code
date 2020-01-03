@@ -1,6 +1,6 @@
-package com.boyu.code_microservice_repository.vo;
+package com.boyu.vo;
 
-import com.boyu.e_commerce_common.code.ServiceCode;
+import com.boyu.code.ServiceCode;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonInclude;

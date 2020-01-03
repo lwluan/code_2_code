@@ -13,6 +13,7 @@ public class ProFile extends SuperProFile implements Serializable {
 
 	private List<ProTableColumn> columns; // vo 列表使用
 	private ProModule module;
+	private ProMicroService microService;
 	private List<ProFun> funs; // controller 使用 method方法列表
 	private List<ProField> fields; // vo 使用,用于vo类成员域
 	private List<ProField> validateMethods; // 需要验证生成的方法
@@ -95,5 +96,12 @@ public class ProFile extends SuperProFile implements Serializable {
 	public void setGenService(boolean genService) {
 		this.genService = genService;
 	}
-	
+
+	public ProMicroService getMicroService() {
+		return microService;
+	}
+
+	public void setMicroService(ProMicroService microService) {
+		this.microService = microService;
+	}
 }
