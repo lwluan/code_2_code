@@ -45,7 +45,8 @@ public class MicroProjectGenerate extends ProjectGenerate {
     String feignClientPrev = "feign-qualifier";
     String feignSStr = feignClientPrev+":";
     String feignEStr = "#feign-client-qualifier-end";
-
+    String zuulSStr = "#zuul.routes-s";
+    String zuulEStr = "#zuul.routes-e";
 
     @Resource
     private ProMicroServiceMapper microServiceMapper;
@@ -114,7 +115,7 @@ public class MicroProjectGenerate extends ProjectGenerate {
             createMicroPomFile(microProPath, microArtifactId);
 
             // 3、e_commerce_order ECommerceOrderApplication.java
-            genStarterAppClass(microProPath, microArtifactId, microArtifactIdName);
+            genStarterAppClass(microProPath, microArtifactId, microArtifactIdName, micro);
 
             // 4、module of micro add to root pom.xml
             addModuleOfMicroToRootPom(targetPath, microArtifactId);
@@ -128,6 +129,11 @@ public class MicroProjectGenerate extends ProjectGenerate {
             // 7、gen micro client
             genMicroClientConfig(targetPath, microArtifactId, micros);
 
+            // api project update
+            if(micro.getApiProject() == 1) {
+                updateMicroZuulConfig(targetPath, microArtifactId, micros);
+            }
+
         }
 
         // micro-cloud
@@ -136,12 +142,30 @@ public class MicroProjectGenerate extends ProjectGenerate {
 
     }
 
+    private void updateMicroZuulConfig(String targetPath, String microArtifactId, List<ProMicroService> micros) throws Exception {
+        StringBuilder zuul = new StringBuilder();
+        zuul.append(zuulSStr).append("\n");
+        for(ProMicroService micro: micros) {
+            if(micro.getApiProject() == 0) {
+                zuul.append("    "+micro.getArtifactId()+":").append("\n");;
+                zuul.append("      path: /"+micro.getArtifactId()+"/**").append("\n");;
+                zuul.append("      serviceId: micro-test-cloud").append("\n");;
+            }
+        }
+        zuul.append(zuulEStr);
+        String resourcePath = targetPath + "/" + microArtifactId + "/src/main/resources/";
+        File appYmlFileDev = new File(resourcePath+"/application-dev.yml");
+
+        updateMicroConfig(zuulSStr, zuulEStr, appYmlFileDev, zuul.toString());
+    }
+
     private void genMicroClientConfig(String targetPath, String microArtifactId, List<ProMicroService> micros) throws Exception {
 
         // 生成 controller - client Feign-client
         // FeignClient name(microName+moduleName+ControllerName) qualifier
         StringBuilder dev = new StringBuilder();
         StringBuilder prod = new StringBuilder();
+
         dev.append(feignSStr).append("\n");
         prod.append(feignSStr).append("\n");
 
@@ -179,14 +203,15 @@ public class MicroProjectGenerate extends ProjectGenerate {
         File appYmlFileDev = new File(resourcePath+"/application-dev.yml");
         File appYmlFileProd = new File(resourcePath+"/application-prod.yml");
 
-        updateMicroConfig(appYmlFileDev, dev.toString());
-        updateMicroConfig(appYmlFileProd, prod.toString());
+        updateMicroConfig(feignSStr, feignEStr, appYmlFileDev, dev.toString());
+        updateMicroConfig(feignSStr, feignEStr, appYmlFileProd, prod.toString());
 
     }
 
-    private void updateMicroConfig(File f, String str) throws Exception {
+    private void updateMicroConfig(String sStr, String eStr, File f, String str) throws Exception {
         String txt = IOUtils.toString(new FileInputStream(f), "utf-8");
-        String orgStr = txt.substring(txt.indexOf(feignSStr), txt.indexOf(feignEStr)+feignEStr.length());
+        String orgStr = txt.substring(txt.indexOf(sStr), txt.indexOf(eStr)+eStr.length());
+        orgStr = orgStr.replaceAll("\\*", "\\\\*");
         txt = txt.replaceAll(orgStr, str);
         writeFile(txt, f);
     }
@@ -300,8 +325,13 @@ public class MicroProjectGenerate extends ProjectGenerate {
             appContent.append(feignSStr).append("\n");
             appContent.append(feignEStr).append("\n");
 
-            writeFile(appContent.toString(), appYmlFileDev);
             writeFile(appContent.toString(), appYmlFileProd);
+
+            // zuul - dev
+            appContent.append(zuulSStr).append("\n");
+            appContent.append(zuulEStr).append("\n\n");
+
+            writeFile(appContent.toString(), appYmlFileDev);
         }
     }
 
@@ -347,7 +377,7 @@ public class MicroProjectGenerate extends ProjectGenerate {
         }
     }
 
-    private void genStarterAppClass(String microProPath, String microArtifactId, String microArtifactIdName) throws Exception {
+    private void genStarterAppClass(String microProPath, String microArtifactId, String microArtifactIdName, ProMicroService micro) throws Exception {
         String applicationClassName = StringUtil.getJavaTableName(microArtifactId) + "Application"; // e_commerce_order to ECommerceOrder
 
         String applicationClassPath = (microProPath+"/src/main/java/"+this.groupId+"."+microArtifactIdName).replaceAll("\\.", "/");
@@ -358,6 +388,10 @@ public class MicroProjectGenerate extends ProjectGenerate {
             TopLevelClass appClass = new TopLevelClass(this.groupId + "." + microArtifactIdName + "." + applicationClassName);
             appClass.setVisibility(JavaVisibility.PUBLIC);
 
+            if(micro.getApiProject() == 1) {
+                appClass.addImportedType("org.springframework.cloud.netflix.zuul.EnableZuulProxy");
+                appClass.addAnnotation("@EnableZuulProxy");
+            }
             appClass.addAnnotation("@EnableFeignClients(basePackages = \"" + this.groupId + "\")");
             appClass.addAnnotation("@EnableDiscoveryClient");
             appClass.addAnnotation("@SpringBootApplication(scanBasePackages = \"" + this.groupId + "\")");
@@ -369,6 +403,8 @@ public class MicroProjectGenerate extends ProjectGenerate {
             appClass.addImportedType("org.springframework.cloud.openfeign.EnableFeignClients");
             appClass.addImportedType("org.springframework.web.bind.annotation.GetMapping");
             appClass.addImportedType("org.springframework.web.bind.annotation.RestController");
+
+
 
             Method mainMethod = new Method();
             mainMethod.setVisibility(JavaVisibility.PUBLIC);

@@ -1,5 +1,6 @@
 spring:
   profiles:
+#    include: email,xmyb
     active: dev
   main:
-    allow-bean-definition-overriding: true      
+    allow-bean-definition-overriding: true
