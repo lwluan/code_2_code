@@ -8,6 +8,10 @@ public class StringUtil extends StringUtils {
 	public static String firstUpCase(String value) {
 		return value.substring(0, 1).toUpperCase() + value.substring(1);
 	}
+
+	public static String firstLowCase(String value) {
+		return value.substring(0, 1).toLowerCase() + value.substring(1);
+	}
 	
 	/**
 	 * 数据库名转为java类名
