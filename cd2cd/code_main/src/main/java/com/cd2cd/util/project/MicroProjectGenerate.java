@@ -18,6 +18,7 @@ import org.mybatis.generator.api.dom.java.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
@@ -417,7 +418,15 @@ public class MicroProjectGenerate extends ProjectGenerate {
             }
             appClass.addAnnotation("@EnableFeignClients(basePackages = \"" + this.groupId + "\")");
             appClass.addAnnotation("@EnableDiscoveryClient");
-            appClass.addAnnotation("@SpringBootApplication(scanBasePackages = \"" + this.groupId + "\")");
+
+
+            String springBootApplication = "@SpringBootApplication(scanBasePackages = \"" + this.groupId + "\")";
+            if (micro.getApiProject() == 0) {
+                springBootApplication = "@SpringBootApplication(scanBasePackages = \"" + this.groupId + "\", exclude = {SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class})";
+                appClass.addImportedType("org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration");
+                appClass.addImportedType("org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration");
+            }
+            appClass.addAnnotation(springBootApplication);
 
             appClass.addImportedType("org.springframework.boot.SpringApplication");
             appClass.addImportedType("org.springframework.boot.autoconfigure.SpringBootApplication");
