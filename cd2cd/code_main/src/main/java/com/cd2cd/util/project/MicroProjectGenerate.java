@@ -166,6 +166,8 @@ public class MicroProjectGenerate extends ProjectGenerate {
     private void updateMicroZuulConfig(String targetPath, String microArtifactId, List<ProMicroService> micros) throws Exception {
         StringBuilder zuul = new StringBuilder();
         zuul.append(zuulSStr).append("\n");
+        zuul.append("zuul:\n");
+        zuul.append("  routes:\n");
         for (ProMicroService micro : micros) {
             if (micro.getApiProject() == 0) {
                 zuul.append("    " + micro.getArtifactId() + ":").append("\n");
