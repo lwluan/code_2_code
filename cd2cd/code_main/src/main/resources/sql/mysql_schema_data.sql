@@ -1,16 +1,3 @@
-# ************************************************************
-# Sequel Pro SQL dump
-# Version 4541
-#
-# http://www.sequelpro.com/
-# https://github.com/sequelpro/sequelpro
-#
-# Host: 192.168.31.20 (MySQL 5.7.27-0ubuntu0.18.04.1)
-# Database: auto_code
-# Generation Time: 2019-12-30 09:58:25 +0000
-# ************************************************************
-
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -49,6 +36,7 @@ CREATE TABLE `pro_database` (
   `password` varchar(30) DEFAULT NULL,
   `port` varchar(12) DEFAULT NULL,
   `hostname` varchar(30) DEFAULT NULL,
+  `tenant` varchar(10) DEFAULT 'false' COMMENT '是否多租户；true:false',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -86,7 +74,7 @@ CREATE TABLE `pro_file` (
   `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
   `project_id` bigint(11) unsigned DEFAULT NULL COMMENT '项目ID',
   `module_id` bigint(11) unsigned DEFAULT NULL COMMENT '模块ID',
-  `micro_id` bigint(20) DEFAULT NULL COMMENT '微服务ID',
+  `micro_id` bigint(20) unsigned DEFAULT NULL COMMENT '服务ID',
   `super_id` bigint(11) unsigned DEFAULT NULL COMMENT '父类ID',
   `name` varchar(100) DEFAULT NULL COMMENT '文件名称',
   `comment` varchar(500) DEFAULT NULL,
@@ -127,6 +115,8 @@ CREATE TABLE `pro_fun` (
   `return_show` varchar(100) DEFAULT NULL COMMENT '在方法中显示使用',
   `todo_content` varchar(500) DEFAULT NULL COMMENT 'todo',
   `gen_service` varchar(10) DEFAULT NULL,
+  `gen_client` varchar(10) NOT NULL DEFAULT 'false' COMMENT 'true;false',
+  `del_falg` int(11) NOT NULL DEFAULT '0' COMMENT '1:删除，0:正常',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -189,6 +179,7 @@ CREATE TABLE `pro_micro_service` (
   `artifact_id` varchar(100) DEFAULT NULL,
   `context_path` varchar(100) DEFAULT NULL COMMENT '访问路径',
   `del_flag` int(11) NOT NULL DEFAULT '0' COMMENT '1删除；0正常',
+  `api_project` int(11) NOT NULL DEFAULT '0' COMMENT '0:微服务项目，1:api项目',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -439,6 +430,7 @@ CREATE TABLE `sys_user_role_rel` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 
 
+
 INSERT INTO `sys_authority` (`id`, `pid`, `guid`, `name`, `url`, `create_time`, `update_time`)
 VALUES
 	(1,NULL,'101','用户管理','/sysUser/index','2017-12-18 22:42:00','2017-12-18 22:42:00'),
@@ -557,11 +549,3 @@ VALUES
 	(6, 'Min', 'javax.validation.constraints.Min', '最小', '[\"value:Integer\"]', NULL),
 	(7, 'Range', 'org.hibernate.validator.constraints.Range', '区间', '[\"max:Integer\", \"min:Integer\"]', NULL),
 	(8, 'Valid', 'javax.validation.Valid', '是否验证', NULL, NULL);
-
-
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
