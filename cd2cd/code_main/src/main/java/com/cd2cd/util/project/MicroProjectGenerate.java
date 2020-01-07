@@ -619,7 +619,6 @@ public class MicroProjectGenerate extends ProjectGenerate {
 
     private void genDatabaseProjectProperties(ProDatabase database, String localPath) throws Exception {
         String orgDbName = database.getDbName();
-        String dbNameStr = orgDbName.replaceAll("-", "_");
         String dbPrev = StringUtil.firstLowCase(StringUtil.getJavaTableName(orgDbName));
         String microArtifactId = artifactId + "-repository-" + orgDbName+"/src/main/resources";
         String filePath = localPath + microArtifactId + "/"+dbPrev+"Datasource.properties";
@@ -628,7 +627,7 @@ public class MicroProjectGenerate extends ProjectGenerate {
             ByteArrayOutputStream bai = new ByteArrayOutputStream();
             Map<String, Object> dataObj = new HashMap<>();
 
-            dataObj.put("dbPrev", dbNameStr);
+            dataObj.put("dbPrev", StringUtil.clearChar(orgDbName));
             dataObj.put("hostname", database.getHostname());
             dataObj.put("port", database.getPort());
 
@@ -713,7 +712,7 @@ public class MicroProjectGenerate extends ProjectGenerate {
             // DataSource
             Method dataSourceMethod = new Method(dbPrev + "DataSource");
             dataSource.addMethod(dataSourceMethod);
-            dataSourceMethod.addAnnotation("@ConfigurationProperties(prefix = \"datasource." + dbName + "\")");
+            dataSourceMethod.addAnnotation("@ConfigurationProperties(prefix = \"datasource." + StringUtil.clearChar(dbName) + "\")");
             dataSourceMethod.addAnnotation("@Bean(name = \"" + dbPrev + "DataSource\")");
             dataSourceMethod.setReturnType(new FullyQualifiedJavaType("DataSource"));
             dataSourceMethod.setVisibility(JavaVisibility.PUBLIC);

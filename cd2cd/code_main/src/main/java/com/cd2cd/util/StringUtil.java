@@ -35,4 +35,8 @@ public class StringUtil extends StringUtils {
 	public static void main(String args[]) {
 		System.out.println(getJavaTableName("e_aa_baa-jfkd"));
 	}
+
+    public static String clearChar(String dbName) {
+		return dbName.replaceAll("-", "").replaceAll("_", "");
+    }
 }
