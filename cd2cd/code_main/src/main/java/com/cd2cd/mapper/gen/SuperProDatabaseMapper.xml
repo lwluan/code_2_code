@@ -8,6 +8,7 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="port" jdbcType="VARCHAR" property="port" />
     <result column="hostname" jdbcType="VARCHAR" property="hostname" />
+    <result column="tenant" jdbcType="VARCHAR" property="tenant" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
@@ -70,7 +71,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, db_name, username, password, port, hostname, create_time, update_time
+    id, db_name, username, password, port, hostname, tenant, create_time, update_time
   </sql>
   <select id="selectByExample" parameterType="com.cd2cd.domain.gen.ProDatabaseCriteria" resultMap="BaseResultMap">
     select
@@ -110,11 +111,11 @@
       SELECT LAST_INSERT_ID()
     </selectKey>
     insert into pro_database (db_name, username, password, 
-      port, hostname, create_time, 
-      update_time)
+      port, hostname, tenant, 
+      create_time, update_time)
     values (#{dbName,jdbcType=VARCHAR}, #{username,jdbcType=VARCHAR}, #{password,jdbcType=VARCHAR}, 
-      #{port,jdbcType=VARCHAR}, #{hostname,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{port,jdbcType=VARCHAR}, #{hostname,jdbcType=VARCHAR}, #{tenant,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.cd2cd.domain.ProDatabase">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -136,6 +137,9 @@
       </if>
       <if test="hostname != null">
         hostname,
+      </if>
+      <if test="tenant != null">
+        tenant,
       </if>
       <if test="createTime != null">
         create_time,
@@ -159,6 +163,9 @@
       </if>
       <if test="hostname != null">
         #{hostname,jdbcType=VARCHAR},
+      </if>
+      <if test="tenant != null">
+        #{tenant,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         #{createTime,jdbcType=TIMESTAMP},
@@ -195,6 +202,9 @@
       <if test="record.hostname != null">
         hostname = #{record.hostname,jdbcType=VARCHAR},
       </if>
+      <if test="record.tenant != null">
+        tenant = #{record.tenant,jdbcType=VARCHAR},
+      </if>
       <if test="record.createTime != null">
         create_time = #{record.createTime,jdbcType=TIMESTAMP},
       </if>
@@ -214,6 +224,7 @@
       password = #{record.password,jdbcType=VARCHAR},
       port = #{record.port,jdbcType=VARCHAR},
       hostname = #{record.hostname,jdbcType=VARCHAR},
+      tenant = #{record.tenant,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
@@ -238,6 +249,9 @@
       <if test="hostname != null">
         hostname = #{hostname,jdbcType=VARCHAR},
       </if>
+      <if test="tenant != null">
+        tenant = #{tenant,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -254,6 +268,7 @@
       password = #{password,jdbcType=VARCHAR},
       port = #{port,jdbcType=VARCHAR},
       hostname = #{hostname,jdbcType=VARCHAR},
+      tenant = #{tenant,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}

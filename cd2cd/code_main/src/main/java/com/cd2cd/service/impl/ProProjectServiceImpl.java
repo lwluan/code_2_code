@@ -88,7 +88,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 	public BaseRes<DataPageWrapper<ProProjectVo>> list(Integer currPage, Integer pageSize, ProProjectVo proProjectVo) {
 
 		BaseRes<DataPageWrapper<ProProjectVo>> res = new BaseRes<>();
-		res.setData(new DataPageWrapper<ProProjectVo>());
+		res.setData(new DataPageWrapper<>());
 		res.getData().setCurrPage(currPage);
 		res.getData().setPageSize(pageSize);
 
@@ -100,6 +100,7 @@ public class ProProjectServiceImpl implements ProProjectService {
 		example.setMysqlOffset(mysqlOffset);
 
 		Criteria mCriteria = example.createCriteria();
+		mCriteria.andDelFlagEqualTo(0);
 		if (StringUtils.isNotEmpty(proProjectVo.getName())) {
 			mCriteria.andNameLike(proProjectVo.getName() + "%");
 		}
@@ -608,7 +609,9 @@ public class ProProjectServiceImpl implements ProProjectService {
 	public BaseRes<List<ProProjectVo>> projectList() {
 		
 		BaseRes<List<ProProjectVo>> res = new BaseRes<List<ProProjectVo>>();
-		List<ProProject> proProjectList = proProjectMapper.selectByExample(null);
+		ProProjectCriteria proProjectCriteria = new ProProjectCriteria();
+		proProjectCriteria.createCriteria().andDelFlagEqualTo(0);
+		List<ProProject> proProjectList = proProjectMapper.selectByExample(proProjectCriteria);
 		List<ProProjectVo> rows = new ArrayList<ProProjectVo>();
 		for(ProProject project: proProjectList) {
 			ProProjectVo mProProjectVo = new ProProjectVo();

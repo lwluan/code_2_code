@@ -16,6 +16,11 @@ public class SuperProDatabase implements Serializable {
 
     private String hostname;
 
+    /**
+     * 是否多租户；true:false
+     */
+    private String tenant;
+
     private Date createTime;
 
     private Date updateTime;
@@ -70,6 +75,20 @@ public class SuperProDatabase implements Serializable {
         this.hostname = hostname;
     }
 
+    /**
+     * 是否多租户；true:false
+     */
+    public String getTenant() {
+        return tenant;
+    }
+
+    /**
+     * 是否多租户；true:false
+     */
+    public void setTenant(String tenant) {
+        this.tenant = tenant;
+    }
+
     public Date getCreateTime() {
         return createTime;
     }
@@ -98,6 +117,7 @@ public class SuperProDatabase implements Serializable {
         sb.append(", password=").append(password);
         sb.append(", port=").append(port);
         sb.append(", hostname=").append(hostname);
+        sb.append(", tenant=").append(tenant);
         sb.append(", createTime=").append(createTime);
         sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
@@ -123,6 +143,7 @@ public class SuperProDatabase implements Serializable {
             && (this.getPassword() == null ? other.getPassword() == null : this.getPassword().equals(other.getPassword()))
             && (this.getPort() == null ? other.getPort() == null : this.getPort().equals(other.getPort()))
             && (this.getHostname() == null ? other.getHostname() == null : this.getHostname().equals(other.getHostname()))
+            && (this.getTenant() == null ? other.getTenant() == null : this.getTenant().equals(other.getTenant()))
             && (this.getCreateTime() == null ? other.getCreateTime() == null : this.getCreateTime().equals(other.getCreateTime()))
             && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()));
     }
@@ -137,6 +158,7 @@ public class SuperProDatabase implements Serializable {
         result = prime * result + ((getPassword() == null) ? 0 : getPassword().hashCode());
         result = prime * result + ((getPort() == null) ? 0 : getPort().hashCode());
         result = prime * result + ((getHostname() == null) ? 0 : getHostname().hashCode());
+        result = prime * result + ((getTenant() == null) ? 0 : getTenant().hashCode());
         result = prime * result + ((getCreateTime() == null) ? 0 : getCreateTime().hashCode());
         result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
         return result;

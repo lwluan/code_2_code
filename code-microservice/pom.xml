@@ -13,8 +13,6 @@
     <modules>
         <module>code-microservice-parent</module>
         <module>code-microservice-common</module>
-        <module>code-microservice-repository</module>
-        <module>code-microservice-zuul</module>
         <module>code-microservice-cloud</module>
     </modules>
         

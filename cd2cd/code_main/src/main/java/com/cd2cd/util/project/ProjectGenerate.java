@@ -379,7 +379,7 @@ public abstract class ProjectGenerate {
             String sqlMap = groupId + "." + artifactIdName +"."+ (doDbName?dbName:"") + ".mapper";
             String javaModel = groupId + "." + artifactIdName +"."+ (doDbName?dbName:"") + ".domain";;
 
-//            log.info("\nsqlMap={}, \njavaModel={}, \nsqlMapPath={} \n javaModelPath={}", sqlMap, javaModel, sqlMapPath, javaModelPath);
+            log.info("\nsqlMap={}, \njavaModel={}, \nsqlMapPath={} \n javaModelPath={}", sqlMap, javaModel, sqlMapPath, javaModelPath);
             // h2
             String connectionURL = "jdbc:h2:"+H2_DB_PATH+"/" + database.getDbName();
 

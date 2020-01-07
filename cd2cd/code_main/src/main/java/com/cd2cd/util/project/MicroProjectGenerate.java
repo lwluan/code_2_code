@@ -134,12 +134,33 @@ public class MicroProjectGenerate extends ProjectGenerate {
                 updateMicroZuulConfig(targetPath, microArtifactId, micros);
             }
 
+            // gen logback.xml
+            genMicroLogbackXml(targetPath, microArtifactId);
+
         }
 
         // micro-cloud
         String microArtifactId = this.artifactId + "-cloud";
         genMicroClientConfig(targetPath, microArtifactId, micros);
 
+        genMicroLogbackXml(targetPath, microArtifactId);
+    }
+
+    private void genMicroLogbackXml(String targetPath, String microArtifactId) throws Exception {
+
+        String filePath = targetPath + "/" + microArtifactId + "/src/main/resources/logback.xml";
+        File microPomFile = new File(filePath);
+        if (!microPomFile.exists()) {
+            ByteArrayOutputStream bai = new ByteArrayOutputStream();
+            Map<String, Object> dataObj = new HashMap<>();
+
+            String pkgName = this.groupId+"."+microArtifactId.replaceAll("-", "_");
+            dataObj.put("pkgName", pkgName);
+
+            GenFileByFtl mGenFileByFtl = new GenFileByFtl();
+            mGenFileByFtl.fetchResourcesFromJar("micro.logback.xml.ftl", dataObj, bai);
+            writeFile(new String(bai.toByteArray()), microPomFile);
+        }
     }
 
     private void updateMicroZuulConfig(String targetPath, String microArtifactId, List<ProMicroService> micros) throws Exception {
@@ -148,11 +169,8 @@ public class MicroProjectGenerate extends ProjectGenerate {
         for (ProMicroService micro : micros) {
             if (micro.getApiProject() == 0) {
                 zuul.append("    " + micro.getArtifactId() + ":").append("\n");
-                ;
                 zuul.append("      path: /" + micro.getArtifactId() + "/**").append("\n");
-                ;
-                zuul.append("      serviceId: micro-test-cloud").append("\n");
-                ;
+                zuul.append("      serviceId: "+this.artifactId+"-cloud").append("\n");
             }
         }
         zuul.append(zuulEStr);
@@ -449,7 +467,7 @@ public class MicroProjectGenerate extends ProjectGenerate {
         proPath = targetPath;
 
         // module
-        String[] modules = new String[]{"-cloud", "-common", "-repository", "-parent"};
+        String[] modules = new String[]{"-cloud", "-common", "-parent"};
         for (String mStr : modules) {
             reNameProject(mStr, proPath, groupIdName);
             replacePomXml(mStr, proPath);
@@ -563,126 +581,208 @@ public class MicroProjectGenerate extends ProjectGenerate {
                     tables = tables.stream().filter(table -> ignoreTables.indexOf("\"" + table.getId() + "\"") < 0).collect(Collectors.toList());
                 }
 
-                /**
-                 * 暂时支持一个数据库 mapper/entity
-                 */
-
                 String localPath = project.getLocalPath();
                 localPath = localPath.endsWith("/") ? localPath : localPath + "/";
                 localPath = localPath + artifactId + "/";
-                String mapperPath = localPath + artifactId + "-repository/";
+                String dbArtifactId = artifactId + "-repository-"+database.getDbName();
+                String mapperPath = localPath + dbArtifactId+"/";
                 String domainPath = localPath + artifactId + "-common/";
 
-                initH2Database(tables, database);
+                // 生成数据源 DataSource --- e-commerce-repository-[db-name]
+                genDatabaseProject(database, localPath);
 
+                initH2Database(tables, database);
                 String javaModelPath = domainPath;
                 String sqlMapPath = mapperPath;
 
                 genJavaFromDb(tables, database, javaModelPath, sqlMapPath, true);
 
-                // 生成数据源 DataSource --- e-commerce-repository/
-                /**
-                 * 服务绑定数据源；
-                 */
-                genDatabaseDataSource(database);
-
+                addModuleOfMicroToRootPom(localPath, dbArtifactId);
             }
         }
     }
 
-    private void genDatabaseDataSource(ProDatabase database) {
+    private void genDatabaseProject(ProDatabase database, String localPath) throws Exception {
 
-        String dbName = database.getDbName().replaceAll("-", "_");
+        // 生成database
+        genDatabaseDataSource(database, localPath);
+
+        // 生成pom
+        genDatabaseProjectPom(database, localPath);
+
+        // 生成 properties
+        genDatabaseProjectProperties(database, localPath);
+
+    }
+
+    private void genDatabaseProjectProperties(ProDatabase database, String localPath) throws Exception {
+        String orgDbName = database.getDbName();
+        String dbNameStr = orgDbName.replaceAll("-", "_");
+        String dbPrev = StringUtil.firstLowCase(StringUtil.getJavaTableName(orgDbName));
+        String microArtifactId = artifactId + "-repository-" + orgDbName+"/src/main/resources";
+        String filePath = localPath + microArtifactId + "/"+dbPrev+"Datasource.properties";
+        File microPomFile = new File(filePath);
+        if (!microPomFile.exists()) {
+            ByteArrayOutputStream bai = new ByteArrayOutputStream();
+            Map<String, Object> dataObj = new HashMap<>();
+
+            dataObj.put("dbPrev", dbNameStr);
+            dataObj.put("hostname", database.getHostname());
+            dataObj.put("port", database.getPort());
+
+            dataObj.put("password", database.getPassword());
+            dataObj.put("username", database.getUsername());
+
+            String dbName = database.getDbName();
+            if("true".equals(database.getTenant())) {
+                dbName = String.format("{%s}", dbName);
+            }
+
+            // 多租户
+            dataObj.put("dbName", dbName);
+
+            GenFileByFtl mGenFileByFtl = new GenFileByFtl();
+            mGenFileByFtl.fetchResourcesFromJar("micro.db.properties.ftl", dataObj, bai);
+            writeFile(new String(bai.toByteArray()), microPomFile);
+        }
+    }
+    private void genDatabaseProjectPom(ProDatabase database, String localPath) throws Exception {
+
+        String orgDbName = database.getDbName();
+        String microArtifactId = artifactId + "-repository-" + orgDbName;
+        String projectPath = localPath + microArtifactId + "/pom.xml";;
+
+        File microPomFile = new File(projectPath);
+        if (!microPomFile.exists()) {
+            ByteArrayOutputStream bai = new ByteArrayOutputStream();
+            Map<String, Object> dataObj = new HashMap<String, Object>();
+
+            dataObj.put("groupId", this.groupId);
+            dataObj.put("artifactId", artifactId);
+            dataObj.put("microArtifactId", microArtifactId);
+
+            GenFileByFtl mGenFileByFtl = new GenFileByFtl();
+            mGenFileByFtl.fetchResourcesFromJar("micro.db.pom.xml", dataObj, bai);
+            IOUtils.write(bai.toByteArray(), new FileOutputStream(microPomFile));
+        }
+    }
+
+    private void genDatabaseDataSource(ProDatabase database, String localPath) throws Exception {
+
+        String orgDbName = database.getDbName();
+        String projectPath = localPath + artifactId + "-repository-" + orgDbName;
+
+        String dbName = orgDbName.replaceAll("-", "_");
         String pkg = (groupId + "." +artifactIdName +"."+ dbName).replaceAll("-", "_");;
 
-        String dbPrev = StringUtil.firstLowCase(StringUtil.getJavaTableName(dbName));
         String dsClassName = StringUtil.getJavaTableName(dbName) + "DataSource";
-        TopLevelClass dataSource = new TopLevelClass(pkg + "." + dsClassName);
-        dataSource.setVisibility(JavaVisibility.PUBLIC);
 
-        // import
-        dataSource.addImportedType("java.util.Properties");
-        dataSource.addImportedType("javax.sql.DataSource");
-        dataSource.addImportedType("org.apache.commons.dbcp2.BasicDataSource");
-        dataSource.addImportedType("org.apache.ibatis.mapping.VendorDatabaseIdProvider");
-        dataSource.addImportedType("org.apache.ibatis.session.SqlSessionFactory");
-        dataSource.addImportedType("org.mybatis.spring.SqlSessionFactoryBean");
-        dataSource.addImportedType("org.mybatis.spring.SqlSessionTemplate");
-        dataSource.addImportedType("org.mybatis.spring.annotation.MapperScan");
-        dataSource.addImportedType("org.springframework.beans.factory.annotation.Qualifier");
-        dataSource.addImportedType("org.springframework.boot.context.properties.ConfigurationProperties");
-        dataSource.addImportedType("org.springframework.context.annotation.Bean");
-        dataSource.addImportedType("org.springframework.context.annotation.Configuration");
-        dataSource.addImportedType("org.springframework.jdbc.datasource.DataSourceTransactionManager");
+        String classPath = (projectPath+"/src/main/java/"+pkg).replaceAll("\\.", "/");
+        File classFile = new File(classPath+"/"+dsClassName+".java");
 
-        // class annotation
-        dataSource.addAnnotation("@Configuration(\""+dbPrev+"DataSourceConfig\")");
-        dataSource.addAnnotation("@MapperScan(basePackages = \""+pkg+".mapper\", sqlSessionTemplateRef  = \""+dbPrev+"SqlSessionTemplate\")");
+        if( ! classFile.exists()) {
+            String dbPrev = StringUtil.firstLowCase(StringUtil.getJavaTableName(dbName));
 
-        // DataSource
-        Method dataSourceMethod = new Method(dbPrev+"DataSource");
-        dataSourceMethod.addAnnotation("@ConfigurationProperties(prefix = \"spring."+dbPrev+".source\")");
-        dataSourceMethod.addAnnotation("@Bean(name = \""+dbPrev+"DataSource\")");
-        dataSourceMethod.setReturnType(new FullyQualifiedJavaType("DataSource"));
-        dataSourceMethod.setVisibility(JavaVisibility.PUBLIC);
-        dataSourceMethod.addBodyLine("return new BasicDataSource();");
+            TopLevelClass dataSource = new TopLevelClass(pkg + "." + dsClassName);
+            dataSource.setVisibility(JavaVisibility.PUBLIC);
 
-        // SqlSessionFactory
-        Method sqlSessionFactory = new Method(dbPrev+"SqlSessionFactory");
-        sqlSessionFactory.addAnnotation("@Bean(name = \""+dbPrev+"SqlSessionFactory\")");
-
-        Parameter param = new Parameter(new FullyQualifiedJavaType("DataSource"), "dataSource");
-        param.addAnnotation("@Qualifier(\""+dbPrev+"DataSource\")");
-        sqlSessionFactory.addParameter(param);
-
-        sqlSessionFactory.setReturnType(new FullyQualifiedJavaType("SqlSessionFactory"));
-        sqlSessionFactory.setVisibility(JavaVisibility.PUBLIC);
-        sqlSessionFactory.addException(new FullyQualifiedJavaType("Exception"));
-
-        sqlSessionFactory.addBodyLine("SqlSessionFactoryBean bean = new SqlSessionFactoryBean();");
-        sqlSessionFactory.addBodyLine("bean.setTypeAliasesPackage(\""+pkg+".domain\");");
-        sqlSessionFactory.addBodyLine("bean.setDataSource(dataSource);");
-
-        // 设置多数据库支持
-        sqlSessionFactory.addBodyLine("Properties mProperties = new Properties();");
-        sqlSessionFactory.addBodyLine("mProperties.put(\"Oracle\", \"oracle\");");
-        sqlSessionFactory.addBodyLine("mProperties.put(\"MySQL\", \"mysql\");");
-        sqlSessionFactory.addBodyLine("mProperties.put(\"SQL Server\", \"sqlserver\");");
-        sqlSessionFactory.addBodyLine("mProperties.put(\"DB2\", \"db2\");");
-
-        sqlSessionFactory.addBodyLine("VendorDatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();");
-        sqlSessionFactory.addBodyLine("databaseIdProvider.setProperties(mProperties);");
-        sqlSessionFactory.addBodyLine("bean.setDatabaseIdProvider(databaseIdProvider);");
-        sqlSessionFactory.addBodyLine("return bean.getObject();");
+            // import
+            dataSource.addImportedType("java.util.Properties");
+            dataSource.addImportedType("javax.sql.DataSource");
+            dataSource.addImportedType("org.apache.commons.dbcp2.BasicDataSource");
+            dataSource.addImportedType("org.apache.ibatis.mapping.VendorDatabaseIdProvider");
+            dataSource.addImportedType("org.apache.ibatis.session.SqlSessionFactory");
+            dataSource.addImportedType("org.mybatis.spring.SqlSessionFactoryBean");
+            dataSource.addImportedType("org.mybatis.spring.SqlSessionTemplate");
+            dataSource.addImportedType("org.mybatis.spring.annotation.MapperScan");
+            dataSource.addImportedType("org.springframework.beans.factory.annotation.Qualifier");
+            dataSource.addImportedType("org.springframework.boot.context.properties.ConfigurationProperties");
+            dataSource.addImportedType("org.springframework.context.annotation.Bean");
+            dataSource.addImportedType("org.springframework.context.annotation.Configuration");
+            dataSource.addImportedType("org.springframework.jdbc.datasource.DataSourceTransactionManager");
+            dataSource.addImportedType("org.springframework.context.annotation.PropertySource;");
 
 
-        // TransactionManager
-        Method transactionManager = new Method(dbPrev+"TransactionManager");
-        transactionManager.addAnnotation("@Bean(name = \""+dbPrev+"TransactionManager\")");
-        transactionManager.setReturnType(new FullyQualifiedJavaType("DataSourceTransactionManager"));
-        transactionManager.setVisibility(JavaVisibility.PUBLIC);
+            // class annotation
+            dataSource.addAnnotation("@PropertySource(\""+dbPrev+"Datasource.properties\")");
+            dataSource.addAnnotation("@Configuration(\"" + dbPrev + "DataSourceConfig\")");
+            dataSource.addAnnotation("@MapperScan(basePackages = \"" + pkg + ".mapper\", sqlSessionTemplateRef  = \"" + dbPrev + "SqlSessionTemplate\")");
 
-        param = new Parameter(new FullyQualifiedJavaType("DataSource"), "dataSource");
-        param.addAnnotation("@Qualifier(\""+dbPrev+"DataSource\")");
-        transactionManager.addParameter(param);
+            // DataSource
+            Method dataSourceMethod = new Method(dbPrev + "DataSource");
+            dataSource.addMethod(dataSourceMethod);
+            dataSourceMethod.addAnnotation("@ConfigurationProperties(prefix = \"datasource." + dbName + "\")");
+            dataSourceMethod.addAnnotation("@Bean(name = \"" + dbPrev + "DataSource\")");
+            dataSourceMethod.setReturnType(new FullyQualifiedJavaType("DataSource"));
+            dataSourceMethod.setVisibility(JavaVisibility.PUBLIC);
 
-        transactionManager.addBodyLine("return new DataSourceTransactionManager(dataSource);");
+            if("true".equals(database.getTenant())) {
+                dataSource.addImportedType(this.groupId+".multisource.MultiDataSource");
+                dataSourceMethod.addBodyLine("return new MultiDataSource();");
+            } else {
+                dataSourceMethod.addBodyLine("return new BasicDataSource();");
+            }
 
-        // tenantSqlSessionTemplate
-        Method tenantSqlSessionTemplate = new Method(dbPrev+"SqlSessionTemplate");
-        tenantSqlSessionTemplate.addAnnotation("@Bean(name = \""+dbPrev+"SqlSessionTemplate\")");
-        tenantSqlSessionTemplate.setReturnType(new FullyQualifiedJavaType("SqlSessionTemplate"));
-        tenantSqlSessionTemplate.setVisibility(JavaVisibility.PUBLIC);
+            // SqlSessionFactory
+            Method sqlSessionFactory = new Method(dbPrev + "SqlSessionFactory");
+            dataSource.addMethod(sqlSessionFactory);
+            sqlSessionFactory.addAnnotation("@Bean(name = \"" + dbPrev + "SqlSessionFactory\")");
 
-        param = new Parameter(new FullyQualifiedJavaType("SqlSessionFactory"), "sqlSessionFactory");
-        param.addAnnotation("@Qualifier(\""+dbPrev+"SqlSessionFactory\")");
-        tenantSqlSessionTemplate.addParameter(param);
+            Parameter param = new Parameter(new FullyQualifiedJavaType("DataSource"), "dataSource");
+            param.addAnnotation("@Qualifier(\"" + dbPrev + "DataSource\")");
+            sqlSessionFactory.addParameter(param);
 
-        tenantSqlSessionTemplate.addException(new FullyQualifiedJavaType("Exception"));
-        tenantSqlSessionTemplate.addBodyLine("return new SqlSessionTemplate(sqlSessionFactory);");
+            sqlSessionFactory.setReturnType(new FullyQualifiedJavaType("SqlSessionFactory"));
+            sqlSessionFactory.setVisibility(JavaVisibility.PUBLIC);
+            sqlSessionFactory.addException(new FullyQualifiedJavaType("Exception"));
+
+            sqlSessionFactory.addBodyLine("SqlSessionFactoryBean bean = new SqlSessionFactoryBean();");
+            sqlSessionFactory.addBodyLine("bean.setTypeAliasesPackage(\"" + pkg + ".domain\");");
+            sqlSessionFactory.addBodyLine("bean.setDataSource(dataSource);");
+
+            // 设置多数据库支持
+            sqlSessionFactory.addBodyLine("Properties mProperties = new Properties();");
+            sqlSessionFactory.addBodyLine("mProperties.put(\"Oracle\", \"oracle\");");
+            sqlSessionFactory.addBodyLine("mProperties.put(\"MySQL\", \"mysql\");");
+            sqlSessionFactory.addBodyLine("mProperties.put(\"SQL Server\", \"sqlserver\");");
+            sqlSessionFactory.addBodyLine("mProperties.put(\"DB2\", \"db2\");");
+
+            sqlSessionFactory.addBodyLine("VendorDatabaseIdProvider databaseIdProvider = new VendorDatabaseIdProvider();");
+            sqlSessionFactory.addBodyLine("databaseIdProvider.setProperties(mProperties);");
+            sqlSessionFactory.addBodyLine("bean.setDatabaseIdProvider(databaseIdProvider);");
+            sqlSessionFactory.addBodyLine("return bean.getObject();");
 
 
+            // TransactionManager
+            Method transactionManager = new Method(dbPrev + "TransactionManager");
+            dataSource.addMethod(transactionManager);
+            transactionManager.addAnnotation("@Bean(name = \"" + dbPrev + "TransactionManager\")");
+            transactionManager.setReturnType(new FullyQualifiedJavaType("DataSourceTransactionManager"));
+            transactionManager.setVisibility(JavaVisibility.PUBLIC);
 
+            param = new Parameter(new FullyQualifiedJavaType("DataSource"), "dataSource");
+            param.addAnnotation("@Qualifier(\"" + dbPrev + "DataSource\")");
+            transactionManager.addParameter(param);
+
+            transactionManager.addBodyLine("return new DataSourceTransactionManager(dataSource);");
+
+            // tenantSqlSessionTemplate
+            Method tenantSqlSessionTemplate = new Method(dbPrev + "SqlSessionTemplate");
+            dataSource.addMethod(tenantSqlSessionTemplate);
+            tenantSqlSessionTemplate.addAnnotation("@Bean(name = \"" + dbPrev + "SqlSessionTemplate\")");
+            tenantSqlSessionTemplate.setReturnType(new FullyQualifiedJavaType("SqlSessionTemplate"));
+            tenantSqlSessionTemplate.setVisibility(JavaVisibility.PUBLIC);
+
+            param = new Parameter(new FullyQualifiedJavaType("SqlSessionFactory"), "sqlSessionFactory");
+            param.addAnnotation("@Qualifier(\"" + dbPrev + "SqlSessionFactory\")");
+            tenantSqlSessionTemplate.addParameter(param);
+
+            tenantSqlSessionTemplate.addException(new FullyQualifiedJavaType("Exception"));
+            tenantSqlSessionTemplate.addBodyLine("return new SqlSessionTemplate(sqlSessionFactory);");
+
+            writeFile(dataSource.getFormattedContent(), classFile);
+
+        }
     }
 
     @Override
