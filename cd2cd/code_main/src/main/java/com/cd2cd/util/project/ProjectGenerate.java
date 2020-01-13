@@ -376,8 +376,8 @@ public abstract class ProjectGenerate {
 
             // 添加db名称
             String dbName = database.getDbName().replaceAll("-", "_");
-            String sqlMap = groupId + "." + artifactIdName +"."+ (doDbName?dbName:"") + ".mapper";
-            String javaModel = groupId + "." + artifactIdName +"."+ (doDbName?dbName:"") + ".domain";;
+            String sqlMap = groupId + "." + artifactIdName + (doDbName?"."+dbName:"") + ".mapper";
+            String javaModel = groupId + "." + artifactIdName + (doDbName?"."+dbName:"") + ".domain";;
 
             log.info("\nsqlMap={}, \njavaModel={}, \nsqlMapPath={} \n javaModelPath={}", sqlMap, javaModel, sqlMapPath, javaModelPath);
             // h2
