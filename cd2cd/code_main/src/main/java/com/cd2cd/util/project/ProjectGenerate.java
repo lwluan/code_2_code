@@ -374,7 +374,7 @@ public abstract class ProjectGenerate {
     protected void genJavaFromDb(List<ProTable> tables, ProDatabase database, String javaModelPath, String sqlMapPath, boolean doDbName) {
         try {
 
-            // 添加db名称
+            // 添加 db 名称
             String dbName = database.getDbName().replaceAll("-", "_");
             String sqlMap = groupId + "." + artifactIdName + (doDbName?"."+dbName:"") + ".mapper";
             String javaModel = groupId + "." + artifactIdName + (doDbName?"."+dbName:"") + ".domain";;
