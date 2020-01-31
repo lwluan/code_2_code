@@ -262,6 +262,7 @@ public class SimpleProjectGenerate extends ProjectGenerate {
                 String localPath = project.getLocalPath();
                 localPath = localPath.endsWith("/") ? localPath : localPath + "/";
                 localPath = localPath + artifactId + "/" + artifactId + "_main/";
+                localPath = localPath.replaceAll("-", "_");
 
                 initH2Database(tables, database);
                 genJavaFromDb(tables, database, localPath, localPath, false);

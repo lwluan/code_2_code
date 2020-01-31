@@ -97,7 +97,9 @@ public class TopClassParser {
     }
     public static void main(String[] args) throws IOException {
 
-        File file = new File("/Volumes/data/code-sources/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/dom/java/demo/DemoClass.java");
+        String url = "/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/dom/java/demo/DemoClass.java";
+//        url = "/Volumes/data/code-sources/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/dom/java/demo/DemoClass.java";
+        File file = new File(url);
         TopClassParser cf = new TopClassParser(file);
 
         TopLevelClass cc = cf.toTopLevelClass();

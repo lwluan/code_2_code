@@ -6,8 +6,11 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.cd2cd.dom.java.interfase.InterfaceImplFormat;
+import com.cd2cd.dom.java.parse.TopClassParser;
 import com.cd2cd.util.BeanUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -100,8 +103,6 @@ public class GenServiceHelper {
 		return null;
 	}
 
-
-
 	private void genServiceInterface() throws IOException {
 		String type = getInterfaceClassName();
 
@@ -122,9 +123,9 @@ public class GenServiceHelper {
 		InterfaceFormat iff = new InterfaceFormat(originCode, type);
 		Interface originInferface = iff.getmInterface();
 
-		if(originInferface.getMethods().size() < 1) {
-			return;
-		}
+//		if(originInferface.getMethods().size() < 1) {
+//			return;
+//		}
 
 		List<MyMethod> originMethods = iff.getMethods();
 		Map<String, MyMethod> oldMethodDic = iff.getGenMethodMap();
@@ -240,71 +241,144 @@ public class GenServiceHelper {
 	}
 
 	private void genServiceImpl() throws IOException {
-		String interfaceType = getInterfaceClassName();
-		FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType(interfaceType);
 
-		String implType = getImplClassName();
 
-		TopLevelClass newServiceImpl = new TopLevelClass(implType);
+		// 查看文件是否存在，存在解析生成；不存在首次生成;
+		String filePath = getImplClassAbsPath();
+		File classfile = new File(filePath);
 
-		/** super interface */
-		newServiceImpl.addSuperInterface(superInterface);
-		newServiceImpl.setVisibility(JavaVisibility.PUBLIC);
+		TopLevelClass newServiceImpl = null;
+		if(classfile.exists()) {
+			TopClassParser topClassParser = new TopClassParser(IOUtils.toString(new FileInputStream(classfile), "utf-8"));
+			newServiceImpl = topClassParser.toTopLevelClass();
+		} else {
+			String implType = getImplClassName();
+			newServiceImpl = new TopLevelClass(implType);
+			String interfaceType = getInterfaceClassName();
+			FullyQualifiedJavaType superInterface = new FullyQualifiedJavaType(interfaceType);
 
-		/** class import **/
-		addClassImport(newServiceImpl);
+			/** super interface */
+			newServiceImpl.addSuperInterface(superInterface);
+			newServiceImpl.setVisibility(JavaVisibility.PUBLIC);
 
-		// origin code method list
-		String originCode = getOriginCodeTxt(getImplClassAbsPath());
-		InterfaceImplFormat iff = new InterfaceImplFormat(originCode, implType);
-		TopLevelClass originImpl = iff.getmTopLevelClass();
-		addClassImport(originImpl);
+			/** class import **/
+			addClassImport(newServiceImpl);
+			addClassImport(newServiceImpl);
 
-		if(originImpl.getMethods().size() <1) {
-			return;
+			newServiceImpl.addAnnotation("@Service");
+			newServiceImpl.addImportedType("org.springframework.stereotype.Service");
+			newServiceImpl.addImportedType(getInterfaceClassName());
+			newServiceImpl.addSuperInterface(new FullyQualifiedJavaType(getInterfaceClassName()));
+
 		}
 
-		Map<String, MyMethod> oldMethodDic = iff.getGenMethodMap();
-		Map<String, Method> newFunGenMap = new HashMap<>();
 
-		// 设置方法
-		setFunction(newServiceImpl.getMethods(), oldMethodDic, newFunGenMap, true);
+		Map<String, Method> mapMethod = new HashMap<>();
+		List<Method> methods = newServiceImpl.getMethods();
+		for(Method m: methods) {
 
+			List<String> docs = m.getJavaDocLines();
+			String commStr = String.join("", docs);
 
-		for(String mKey: newFunGenMap.keySet()) {
+			Pattern genP = Pattern.compile("@gen_.*_lwl");
+			Matcher GenMp = genP.matcher(commStr);
+			if(GenMp.find()) {
+				String genStr = GenMp.group().trim();
+				mapMethod.put(genStr, m);
+			}
+		}
 
-			MyMethod oldMethod = oldMethodDic.get(mKey);
-			if(Objects.isNull(oldMethod)) {
-				originImpl.addMethod(newFunGenMap.get(mKey));
+		for(ProFun fun : file.getFuns()) {
+
+			// not gen service
+			if (!"true".equals(fun.getGenService())) {
 				continue;
 			}
 
-			List<String> javaDocLines = new ArrayList<>(oldMethod.getJavaDocLines());
-			List<String> bodyLines = new ArrayList<>(oldMethod.getBodyLines());
+			// 自定义注释
+			List<String> customeStrs = null;
+			String genStr = CodeUtils.getFunIdenStr(fun.getId() + "");
+			Method m;
+			if(mapMethod.containsKey(genStr)) {
+				m = mapMethod.get(genStr);
+				customeStrs = new ArrayList<>();
+				List<String> docs = m.getJavaDocLines();
+				String commStr = String.join("", docs);
 
-			BeanUtils.copyProperties(newFunGenMap.get(mKey), oldMethod);
+				String cc = commStr.substring(0, commStr.indexOf(genStr));
+				String[] lines = cc.split("\n");
+				for(int i=1; i<lines.length-1; i++) {
+					customeStrs.add(lines[i]);
+				}
+			} else {
+				m = new Method(fun.getFunName());
+				newServiceImpl.addMethod(m);
 
-			oldMethod.getJavaDocLines().clear();
-			oldMethod.getJavaDocLines().addAll(javaDocLines);
+				if(null == m.getReturnType()) {
+					m.addBodyLine("");
+				} else {
+					m.addBodyLine("return null;");
+				}
 
-			oldMethod.getBodyLines().clear();
-			oldMethod.getBodyLines().addAll(bodyLines);
+			}
+
+			// 清除参数
+			m.getParameters().clear();
+			// 清除comment
+			m.getJavaDocLines().clear();
+
+			m.addJavaDocLine("/**");
+			if(CollectionUtils.isNotEmpty(customeStrs)) {
+				m.getJavaDocLines().addAll(customeStrs);
+			}
+
+			m.addJavaDocLine(" * "+ genStr);
+			m.addJavaDocLine(" * "+fun.getName());
+			m.addJavaDocLine(" * "+fun.getComment());
+
+			/**
+			 * 方法参数
+			 */
+			List<ProFunArg> args = fun.getArgs();
+			for(ProFunArg arg : args) {
+				// {id} 在 path中 /data/{id}
+				String paramName = arg.getName();
+				paramName = paramName.replace("{", "").replace("}", "");
+				Parameter mp = new Parameter(new FullyQualifiedJavaType(arg.getArgTypeName()), paramName);
+				m.addParameter(mp);
+				m.addJavaDocLine(" * @param "+paramName);
+			}
+
+			/**
+			 * 方法返回值
+			 */
+			if(StringUtils.isNotBlank(fun.getReturnShow())) {
+				m.setReturnType(new FullyQualifiedJavaType(fun.getReturnShow()));
+			}
+			m.addJavaDocLine("**/");
+
+			/**
+			 * 用户自定义备释保留；程序生成，重新更新
+			 * @gen_123_lwl
+			 */
+
+			/**
+			 * @gen_33_lwl
+			 * test
+			 * test
+			 * @param testVo
+			 **/
 
 		}
-
-		originImpl.addAnnotation("@Service");
-		originImpl.addImportedType("org.springframework.stereotype.Service");
-		originImpl.addImportedType(getInterfaceClassName());
-		originImpl.addSuperInterface(new FullyQualifiedJavaType(getInterfaceClassName()));
-		writeCodeToFile(originImpl, getImplClassAbsPath());
+		writeCodeToFile(newServiceImpl, getImplClassAbsPath());
 
 	}
 	
 	public void genCode() throws IOException {
 
 		// 判断是否需存在生成 genService
-//		genServiceInterface();
-//		genServiceImpl();
+		genServiceInterface();
+		genServiceImpl();
 	}
 	
 	

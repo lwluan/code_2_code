@@ -56,7 +56,7 @@ import java.util.*;
 public abstract class ProjectGenerate {
 
     private Logger log = LoggerFactory.getLogger(ProjectGenerate.class);
-
+    protected static final boolean NO_GENSERVICE_CTRL = true; // 是否不生成Service
     protected static String code_path = "code_template";
     protected static final Logger LOG = LoggerFactory.getLogger(ProjectGenUtil.class);
     protected static final String H2_DB_PATH = "./h2db";
@@ -128,6 +128,11 @@ public abstract class ProjectGenerate {
         this.project = proProject;
         contextPath = project.getContextPath();
         artifactId = project.getArtifactId();
+        if(! "micro".equals(proProject.getProType())) {
+            // 非微服务使用 _
+            artifactId = artifactId.replaceAll("-", "_");
+        }
+
         groupId = project.getGroupId();
         name = project.getName();
         packageType = project.getPackageType();
@@ -812,6 +817,10 @@ public abstract class ProjectGenerate {
      */
     protected void genService(List<ProFile> controllerList, ProMicroService micro) throws FileNotFoundException, IOException {
 
+        if(NO_GENSERVICE_CTRL) {
+            return;
+        }
+
         for(ProFile file : controllerList) {
 
             String moduleName = null;
@@ -871,6 +880,7 @@ public abstract class ProjectGenerate {
 
             ProModule module = file.getModule();
             String fileGenPath = (localPath + "/" + artifactId + "/"+artifactId+"_main/src/main/java/" + groupId + "." + artifactId).replaceAll("\\.", "/");
+
             String filePkg = groupId + "." + artifactId;
 
             // 是否有模块名称

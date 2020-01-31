@@ -22,7 +22,8 @@ public class ProProject extends SuperProProject implements Serializable {
             artifactId = micro.getArtifactId().replaceAll("\\.", "/").replaceAll("-", "_");
             return String.format("%s/%s/%s/src/main/java/%s/%s/", localPath, rootPro, micro.getArtifactId(), groupId, artifactId).replaceAll("\\.", "/");
         } else {
-            return String.format("%s/%s/%s_main/src/main/java/%s/%s/", localPath, rootPro, artifactId, groupId, artifactId).replaceAll("\\.", "/");
+
+            return String.format("%s/%s/%s_main/src/main/java/%s/%s/", localPath, rootPro.replaceAll("-", "_"), artifactId, groupId, artifactId).replaceAll("\\.", "/");
         }
     }
     

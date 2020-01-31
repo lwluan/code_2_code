@@ -9,6 +9,7 @@ cd2cd/code_main/auto_code.trace.db
 cd2cd/code_parent/.project
 cd2cd/code_parent/.settings
 
+**/*.iml
 
 code_template/.project
 code_template/.settings

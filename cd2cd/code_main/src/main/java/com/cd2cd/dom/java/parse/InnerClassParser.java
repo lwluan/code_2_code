@@ -1,11 +1,14 @@
 package com.cd2cd.dom.java.parse;
 
+import com.cd2cd.dom.java.InnerClassUtil;
 import org.apache.commons.lang.StringUtils;
 import org.mybatis.generator.api.dom.java.*;
+import org.springframework.util.CollectionUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 import java.util.regex.Matcher;
@@ -45,16 +48,92 @@ public class InnerClassParser {
         List<String> blocks = getBlocksFromCode(block);
 
 
-        List<String> methodList = new ArrayList<>();
+        List<String> fieldsList = new ArrayList<>();
+        List<String> methodsList = new ArrayList<>();
+        List<String> initBlockList = new ArrayList<>();
+        List<String> innerClassList = new ArrayList<>();
+        List<String> innerEnumsList = new ArrayList<>();
+
         for(String bb: blocks) {
-            System.out.println(bb +"***************\n\n");
+//            System.out.println(bb +"***************-----------++++++++++++--------+++++++------line..-___=====\n\n");
+            String[] lines = bb.trim().split("\n");
+
+            boolean commOpen = false;
+            StringBuilder sb = new StringBuilder();
+            for(int i=0; i<lines.length; i++) {
+
+                String line = lines[i];
+                sb.append(line+"\n");
+
+                // 存在注释块中的代码为无效
+                /**
+                 * 例：
+                 * continue;
+                 */
+
+                int commSIndex = line.indexOf("/*");
+                int commEIndex = line.lastIndexOf("*/");
+
+                // 情况：/**{ | /**}
+                if(commSIndex > -1 && line.trim().indexOf("/*") == 0) {
+                    commOpen = true;
+                }
+
+                // 情况：{**/  | }**/
+                if(commEIndex>-1) {
+                    commOpen = false;
+                }
+
+                if(commOpen || line.trim().indexOf("//") == 0) {
+                    continue;
+                }
+
+                LineType lineType = checkLineType(line);
+
+                // open 时，判断是开始位置还是在代码后面例：1(enum aaa{ /** /**); 2(/** enum bbb{} **/)
+
+                if(lineType == LineType.Other) {
+
+                } else {
+                    if (lineType == LineType.Fields) {
+                        fieldsList.add(sb.toString());
+                        sb.delete(0, sb.length());
+                    } else {
+
+                        for(int j=i+1; j<lines.length; j++) {
+                            sb.append(lines[j]+"\n");
+                        }
+                        // 后面全部代码一起加入跳出
+                        // InitializationBlock,InnerClasses,InnerEnums,Methods
+
+                        switch (lineType) {
+                            case Methods:
+                                methodsList.add(sb.toString());
+                                break;
+                            case InitializationBlock:
+                                initBlockList.add(sb.toString());
+                                break;
+                            case InnerClasses:
+                                innerClassList.add(sb.toString());
+                                break;
+                            case InnerEnums:
+                                innerEnumsList.add(sb.toString());
+                                break;
+                        }
+                        break;
+                    }
+                }
 
 
+            }
         }
 
-        // 过滤出方法
 
-        // 过滤出inner内部类
+        // 过滤出方法
+        handleMethod(methodsList, innerClass);
+
+        // 过滤出inner内部类, interface
+        handleInnerClass(innerClassList, innerClass);
 
         // inner interface
 
@@ -64,12 +143,299 @@ public class InnerClassParser {
 
         // 过滤出 init block
 
-        // 成员变量
-
+        // 成员变量 fields
+        handleFields(fieldsList, innerClass);
 
         // 设置成员变量 + 注解 + @Value("${aa.ba.val}")
-//        setClassField(innerClass, code);
 
+        // setClassField(innerClass, code);
+    }
+
+    /**
+     * 内部类或内部接口
+     * @param innerClassList
+     * @param innerClass
+     */
+    private static void handleInnerClass(List<String> innerClassList, InnerClass innerClass) {
+
+        for(String block: innerClassList) {
+
+            System.out.println("block=" + block);
+
+            String classH = getClassHeader(block);
+            if(classH.indexOf("interface") > -1) {
+                // interface
+            } else {
+                // class
+
+                // interface
+
+                // class abs
+
+                System.out.println("classH="+classH);
+                String className = InnerClassUtil.getInnerClassName(classH);
+
+                InnerClass childClass = new InnerClass(className);
+
+//            Interface
+                innerClass.addInnerClass(childClass);
+                System.out.println("block---" + block);
+            }
+
+        }
+
+    }
+
+    private static void handleFields(List<String> fieldsList, InnerClass innerClass) {
+        for(String block: fieldsList) {
+
+            String[] lines = block.split("\n");
+            Field field = new Field();
+            innerClass.addField(field);
+
+            boolean commOpen = false;
+            for(int i=0; i<lines.length; i++) {
+                String line = lines[i];
+                if (line.trim().indexOf("/*") == 0) {
+                    commOpen = true;
+                }
+
+                if (commOpen) {
+                    field.addJavaDocLine(line.trim());
+                }
+                if (line.trim().indexOf("*/") > -1) {
+                    commOpen = false;
+                }
+
+                // 注解 Annotation
+                if (line.trim().indexOf("@") == 0) {
+                    field.addAnnotation(line.trim());
+                } else if (i==lines.length - 1) {
+                    // 成员变量
+
+                    JavaVisibility visibility = JavaVisibility.valueOf(getVisible(line).toUpperCase());
+                    if(visibility != null) {
+                        field.setVisibility(visibility);
+                    }
+
+                    // static
+                    if(line.indexOf("static") > -1) {
+                        field.setStatic(true);
+                    }
+
+                    // final
+                    if(line.indexOf("final") > -1) {
+                        field.setFinal(true);
+                    }
+
+                    // name
+                    String nn = line.substring(0, line.indexOf(";"));
+                    String name = nn.substring(nn.lastIndexOf(" ")).trim();
+                    field.setName(name);
+
+                    // type
+                    String tt = line.substring(0, line.lastIndexOf(name));
+                    tt = tt.replaceAll("private ",  "");
+                    tt = tt.replaceAll(" final ",  "");
+                    tt = tt.replaceAll(" static ",  "");
+                    tt = tt.replaceAll(" public ",  "");
+                    tt = tt.replaceAll(" protected ",  "");
+                    field.setType(new FullyQualifiedJavaType(tt));
+                }
+            }
+
+        }
+    }
+
+
+    private static LineType checkLineType(String line) {
+
+        LineType lineType = LineType.Other;
+
+
+        // public static void cccc(@RequestBody @NotNull @Validated({AddValid.class, UpdateValid.class}) String ddd) {
+        // 过滤掉以上
+
+        if(line.indexOf("@") == -1 && isMatch(line, "class.+\\{") || isMatch(line, "interface.+\\{")) {
+            // 抽象
+            lineType =  LineType.InnerClasses;
+
+        }else if(isMatch(line, "enum.+\\{")) {
+            // 枚举
+            lineType =  LineType.InnerEnums;
+
+        }else if(isMatch(line, ".+\\(.*\\).*\\{")) {
+            // 方法
+            lineType =  LineType.Methods;
+
+        }else if(line.trim().indexOf("static") == 0 || line.trim().indexOf("{") == 0) {
+            // 静态块代码
+            lineType =  LineType.InitializationBlock;
+
+        }else if(isMatch(line, ".*\\s+.+;")) {
+            // 成员变量
+            lineType =  LineType.Fields;
+        }
+
+        System.out.println(line+"     ------     "+lineType);
+
+        return lineType;
+    }
+
+    private static boolean isMatch(String line, String pattern) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(line);
+        return m.find();
+    }
+
+    // 过滤出类中的所有方法
+    private static void handleMethod(List<String> list, InnerClass innerClass) {
+
+        for(String block: list) {
+
+            Method method = new Method();
+            innerClass.addMethod(method);
+
+
+            // 方法注释； 注解；
+            String[] lines = block.split("\n");
+            boolean commOpen = false;
+            for(int i=0; i<lines.length; i++) {
+                String line = lines[i];
+                if(line.trim().indexOf("/*") == 0) {
+                    commOpen = true;
+                }
+
+                if(commOpen) {
+                    method.addJavaDocLine(line.trim());
+                }
+                if(line.trim().indexOf("*/") >-1 ) {
+                    commOpen = false;
+                }
+
+                // 注解 Annotation
+                if(line.trim().indexOf("@") == 0) {
+                    method.addAnnotation(line.trim());
+                } else if(isMatch(line, ".+\\(.*\\).*\\{")) {
+                    // 方法头
+
+                    String funStr = line.trim();
+
+                    // 方法名
+                    int funLInt = funStr.indexOf("(");
+                    String s = funStr.substring(0, funLInt);
+                    String name = s.substring(s.lastIndexOf(" ")).trim();
+                    method.setName(name);
+
+                    // 是否为构造函数
+                    if(innerClass.getType().getShortName().equals(name)) {
+                        method.setConstructor(true);
+                    }
+
+                    JavaVisibility visibility = JavaVisibility.valueOf(getVisible(funStr).toUpperCase());
+                    if(visibility != null) {
+                        method.setVisibility(visibility);
+                    }
+
+                    // static
+                    if(funStr.indexOf("static") > -1) {
+                        method.setStatic(true);
+                    }
+
+                    // final
+                    if(funStr.indexOf("final") > -1) {
+                        method.setFinal(true);
+                    }
+
+
+                    // 返回值
+                    String reType = funStr.substring(funStr.indexOf(" "), funStr.indexOf(name)).trim();
+                    reType = reType.replaceAll("static", "");
+                    reType = reType.replaceAll("final", "");
+                    method.setReturnType(new FullyQualifiedJavaType(reType));
+
+
+                    // 方法参数
+                    String params = funStr.substring(funLInt+1, funStr.lastIndexOf(")")).trim();
+                    if(StringUtils.isNotBlank(params)) {
+                        String[] pp = params.split(",");
+                        for(String p: pp) {
+
+                            // cccc(@RequestBody @NotNull @Validated({AddValid.class, UpdateValid.class}) String ddd)
+
+                            String nn = p.substring(p.lastIndexOf(" ")).trim();
+                            String tt = p.substring(0, p.lastIndexOf(" ")).trim();
+
+                            Parameter parameter = new Parameter(new FullyQualifiedJavaType(tt), nn);
+                            method.addParameter(parameter);
+                        }
+                    }
+                    System.out.println("params=" + params);
+
+                    // throws
+                    String k = "throws";
+                    if(funStr.indexOf(k) > -1) {
+                        int ii = funStr.indexOf(k) + k.length();
+                        String exceptions = funStr.substring(ii, funStr.indexOf("{", ii+1)).trim();
+                        System.out.println("exceptions=" + exceptions);
+
+                        String[] exs = exceptions.split(",");
+                        for (String e : exs) {
+                            method.addException(new FullyQualifiedJavaType(e.trim()));
+                        }
+                    }
+
+                    // 方法体
+                    for(int j=i+1; j<lines.length; j++) {
+
+                        String ll = lines[j].trim();
+                        // last } 不加入
+                        if(j==lines.length-1) {
+
+                            // 去除注释中的内容
+                            if(ll.indexOf("//") > -1) {
+                                ll = ll.substring(0, ll.indexOf("//"));
+                            }
+
+                            ll = ll.substring(0, ll.lastIndexOf("}"));
+                        }
+                        if(StringUtils.isNotBlank(ll)) {
+                            method.addBodyLine(ll.trim());
+                        }
+                    }
+
+                    if(funStr.indexOf("abstract") == -1 && CollectionUtils.isEmpty(method.getBodyLines())) {
+                        method.addBodyLine("");
+                    }
+
+                    break;
+                }
+            }
+        }
+    }
+
+    private static int doIndex(String line, char sChar) {
+        int ii = line.indexOf(sChar);
+        if(ii > -1) {
+            if(line.charAt(ii-1) == '(') {
+                return line.indexOf(sChar, ii+1);
+            } else {
+                return ii;
+            }
+        }
+        return -1;
+    }
+
+    private static int doLastIndex(String line, char eChar) {
+        int ii = line.indexOf(eChar);
+        if(ii > -1) {
+            if(line.length() > ii+1 && line.charAt(ii+1) == ')') {
+                return line.indexOf(eChar, ii+1);
+            } else {
+                return ii;
+            }
+        }
+        return -1;
     }
 
     private static List<String> getBlocksFromCode(String block) {
@@ -92,12 +458,15 @@ public class InnerClassParser {
 
             bStr.append(line+"\n");
 
-            int sCharIndex = line.indexOf(sChar);
-            int eCharIndex = line.indexOf(eChar);
+//            int sCharIndex = line.indexOf(sChar);
+//            int eCharIndex = line.indexOf(eChar);
+            int sCharIndex = doIndex(line, sChar);
+            int eCharIndex = doLastIndex(line, eChar);
+
             int aCharIndex = line.indexOf(aChar);
             int strCharIndex = line.indexOf(strChar);
             int commSIndex = line.indexOf("/*");
-            int commEIndex = line.indexOf("*/");
+            int commEIndex = line.lastIndexOf("*/");
             int commLIndex = line.indexOf("//");
 
 
@@ -107,10 +476,14 @@ public class InnerClassParser {
             // 未在注释中
             if(!commOpen) {
 
-                // 注解中是否有 { }
+                // 注解中是否有 { }  *******
                 if (aCharIndex > -1) {
-                    hasSChar = false;
                     hasEChar = false;
+
+                    // {}  {: {大于}
+                    if( ! (line.lastIndexOf("{") > line.lastIndexOf("}")) ) {
+                        hasSChar = false;
+                    }
                 }
 
                 // 字符【串】中是否有 "{" "}"
@@ -198,7 +571,9 @@ public class InnerClassParser {
             // 在注释内部，忽略
             // } // test { }
             if(debug) {
-                System.out.println("line=" + line + "\t\t\t\t **** commOpen=" + commOpen + "，hasSChar=" + hasSChar + "，hasEChar=" + hasEChar);
+                System.out.println("line=" + line + "\n____________________\n commOpen="
+                        + commOpen + "，hasSChar=" + hasSChar + "，hasEChar=" + hasEChar
+                +",sCharIndex=" + sCharIndex + ",eCharIndex=" + eCharIndex+"\n\n");
             }
             if(commOpen) {
                 if( !hasSChar)
@@ -209,14 +584,15 @@ public class InnerClassParser {
 
             if(hasSChar) {
                 if(debug) {
-                    System.out.println("push ++++++++++++++++++");
+                    System.out.println("push ++++++++++++++++++++++++++++++++++++");
                 }
                 stack.push(sChar);
             }
 
-
-
             if(hasEChar) {
+
+                // 少了 pop 一行多个分割 if(true){ } else {  单个字符去判断
+                popOrAddStack(stack, line);
 
                 String bb = bStr.toString();
                 if(debug) {
@@ -236,6 +612,80 @@ public class InnerClassParser {
 
         }
         return blocks;
+    }
+
+    // 少了 pop 一行多个分割 if(true){ } else {  单个字符去判断
+    // 以上程序只处理了一种情况 {}
+    private static void popOrAddStack(Stack<Character> stack, String line) {
+        // /** */;  //
+        // {
+        // }
+
+        // @Abbbb(vaava={cccaa.class,kjbkda.class}); 不计算
+
+        char sChar = '{';
+        char eChar = '}';
+        int commSIndex = line.indexOf("/*");
+        int commEIndex = line.lastIndexOf("*/");
+
+
+        // 去除括号里的 标记
+        String s = line;
+        s = s.replaceAll("\"/\\*", "");
+        s = s.replaceAll("\"//", "");
+
+        // 去除 /** /*
+        if(commSIndex > -1) {
+            int eInt = commEIndex>-1 ? commEIndex : s.length();
+            String ss = s.substring(eInt-1);
+            s = s.substring(0, commSIndex) + ss;
+        }
+
+        // 去除 s="{"; s='{'; s="}"; s='}'; 在字符串中的不计数
+        s = s.replaceAll("\'\\{\'", "");
+        s = s.replaceAll("\'\\}\'", "");
+
+        int commLIndex = s.indexOf("//");
+        // 去除  // 后面代码
+        if(commLIndex > -1) {
+            s = s.substring(0, commLIndex);
+        }
+
+        char strChar = '"';// 去除 字符串里面的内容。
+        int strint = s.indexOf(strChar);
+        while(strint > -1) {
+            int str2int = s.indexOf(strChar, strint+1);
+            if(str2int > -1) {
+                String ii = s.substring(str2int+1);
+                s = s.substring(0, strint) + ii;
+            }
+            strint = s.indexOf(strChar, str2int+1);
+        }
+
+        // {   " 44{33 " {  '{'  // "{
+//        System.out.println(s);
+
+        int sint = 0;
+        int sCount = 0;
+        while(sint > -1) {
+            sint = s.indexOf(sChar, sint+1);
+//            System.out.println("sint="+sint);
+            sCount++;
+        }
+
+        int eint = 0;
+        int eCount = 0;
+        while(eint > -1) {
+            eint = s.indexOf(eChar, eint+1);
+//            System.out.println("eint="+eint);
+            eCount++;
+        }
+
+        if(sCount >1 && eCount<sCount) {
+            stack.push('{');
+        }
+//        System.out.println("sCount="+sCount+", eCount=" + eCount+", eint="+eint+",sint="+sint);
+
     }
 
     public static void setClassField(InnerClass innerClass, String code) {
@@ -318,7 +768,7 @@ public class InnerClassParser {
     }
 
     public static String getClassHeader(String code) {
-        Pattern p = Pattern.compile("(public|private|protected)?.*(static)?.*class.+\\{");
+        Pattern p = Pattern.compile("(public|private|protected)?.*(static)?.*(class|interface).+\\{");
         Matcher m = p.matcher(code);
         while(m.find()) {
             String line = m.group();
@@ -370,7 +820,7 @@ public class InnerClassParser {
 
         // 获取【类范型】 <ClassA> | <T extends ClassA> | <T extends ClassA, E extends ClassB>
         firstStr = firstStr.substring(firstStr.indexOf(className) + className.length());
-        if(firstStr.indexOf("<") < 5) {
+        if(firstStr.indexOf("<") < 5 && firstStr.indexOf("<") > -1) {
             classTypeStr = firstStr.substring(firstStr.indexOf("<")+1, firstStr.indexOf(">"));
         }
         if(StringUtils.isNotBlank(classTypeStr)) {
@@ -429,21 +879,34 @@ public class InnerClassParser {
     }
 
     private static void testClass() throws IOException {
-        File file = new File("/Volumes/data/code-sources/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/dom/java/demo/DemoClass.java");
+        String url = "/Users/lwl/Documents/source-code/java-code/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/dom/java/demo/DemoClass.java";
+//        url = "/Volumes/data/code-sources/java-source/code_2_code/cd2cd/code_main/src/main/java/com/cd2cd/dom/java/demo/DemoClass.java";
+        File file = new File(url);
         TopClassParser cf = new TopClassParser(file);
 
         TopLevelClass cc = cf.toTopLevelClass();
-//        System.out.println(cc.getFormattedContent());
+        System.out.println(cc.getFormattedContent());
     }
 
     public static void main(String[] args) throws IOException {
 
         testClass();
 
-        String s = "/* * {name} **/ ";
-        System.out.println(s.indexOf("/*"));
-        System.out.println(s.indexOf("*/"));
+//        String s = " /** if(true){} **/ s='{'; String aa=\"{\"; if(true){ }else{ } { // {";
+//        popOrAddStack(null, s);
+        String line = "private final static Logger LOG = LoggerFactory.getLogger(DemoClass.class); // iiirewjr";
+//        line = "String name;";
+        line = "abstract class TestAbstract {";
+        line = "private abstract class TestAbstract {";
+        line = "public static void main(String[] args) {";
+        line = "public static void main(){";
+        line = "public void main(){ // 99sfd";
+//        line = "static {";
+//        line = "iiii{ // ";
 
+        Pattern p = Pattern.compile("(static|\\s)*.*\\{");
+        Matcher m = p.matcher(line);
+        System.out.println(m.find()+"------");
 
 
     }
