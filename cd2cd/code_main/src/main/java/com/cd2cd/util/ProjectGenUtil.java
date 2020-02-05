@@ -85,7 +85,7 @@ import com.google.common.collect.Sets;
 public class ProjectGenUtil {
 	private static String code_path = "code_template";
 	private static final Logger LOG = LoggerFactory.getLogger(ProjectGenUtil.class);
-	private static final String H2_DB_PATH = "./h2db";
+	private static final String H2_DB_PATH = "./code-manager/h2db";
 	private static final String H2_DB_PASSWORD = "h2";
 	private static final String H2_DB_USER = "123456";
 	private static String NEW_LINE = System.getProperty("line.separator");

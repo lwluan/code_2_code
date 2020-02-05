@@ -59,7 +59,7 @@ public abstract class ProjectGenerate {
     protected static final boolean NO_GENSERVICE_CTRL = true; // 是否不生成Service
     protected static String code_path = "code_template";
     protected static final Logger LOG = LoggerFactory.getLogger(ProjectGenUtil.class);
-    protected static final String H2_DB_PATH = "./h2db";
+    protected static final String H2_DB_PATH = "./code-manager/h2db";
     protected static final String H2_DB_PASSWORD = "h2";
     protected static final String H2_DB_USER = "123456";
     protected static String NEW_LINE = System.getProperty("line.separator");
