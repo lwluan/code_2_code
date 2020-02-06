@@ -5,6 +5,7 @@ import com.cd2cd.dom.java.FileIdsAndType;
 import com.cd2cd.dom.java.TypeEnum;
 import com.cd2cd.domain.*;
 import com.cd2cd.domain.gen.*;
+import com.cd2cd.util.ResourcesCopyUtil;
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -13,7 +14,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -22,8 +22,6 @@ import org.w3c.dom.Node;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,20 +37,26 @@ public class SimpleProjectGenerate extends ProjectGenerate {
             new File(localPath).mkdirs();
         }
 
-        String _path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "../../../../" + code_path;
-        _path = _path.replace("file:", "");
-        String tpPath = getRealPath(_path);
-
-        log.info("_path={}, tpPath={}", _path, tpPath);
-
-        // 1、项目复制
-        File src = new File(tpPath);
-        File dest = new File(localPath + "/" + code_path);
         if (!new File(localPath + "/" + artifactIdName).exists()) {
-            copyFolder(src, dest);
+            ResourcesCopyUtil.loadRecourseFromJarByFolder("/" + code_path, localPath, ResourcesCopyUtil.class);
+            replaceProject();
         }
-        // 2、项目替换
-        log.info("replaceProject ...");
+
+//        String _path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "../../../../" + code_path;
+//        _path = _path.replace("file:", "");
+//        String tpPath = getRealPath(_path);
+//
+//        log.info("_path={}, tpPath={}", _path, tpPath);
+//
+//        // 1、项目复制
+//        File src = new File(tpPath);
+//        File dest = new File(localPath + "/" + code_path);
+//        if (!new File(localPath + "/" + artifactIdName).exists()) {
+//            copyFolder(src, dest);
+//        }
+//        // 2、项目替换
+//        log.info("replaceProject ...");
+
         replaceProject();
     }
 

@@ -29,7 +29,7 @@ code_template/code_template_parent/.settings
 **/.idea
 **/*.db
 **/logs
-
+**/code-manager
 # Compiled class file
 *.class
 

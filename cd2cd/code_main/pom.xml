@@ -40,6 +40,86 @@
 		</resources>
 		<plugins>
 			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-resources1</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/code_template</outputDirectory>
+							<resources>
+								<resource>
+									<directory>../../code_template</directory>
+									<filtering>true</filtering>
+									<excludes>
+										<exclude>**/.settings/**</exclude>
+										<exclude>**/.project</exclude>
+										<exclude>**/target/**</exclude>
+										<exclude>**/logs/**</exclude>
+										<exclude>**/.classpath</exclude>
+										<exclude>**/.DS_Store</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources2</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/code-microservice</outputDirectory>
+							<resources>
+								<resource>
+									<directory>../../code-microservice</directory>
+									<filtering>true</filtering>
+									<excludes>
+										<exclude>**/.settings/**</exclude>
+										<exclude>**/.project</exclude>
+										<exclude>**/target/**</exclude>
+										<exclude>**/logs/**</exclude>
+										<exclude>**/.classpath</exclude>
+										<exclude>**/.DS_Store</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-resources3</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/target/classes/template_web</outputDirectory>
+							<resources>
+								<resource>
+									<directory>../../template_web</directory>
+									<filtering>true</filtering>
+									<excludes>
+										<exclude>**/.idea/**</exclude>
+										<exclude>**/node_modules/**</exclude>
+										<exclude>**/.umi/**</exclude>
+										<exclude>**/*.log</exclude>
+										<exclude>**/.temp/**</exclude>
+										<exclude>**/.DS_Store</exclude>
+									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
