@@ -9,6 +9,7 @@ import com.cd2cd.domain.gen.*;
 import com.cd2cd.domain.gen.ProFileCriteria;
 import com.cd2cd.mapper.ProMicroServiceMapper;
 import com.cd2cd.util.GenFileByFtl;
+import com.cd2cd.util.ResourcesCopyUtil;
 import com.cd2cd.util.StringUtil;
 import com.google.common.collect.ImmutableSet;
 import freemarker.template.TemplateException;
@@ -58,22 +59,10 @@ public class MicroProjectGenerate extends ProjectGenerate {
             new File(localPath).mkdirs();
         }
 
-        String _path = ClassUtils.getDefaultClassLoader().getResource("").getPath() + "../../../../" + code_path;
-        _path = _path.replace("file:", "");
-        String tpPath = getRealPath(_path);
-
-        log.info("_path={}, tpPath={}", _path, tpPath);
-
-        // 1、项目复制
-        File src = new File(tpPath);
-        File dest = new File(localPath + "/" + code_path);
-        String proPath = localPath + "/" + artifactId;
-        if (!new File(proPath).exists()) {
-            copyFolder(src, dest);
+        if (!new File(localPath + "/" + artifactIdName).exists()) {
+            ResourcesCopyUtil.loadRecourseFromJarByFolder("/" + code_path, localPath, ResourcesCopyUtil.class);
+            replaceProject();
         }
-        // 2、项目替换
-        log.info("replaceProject ...");
-        replaceProject();
 
         // 生成-服务项目
         genMicoServiceProject();

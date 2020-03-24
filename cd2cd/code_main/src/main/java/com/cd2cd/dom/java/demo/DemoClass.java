@@ -13,7 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
 /**
@@ -34,10 +39,12 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
 
     private final static Logger LOG = LoggerFactory.getLogger(DemoClass.class);
 
+    private String aa; // 小明
+
     @Autowired
     private ProProjectMapper proProjectMapper;
 
-    interface TestInterface{
+    interface TestInterface {
 
     }
 
@@ -45,18 +52,32 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
 
     }
 
+    // interface TestInterface {
     enum TestEnum{ /** /** /**
      测试
      */
         aaa, bbb, ccc;
     }
 
+    public static void aaac(String bbb, String ... args) {
+
+    }
+
+    public static void cccc(@RequestBody @NotNull @Validated({AddValid.class, UpdateValid.class}) String ddd) {
+        System.out.println("--00");
+        int bb = 0;
+    }
+
     /**
-     * 特殊语句写法；一有多个分割 { } { 都是有效
+    enum TestBB {
+
+    }
+    */
+    /**
+     * 特殊语句写法；一有多个分割 { } { // 都是有效
      */
-    private void aaa() {
-        if(true){ } else
-            {
+    private void aaa() throws Exception {
+        if(true){ } else {
 
         }
     }
@@ -142,6 +163,7 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
     public DemoClass() {
 
     }
+    /**** } */
 
     // /**
     /**
@@ -154,11 +176,19 @@ public class DemoClass<T extends TestInterface2, E extends TestInterface2> exten
         this.name = name;
     }// }}
 
+    @RequestMapping("/fjdkaf") // 不能说的事
     public BaseRes<DataPageWrapper<ProModuleVo>> productList() {
         return null;
     }
 
     public static void main(String[] args) {
         new DemoClass();
+    }
+
+    public interface AddValid {}
+    public interface UpdateValid {
+        static void aa() {
+
+        }
     }
 }

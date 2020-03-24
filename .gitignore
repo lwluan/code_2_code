@@ -10,6 +10,11 @@ cd2cd/code_parent/.project
 cd2cd/code_parent/.settings
 
 
+**/target
+
+
+**/*.iml
+
 code_template/.project
 code_template/.settings
 code_template/code_template_main/logs
@@ -24,7 +29,7 @@ code_template/code_template_parent/.settings
 **/.idea
 **/*.db
 **/logs
-
+**/code-manager
 # Compiled class file
 *.class
 
