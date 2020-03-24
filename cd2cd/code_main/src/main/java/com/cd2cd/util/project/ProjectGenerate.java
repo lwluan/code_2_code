@@ -414,16 +414,18 @@ public abstract class ProjectGenerate {
                     if("auto_increment".equalsIgnoreCase(c.getExtra())) {
                         extraColumn = c.getName();
                         break;
-                    } else if ("PRI".equalsIgnoreCase(c.getKeyType())){
-                        priColumn = c.getName();
-                        priNum ++;
                     }
+//                    else if ("PRI".equalsIgnoreCase(c.getKeyType())){
+//                        priColumn = c.getName();
+//                        priNum ++;
+//                    }
                 }
                 if(null != extraColumn) {
                     tab.setIdentityPrimaryKey(extraColumn);
-                } else if(priNum == 1 && priColumn != null) {
-                    tab.setIdentityPrimaryKey(priColumn);
                 }
+//                else if(priNum == 1 && priColumn != null) {
+//                    tab.setIdentityPrimaryKey(priColumn);
+//                }
             });
 
             dataObj.put("tables", tables);
